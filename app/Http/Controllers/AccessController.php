@@ -27,10 +27,11 @@ class AccessController extends Controller
 
     public function create(Request $request)
     {
-        // dd($request->access);
+        // dd($request);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'location' => $request->location,
             'status' => $request->status,
             'password' => Hash::make($request->password),
         ]);

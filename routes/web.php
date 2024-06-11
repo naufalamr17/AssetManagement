@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
@@ -51,6 +52,8 @@ Route::post('/store_user', [AccessController::class, 'create'])->name('store_use
 Route::delete('/destroy_user/{id}', [AccessController::class, 'destroy'])->name('destroy_user')->middleware('auth');
 Route::get('/users/{id}/edit', [AccessController::class, 'edit'])->name('edit_user')->middleware('auth');
 Route::put('/users/{id}', [AccessController::class, 'update'])->name('update_user')->middleware('auth');
+
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {

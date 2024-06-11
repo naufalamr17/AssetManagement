@@ -198,7 +198,8 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         $inventory = inventory::findOrFail($id);
-
+        $inventory->delete();
+        
         return redirect()->back()->with('success', 'Inventory deleted successfully.');
     }
 
@@ -385,7 +386,7 @@ class InventoryController extends Controller
 
         if ($inventory) {
             $data = [
-                'location' => $inventory->location, 
+                'location' => $inventory->location,
                 'asset_category' => $inventory->asset_category,
                 'asset_position_dept' => $inventory->asset_position_dept,
                 'asset_type' => $inventory->asset_type,

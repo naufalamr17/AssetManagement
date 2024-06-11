@@ -76,7 +76,7 @@
                                                     </svg>
                                                 </button>
                                             </div>
-                                            <div id="access-container" class="mt-2 space-y-4">
+                                            <div id="access-container" class="space-y-4">
                                                 <div class="d-flex align-items-center">
                                                     <select name="access[]" class="form-control border p-2" style="margin-right: 10px;" required>
                                                         <option value="" disabled selected>Select Access</option>
@@ -93,6 +93,7 @@
 
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success btn-block">Create Account</button>
+                                    <a href="javascript:history.go(-1);" class="btn btn-danger remove-access">Cancel</a>
                                 </div>
                             </form>
                         </div>

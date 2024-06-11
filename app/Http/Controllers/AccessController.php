@@ -33,7 +33,7 @@ class AccessController extends Controller
             'email' => $request->email,
             'location' => $request->location,
             'status' => $request->status,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
         $userId = $user->id;
@@ -47,7 +47,7 @@ class AccessController extends Controller
             // dd($user->accesses());
         }
 
-        return redirect()->back()->with('success', 'User created successfully.');
+        return redirect()->route('user-management')->with('success', 'User created successfully.');
     }
 
     public function destroy($id)

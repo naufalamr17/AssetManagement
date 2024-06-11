@@ -61,7 +61,8 @@ class AccessController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('edituser', compact('user'));
+        // dd($user);
+        return view('pages.access.edituser', compact('user'));
     }
 
     public function update(Request $request, $id)
@@ -69,10 +70,12 @@ class AccessController extends Controller
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->location = $request->location;
         $user->status = $request->status;
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+            $user->password = $request->password;
         }
+        // dd($user);
         $user->save();
 
         $userId = $user->id;
@@ -86,6 +89,6 @@ class AccessController extends Controller
             // dd($user->accesses());
         }
 
-        return redirect()->route('user_center')->with('success', 'User updated successfully.');
+        return redirect()->route('user-management')->with('success', 'User updated successfully.');
     }
 }

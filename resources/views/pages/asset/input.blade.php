@@ -146,6 +146,67 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        @foreach($inventory as $inv)
+                                        <tr class="text-center text-xxs">
+                                            <td>{{ $inv->asset_code }}</td>
+                                            <td>{{ $inv->old_asset_code }}</td>
+                                            <td>{{ $inv->asset_category }}</td>
+                                            <td>{{ $inv->asset_position_dept }}</td>
+                                            <td>{{ $inv->asset_type }}</td>
+                                            <td>{{ $inv->description }}</td>
+                                            <td>{{ $inv->serial_number }}</td>
+                                            <td>{{ $inv->acquisition_date }}</td>
+                                            @if($inv->acquisition_value == 0)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
+                                            @endif
+                                            <?php
+                                            $acquisitionDate = new DateTime($inv->acquisition_date);
+                                            $usefulLife = $inv->useful_life * 365; // Convert useful life from years to days
+                                            $endOfUsefulLife = clone $acquisitionDate;
+                                            $endOfUsefulLife->modify("+{$usefulLife} days");
+
+                                            $currentDate = new DateTime();
+                                            $interval = $currentDate->diff($endOfUsefulLife);
+
+                                            if ($currentDate > $endOfUsefulLife) {
+                                                $remainingDays = -$interval->days; // Use negative value for overdue days
+                                            } else {
+                                                $remainingDays = $interval->days;
+                                            }
+
+                                            $message = "{$remainingDays} hari";
+                                            ?>
+                                            <td>{{ $message }}</td>
+                                            <td>{{ $inv->location }}</td>
+                                            <td>{{ $inv->status }}</td>
+                                            @if(isset($inv->user))
+                                            <td>{{ $inv->user }}</td>
+                                            @else
+                                            <td>-</td>
+                                            @endif
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="p-1">
+                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0" style="width: 24px; height: 24px;">
+                                                            <i class="material-icons" style="font-size: 16px;">edit</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="mx-1"></div>
+                                                    <form action="{{ route('destroy_inventory', ['id' => $inv->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this asset?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm p-0" style="width: 24px; height: 24px;">
+                                                            <i class="material-icons" style="font-size: 16px;">close</i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

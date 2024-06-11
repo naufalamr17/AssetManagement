@@ -22,7 +22,7 @@ class AccessController extends Controller
 
     public function adduser()
     {
-        return view('adduser');
+        return view('pages.access.adduser');
     }
 
     public function create(Request $request)

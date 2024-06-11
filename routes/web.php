@@ -46,6 +46,11 @@ Route::get('profile', [ProfileController::class, 'create'])->middleware('auth')-
 Route::post('user-profile', [ProfileController::class, 'update'])->middleware('auth');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
+Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');
+Route::post('/store_user', [AccessController::class, 'create'])->name('store_user')->middleware('auth');
+Route::delete('/destroy_user/{id}', [AccessController::class, 'destroy'])->name('destroy_user')->middleware('auth');
+Route::get('/users/{id}/edit', [AccessController::class, 'edit'])->name('edit_user')->middleware('auth');
+Route::put('/users/{id}', [AccessController::class, 'update'])->name('update_user')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {

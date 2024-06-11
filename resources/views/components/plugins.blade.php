@@ -5,7 +5,7 @@
     <div class="card shadow-lg">
         <div class="card-header pb-0 pt-3">
             <div class="float-start">
-                <h5 class="mt-3 mb-0">Material UI Configurator</h5>
+                <h5 class="mt-3 mb-0">Configurator</h5>
                 <p>See our dashboard options.</p>
             </div>
             <div class="float-end mt-4">
@@ -65,7 +65,7 @@
                         onclick="darkMode(this)">
                 </div>
             </div>
-            <hr class="horizontal dark my-sm-4">
+            <!-- <hr class="horizontal dark my-sm-4">
             <a class="btn btn-outline-dark w-100" href="../../documentation/getting-started/installation.html">View documentation</a>
             <div class="w-100 text-center">
                 <a class="github-button" href="https://github.com/creativetimofficial/material-dashboard-laravel"
@@ -80,7 +80,7 @@
                     class="btn btn-dark mb-0 me-2" target="_blank">
                     <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
                 </a>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

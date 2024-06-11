@@ -48,7 +48,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 999;
             left: 0;
             top: 0;
             width: 100%;
@@ -106,11 +106,14 @@
                             {{ session('success') }}
                         </div>
                         @endif
-                        <div class="flex justify-between mb-4">
-                            <input type="text" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" name="searchbox" id="searchbox" placeholder="Search..." autofocus>
-                            <button id="openModalButton" class="button-with-icon">
+
+                        <div class="d-flex align-items-center mb-4 p-3">
+                            <input type="text" class="form-control border p-2 me-2" name="searchbox" id="searchbox" placeholder="Search..." style="max-width: 300px;" autofocus>
+                            <button id="openModalButton" class="btn btn-danger my-3">
                                 <i class="fas fa-camera"></i>
                             </button>
+                            <div class="ms-auto my-3"> <a class="btn bg-gradient-dark mb-0" href="{{ route('add_user') }}"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset</a>
+                            </div>
 
                             <!-- The Modal -->
                             <div id="myModal" class="modal">
@@ -121,9 +124,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="me-3 my-3 text-end">
-                            <a class="btn bg-gradient-dark mb-0" href="{{ route('add_user') }}"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset</a>
-                        </div>
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">

@@ -199,7 +199,7 @@ class InventoryController extends Controller
     {
         $inventory = inventory::findOrFail($id);
         $inventory->delete();
-        
+
         return redirect()->back()->with('success', 'Inventory deleted successfully.');
     }
 
@@ -362,7 +362,7 @@ class InventoryController extends Controller
                 'userhists.note'
             )
             ->get();
-        return view('mlpasset.history', compact('userhist'));
+        return view('pages.asset.history', compact('userhist'));
     }
 
     public function repair()

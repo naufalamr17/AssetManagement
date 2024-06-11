@@ -28,6 +28,11 @@ class User extends Authenticatable
         'password_confirmation'
     ];
 
+    public function accesses()
+    {
+        return $this->hasMany(access::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,10 +51,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
     }
-
 }

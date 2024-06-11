@@ -210,7 +210,7 @@ class InventoryController extends Controller
             ->first();
 
         // dd($asset);
-        return view('mlpasset.edit', compact('asset', 'userhist'));
+        return view('pages.asset.editasset', compact('asset', 'userhist'));
     }
 
     public function update(Request $request, $id)

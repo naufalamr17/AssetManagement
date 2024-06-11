@@ -3,7 +3,7 @@
     <x-navbars.sidebar activePage="inventory"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Add Inventory"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Edit Inventory"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -25,13 +25,13 @@
                         </div>
                         @endif
                         <div class="p-6">
-                            <form method="POST" action="{{ route('store_inventory') }}">
+                            <form method="POST" action="{{ route('update_inventory', $asset->id) }}">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="old_asset_code">Kode Asset Lama</label>
-                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code') }}" autofocus>
+                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code', $asset->old_asset_code) }}" autofocus>
                                             @if ($errors->has('old_asset_code'))
                                             <div class="text-danger mt-2">{{ $errors->first('old_asset_code') }}</div>
                                             @endif
@@ -41,9 +41,9 @@
                                             <label for="location">Location</label>
                                             <select id="location" class="form-control border p-2" name="location" required>
                                                 <option value="" selected disabled>Select Location</option>
-                                                <option value="Head Office">01 - Head Office</option>
-                                                <option value="Office Kendari">02 - Office Kendari</option>
-                                                <option value="Site Molore">03 - Site Molore</option>
+                                                <option value="Head Office" {{ $asset->location == 'Head Office' ? 'selected' : '' }}>01 Head Office</option>
+                                                <option value="Office Kendari" {{ $asset->location == 'Office Kendari' ? 'selected' : '' }}>02 Office Kendari</option>
+                                                <option value="Site Molore" {{ $asset->location == 'Site Molore' ? 'selected' : '' }}>03 Site Molore</option>
                                             </select>
                                             @if ($errors->has('location'))
                                             <div class="text-danger mt-2">{{ $errors->first('location') }}</div>
@@ -54,13 +54,13 @@
                                             <label for="asset_category">Kategori</label>
                                             <select id="asset_category" class="form-control border p-2" name="asset_category" required>
                                                 <option value="" selected disabled>Select Category</option>
-                                                <option value="Kendaraan">01 - Kendaraan</option>
-                                                <option value="Mesin">02 - Mesin</option>
-                                                <option value="Alat Berat">03 - Alat Berat</option>
-                                                <option value="Alat Lab">04 - Alat Lab</option>
-                                                <option value="Alat Preparasi">05 - Alat Preparasi</option>
-                                                <option value="Peralatan">06 - Peralatan</option>
-                                                <option value="Perlengkapan">07 - Perlengkapan</option>
+                                                <option value="Kendaraan" {{ $asset->asset_category == 'Kendaraan' ? 'selected' : '' }}>01 Kendaraan</option>
+                                                <option value="Mesin" {{ $asset->asset_category == 'Mesin' ? 'selected' : '' }}>02 Mesin</option>
+                                                <option value="Alat Berat" {{ $asset->asset_category == 'Alat Berat' ? 'selected' : '' }}>03 Alat Berat</option>
+                                                <option value="Alat Lab" {{ $asset->asset_category == 'Alat Lab' ? 'selected' : '' }}>04 Alat Lab</option>
+                                                <option value="Alat Preparasi" {{ $asset->asset_category == 'Alat Preparasi' ? 'selected' : '' }}>05 Alat Preparasi</option>
+                                                <option value="Peralatan" {{ $asset->asset_category == 'Peralatan' ? 'selected' : '' }}>06 Peralatan</option>
+                                                <option value="Perlengkapan" {{ $asset->asset_category == 'Perlengkapan' ? 'selected' : '' }}>07 Perlengkapan</option>
                                             </select>
                                             @if ($errors->has('asset_category'))
                                             <div class="text-danger mt-2">{{ $errors->first('asset_category') }}</div>
@@ -69,7 +69,7 @@
 
                                         <div class="form-group">
                                             <label for="asset_position_dept">Asset Position</label>
-                                            <input id="asset_position_dept" class="form-control border p-2" type="text" name="asset_position_dept" list="asset_position_list" required>
+                                            <input id="asset_position_dept" class="form-control border p-2" type="text" name="asset_position_dept" list="asset_position_list" value="{{ old('asset_position_dept', $asset->asset_position_dept) }}" required>
                                             <datalist id="asset_position_list">
                                                 <option value="Geology">Geology</option>
                                                 <option value="R. HSE">R. HSE</option>
@@ -174,7 +174,7 @@
 
                                         <div class="form-group">
                                             <label for="asset_type">Jenis</label>
-                                            <input list="asset_types" class="form-control border p-2" id="asset_type" name="asset_type" required>
+                                            <input list="asset_types" class="form-control border p-2" id="asset_type" name="asset_type" value="{{ old('asset_type', $asset->asset_type) }}" required>
                                             <datalist id="asset_types">
                                                 <option value="LV">LV</option>
                                                 <option value="Mobil Tangki">Mobil Tangki</option>
@@ -219,7 +219,7 @@
 
                                         <div class="form-group">
                                             <label for="description">Deskripsi</label>
-                                            <textarea id="description" class="form-control border p-2" name="description" required>{{ old('description') }}</textarea>
+                                            <textarea id="description" class="form-control border p-2" name="description" required>{{ old('description', $asset->description) }}</textarea>
                                             @if ($errors->has('description'))
                                             <div class="text-danger mt-2">{{ $errors->first('description') }}</div>
                                             @endif
@@ -227,7 +227,7 @@
 
                                         <div class="form-group">
                                             <label for="serial_number">Serial Number</label>
-                                            <input id="serial_number" class="form-control border p-2" type="text" name="serial_number" value="{{ old('serial_number') }}">
+                                            <input id="serial_number" class="form-control border p-2" type="text" name="serial_number" value="{{ old('serial_number', $asset->serial_number) }}">
                                             @if ($errors->has('serial_number'))
                                             <div class="text-danger mt-2">{{ $errors->first('serial_number') }}</div>
                                             @endif
@@ -237,7 +237,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="acquisition_date">Tanggal Perolehan</label>
-                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ old('acquisition_date') }}" required>
+                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}" required>
                                             @if ($errors->has('acquisition_date'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_date') }}</div>
                                             @endif
@@ -245,7 +245,7 @@
 
                                         <div class="form-group">
                                             <label for="useful_life">Umur ekonomis (Tahun)</label>
-                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life') }}" required>
+                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}" required>
                                             @if ($errors->has('useful_life'))
                                             <div class="text-danger mt-2">{{ $errors->first('useful_life') }}</div>
                                             @endif
@@ -253,7 +253,7 @@
 
                                         <div class="form-group">
                                             <label for="acquisition_value">Nilai Perolehan</label>
-                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value') }}">
+                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}">
                                             @if ($errors->has('acquisition_value'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
                                             @endif
@@ -261,7 +261,7 @@
 
                                         <div class="form-group">
                                             <label for="hand_over_date">Tanggal Serah Terima</label>
-                                            <input type="date" class="form-control border p-2" id="hand_over_date" name="hand_over_date" value="{{ old('hand_over_date') }}">
+                                            <input type="date" class="form-control border p-2" id="hand_over_date" name="hand_over_date" value="{{ isset($asset->hand_over_date) ? $asset->hand_over_date : '' }}">
                                             @if ($errors->has('hand_over_date'))
                                             <div class="text-danger mt-2">{{ $errors->first('hand_over_date') }}</div>
                                             @endif
@@ -269,7 +269,7 @@
 
                                         <div class="form-group">
                                             <label for="user">User</label>
-                                            <input id="user" class="form-control border p-2" type="text" name="user" value="{{ old('user') }}">
+                                            <input id="user" class="form-control border p-2" type="text" name="user" value="{{ old('user', $asset->user) }}">
                                             @if ($errors->has('user'))
                                             <div class="text-danger mt-2">{{ $errors->first('user') }}</div>
                                             @endif
@@ -277,7 +277,7 @@
 
                                         <div class="form-group">
                                             <label for="dept">Dept</label>
-                                            <input id="dept" class="form-control border p-2" type="text" name="dept" value="{{ old('dept') }}">
+                                            <input id="dept" class="form-control border p-2" type="text" name="dept" value="{{ old('dept', $asset->dept) }}">
                                             @if ($errors->has('dept'))
                                             <div class="text-danger mt-2">{{ $errors->first('dept') }}</div>
                                             @endif
@@ -285,7 +285,7 @@
 
                                         <div class="form-group">
                                             <label for="note">Remarks</label>
-                                            <input id="note" class="form-control border p-2" type="text" name="note" value="{{ old('note') }}">
+                                            <input id="note" class="form-control border p-2" type="text" name="note" value="{{ old('note', $userhist ? $userhist->note : '') }}">
                                             @if ($errors->has('note'))
                                             <div class="text-danger mt-2">{{ $errors->first('note') }}</div>
                                             @endif
@@ -298,7 +298,7 @@
                                 </div>
 
                                 <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-success btn-block">Add Asset</button>
+                                    <button type="submit" class="btn btn-success btn-block">Update Asset</button>
                                     <a href="{{ route('inventory') }}" class="btn btn-danger">Cancel</a>
                                 </div>
                             </form>

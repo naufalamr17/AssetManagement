@@ -190,7 +190,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <div class="p-1">
-                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0" style="width: 24px; height: 24px;">
+                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
                                                             <i class="material-icons" style="font-size: 16px;">edit</i>
                                                         </a>
                                                     </div>
@@ -198,7 +198,7 @@
                                                     <form action="{{ route('destroy_inventory', ['id' => $inv->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this asset?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm p-0" style="width: 24px; height: 24px;">
+                                                        <button type="submit" class="btn btn-danger btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
                                                             <i class="material-icons" style="font-size: 16px;">close</i>
                                                         </button>
                                                     </form>

@@ -54,6 +54,15 @@ Route::get('/users/{id}/edit', [AccessController::class, 'edit'])->name('edit_us
 Route::put('/users/{id}', [AccessController::class, 'update'])->name('update_user')->middleware('auth');
 
 Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory')->middleware('auth');
+Route::get('/add_inventory', [InventoryController::class, 'addinventory'])->name('add_inventory')->middleware('auth');
+Route::post('/store_inventory', [InventoryController::class, 'store'])->name('store_inventory')->middleware('auth');
+Route::delete('/destroy_inventory/{id}', [InventoryController::class, 'destroy'])->name('destroy_inventory')->middleware('auth');
+Route::get('/inventory/{id}/edit', [InventoryController::class, 'edit'])->name('edit_inventory')->middleware('auth');
+Route::post('/inventory/{id}', [InventoryController::class, 'update'])->name('update_inventory')->middleware('auth');
+Route::get('/history_inventory', [InventoryController::class, 'history'])->name('history_inventory')->middleware('auth');
+Route::get('/repair_inventory', [InventoryController::class, 'repair'])->name('repair_inventory')->middleware('auth');
+Route::get('/input_repair', [InventoryController::class, 'inputrepair'])->name('input_repair')->middleware('auth');
+Route::get('/get-inventory-data', [InventoryController::class, 'getInventoryData'])->name('get.inventory.data')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {

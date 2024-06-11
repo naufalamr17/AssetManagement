@@ -17,7 +17,7 @@ class InventoryController extends Controller
 
     public function addinventory()
     {
-        return view('mlpasset.input');
+        return view('pages.asset.inputasset');
     }
 
     public function store(Request $request)

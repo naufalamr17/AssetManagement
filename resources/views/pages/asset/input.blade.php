@@ -112,7 +112,7 @@
                             <button id="openModalButton" class="btn btn-danger my-3">
                                 <i class="fas fa-camera"></i>
                             </button>
-                            <div class="ms-auto my-3"> <a class="btn bg-gradient-dark mb-0" href="{{ route('add_user') }}"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset</a>
+                            <div class="ms-auto my-3"> <a class="btn bg-gradient-dark mb-0" href="{{ route('add_inventory') }}"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset</a>
                             </div>
 
                             <!-- The Modal -->

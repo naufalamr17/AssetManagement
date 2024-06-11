@@ -125,24 +125,25 @@
                             </div>
                         </div>
 
-                        <div class="card-body px-0 pb-2">
+                        <div class="card-body px-2 pb-2">
                             <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
+                                <table id="inventoryTable" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Action
-                                            </th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Name</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Email</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Location</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Status</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Access</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset Lama') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Asset Position') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -173,6 +174,9 @@
                         "orderable": false,
                         "targets": '_all'
                     } // Disable ordering on all other columns
+                ],
+                "order": [
+                    [7, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
             });

@@ -26,6 +26,7 @@ use App\Http\Controllers\SessionsController;
 
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/home', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');

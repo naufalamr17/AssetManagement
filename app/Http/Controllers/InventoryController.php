@@ -456,4 +456,24 @@ class InventoryController extends Controller
             return response()->json(['error' => 'Inventaris tidak ditemukan.'], 404);
         }
     }
+
+    public function dispose()
+    {
+        $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            ->select(
+                'inventories.asset_code',
+                'inventories.asset_type',
+                'inventories.serial_number',
+                'inventories.useful_life',
+                'inventories.location',
+                'repairstatuses.status',
+                'repairstatuses.tanggal_kerusakan',
+                'repairstatuses.tanggal_pengembalian',
+                'repairstatuses.note'
+            )->get();
+
+        // dd($inventory);
+
+        return view('pages.asset.dispose', compact('inventory'));
+    }
 }

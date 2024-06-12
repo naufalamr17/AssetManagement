@@ -63,6 +63,7 @@ Route::get('/repair_inventory', [InventoryController::class, 'repair'])->name('r
 Route::get('/input_repair', [InventoryController::class, 'inputrepair'])->name('input_repair')->middleware('auth');
 Route::post('/store_repair', [InventoryController::class, 'storerepair'])->name('store_repair')->middleware('auth');
 Route::get('/get-inventory-data', [InventoryController::class, 'getInventoryData'])->name('get.inventory.data')->middleware('auth');
+Route::get('/dispose_inventory', [InventoryController::class, 'dispose'])->name('dispose_inventory')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {

@@ -368,9 +368,22 @@ class InventoryController extends Controller
 
     public function repair()
     {
-        // $inventory = inventory::all();
+        $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            ->select(
+                'inventories.asset_code',
+                'inventories.asset_type',
+                'inventories.serial_number',
+                'inventories.useful_life',
+                'inventories.location',
+                'inventories.status',
+                'repairstatuses.tanggal_kerusakan',
+                'repairstatuses.tanggal_pengembalian',
+                'repairstatuses.note'
+            )->get();
+
         // dd($inventory);
-        return view('pages.asset.repair');
+
+        return view('pages.asset.repair', compact('inventory'));
     }
 
     public function inputrepair()

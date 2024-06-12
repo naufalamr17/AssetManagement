@@ -131,22 +131,48 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset Lama') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Asset Position') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
                                         </tr>
                                     </thead>
-                                    
+                                    <tbody>
+                                        @foreach($inventory as $item)
+                                        <tr class="text-center text-xxs">
+                                            <td>{{ $item->asset_code ?? '-' }}</td>
+                                            <td>{{ $item->asset_type ?? '-' }}</td>
+                                            <td>{{ $item->serial_number ?? '-' }}</td>
+                                            <?php
+                                            $acquisitionDate = new DateTime($item->acquisition_date);
+                                            $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                            $endOfUsefulLife = clone $acquisitionDate;
+                                            $endOfUsefulLife->modify("+{$usefulLife} days");
+
+                                            $currentDate = new DateTime();
+                                            $interval = $currentDate->diff($endOfUsefulLife);
+
+                                            if ($currentDate > $endOfUsefulLife) {
+                                                $remainingDays = -$interval->days; // Use negative value for overdue days
+                                            } else {
+                                                $remainingDays = $interval->days;
+                                            }
+
+                                            $message = "{$remainingDays} hari";
+                                            ?>
+                                            <td>{{ $message }}</td>
+                                            <td>{{ $item->location ?? '-' }}</td>
+                                            <td>{{ $item->status ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
+                                            <td>{{ $item->note ?? '-' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -177,7 +203,7 @@
                     } // Disable ordering on all other columns
                 ],
                 "order": [
-                    [7, 'desc']
+                    [6, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
             });

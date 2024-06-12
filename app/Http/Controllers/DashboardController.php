@@ -47,6 +47,21 @@ class DashboardController extends Controller
         }
         $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
 
+        $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            ->select(
+                'inventories.asset_code',
+                'inventories.asset_type',
+                'inventories.serial_number',
+                'inventories.useful_life',
+                'inventories.location',
+                'inventories.status',
+                'disposes.tanggal_penghapusan',
+                'disposes.note'
+            )
+            ->orderBy('disposes.tanggal_penghapusan', 'desc')
+            ->take(5)
+            ->get();
+
         // dd($monthlyGrowthFormatted);
 
         return view('dashboard.index', [
@@ -54,6 +69,7 @@ class DashboardController extends Controller
             'categoryStatusCounts' => $categoryStatusCounts,
             'yearlyGrowth' => $yearlyGrowthFormatted,
             'monthlyGrowth' => $monthlyGrowthFormatted,
+            'inventory' => $inventory
         ]);
     }
 }

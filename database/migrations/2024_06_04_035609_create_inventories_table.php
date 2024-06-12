@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('asset_position_dept'); // ASSET POSITION (DEPT)
             $table->string('asset_type'); // Jenis
             $table->text('description'); // Description
-            $table->string('serial_number'); // Serial Number
+            $table->string('serial_number')->nullable(); // Serial Number
             $table->date('acquisition_date'); // Tanggal Perolehan
             $table->date('disposal_date')->nullable(); // Tanggal Penghapusan
             $table->integer('useful_life')->nullable(); // Umur Ekonomis (tahun)

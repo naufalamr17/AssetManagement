@@ -47,6 +47,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-4 col-md-6 mt-4 mb-4">
+                    <div class="card z-index-2">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
+                                <div class="chart">
+                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="170"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
+                            <!-- <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today
+                                sales. </p>
+                            <hr class="dark horizontal">
+                            <div class="d-flex ">
+                                <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                <p class="mb-0 text-sm"> updated 4 min ago </p>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
 
                 <!-- <div class="col-lg-4 mt-4 mb-3">
                     <div class="card z-index-2 ">
@@ -627,6 +648,35 @@
             document.getElementById('stackedBarChart'),
             stackedBarConfig
         );
+
+        const yearlyGrowth = @json($yearlyGrowth);
+
+        const yearlabels = yearlyGrowth.map(item => item.year);
+        const data = yearlyGrowth.map(item => item.count);
+
+        const ctx = document.getElementById('yearlyGrowthChart').getContext('2d');
+        const yearlyGrowthChart = new Chart(ctx, {
+            type: 'line', // or 'bar', 'pie', etc.
+            data: {
+                labels: yearlabels,
+                datasets: [{
+                    label: 'Asset Growth Per Year',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
     </script>
     @endpush
 </x-layout>

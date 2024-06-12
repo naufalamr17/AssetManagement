@@ -460,17 +460,16 @@ class InventoryController extends Controller
 
     public function dispose()
     {
-        $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+        $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
             ->select(
                 'inventories.asset_code',
                 'inventories.asset_type',
                 'inventories.serial_number',
                 'inventories.useful_life',
                 'inventories.location',
-                'repairstatuses.status',
-                'repairstatuses.tanggal_kerusakan',
-                'repairstatuses.tanggal_pengembalian',
-                'repairstatuses.note'
+                'inventories.status',
+                'disposes.tanggal_penghapusan',
+                'disposes.note'
             )->get();
 
         // dd($inventory);

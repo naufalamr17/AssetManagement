@@ -136,8 +136,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
-                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Penghapusan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
                                         </tr>
                                     </thead>
@@ -167,8 +166,7 @@
                                             <td>{{ $message }}</td>
                                             <td>{{ $item->location ?? '-' }}</td>
                                             <td>{{ $item->status ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
                                             <td>{{ $item->note ?? '-' }}</td>
                                         </tr>
                                         @endforeach
@@ -195,7 +193,7 @@
                 "pageLength": 50,
                 "columnDefs": [{
                         "orderable": true,
-                        "targets": 7
+                        "targets": 6
                     }, // Enable ordering on the 8th column (index 7)
                     {
                         "orderable": false,

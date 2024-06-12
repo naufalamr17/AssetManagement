@@ -369,14 +369,14 @@ class InventoryController extends Controller
     {
         // $inventory = inventory::all();
         // dd($inventory);
-        return view('mlpasset.repair');
+        return view('pages.asset.repair');
     }
 
     public function inputrepair()
     {
         // $inventory = inventory::all();
         // dd($inventory);
-        return view('mlpasset.inputrepair');
+        return view('pages.asset.inputrepair');
     }
 
     public function getInventoryData(Request $request)

@@ -28,7 +28,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'dashboard' ? ' active bg-gradient-primary' : '' }}" href="{{ route('dashboard') }}">
+                <a class="nav-link text-white {{ $activePage == 'repair_inventory' ? ' active bg-gradient-primary' : '' }}" href="{{ route('repair_inventory') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-wrench"></i>
                     </div>

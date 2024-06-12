@@ -518,6 +518,8 @@ class InventoryController extends Controller
                 'inventories.description',
                 'inventories.serial_number',
                 'inventories.location',
+                'inventories.acquisition_date',
+                'inventories.useful_life',
                 'userhists.user',
                 'userhists.dept',
                 'inventories.status',

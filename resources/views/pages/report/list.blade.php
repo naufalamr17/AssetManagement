@@ -135,6 +135,8 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (Hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
@@ -154,6 +156,25 @@
                                             <td>{{ $inventory->description ?? '-' }}</td>
                                             <td>{{ $inventory->serial_number ?? '-' }}</td>
                                             <td>{{ $inventory->location ?? '-' }}</td>
+                                            <td>{{ $inventory->acquisition_date ?? '-' }}</td>
+                                            <?php
+                                            $acquisitionDate = new DateTime($inventory->acquisition_date);
+                                            $usefulLife = $inventory->useful_life * 365; // Convert useful life from years to days
+                                            $endOfUsefulLife = clone $acquisitionDate;
+                                            $endOfUsefulLife->modify("+{$usefulLife} days");
+
+                                            $currentDate = new DateTime();
+                                            $interval = $currentDate->diff($endOfUsefulLife);
+
+                                            if ($currentDate > $endOfUsefulLife) {
+                                                $remainingDays = -$interval->days; // Use negative value for overdue days
+                                            } else {
+                                                $remainingDays = $interval->days;
+                                            }
+
+                                            $message = "{$remainingDays} hari";
+                                            ?>
+                                            <td>{{ $message }}</td>
                                             <td>{{ $inventory->user ?? '-' }}</td>
                                             <td>{{ $inventory->dept ?? '-' }}</td>
                                             <td>{{ $inventory->status ?? '-' }}</td>

@@ -375,7 +375,7 @@ class InventoryController extends Controller
                 'inventories.serial_number',
                 'inventories.useful_life',
                 'inventories.location',
-                'inventories.status',
+                'repairstatuses.status',
                 'repairstatuses.tanggal_kerusakan',
                 'repairstatuses.tanggal_pengembalian',
                 'repairstatuses.note'
@@ -412,6 +412,7 @@ class InventoryController extends Controller
             // Create the RepairStatus record
             repairstatus::create([
                 'inv_id' => $inventory->id,
+                'status' => $request->status,
                 'tanggal_kerusakan' => $request->tanggal_kerusakan_breakdown,
                 'note' => $request->remarks_breakdown,
             ]);
@@ -419,6 +420,7 @@ class InventoryController extends Controller
             // Create the RepairStatus record
             repairstatus::create([
                 'inv_id' => $inventory->id,
+                'status' => $request->status,
                 'tanggal_kerusakan' => $request->tanggal_kerusakan_repair,
                 'tanggal_pengembalian' => $request->tanggal_pengembalian_repair,
                 'note' => $request->remarks_repair,

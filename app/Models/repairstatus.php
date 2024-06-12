@@ -11,6 +11,7 @@ class repairstatus extends Model
 
     protected $fillable = [
         'inv_id',
+        'status',
         'tanggal_kerusakan',
         'tanggal_pengembalian',
         'note',

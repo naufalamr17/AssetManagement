@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); 
             $table->unsignedBigInteger('inv_id'); // Menggunakan unsignedBigInteger untuk merujuk ke ID pengguna
             $table->foreign('inv_id')->references('id')->on('inventories')->onDelete('cascade');
+            $table->string('status')->nullable();
             $table->date('tanggal_kerusakan')->nullable();
             $table->date('tanggal_pengembalian')->nullable();
             $table->string('note')->nullable();

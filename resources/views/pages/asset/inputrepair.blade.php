@@ -25,7 +25,7 @@
                         </div>
                         @endif
                         <div class="p-6">
-                            <form method="POST" action="{{ route('store_inventory') }}">
+                            <form method="POST" action="{{ route('store_repair') }}">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
@@ -269,46 +269,49 @@
                                             </select>
                                         </div>
 
-                                        <div id="additional-fields" style="display:none;">
+                                        <div id="additional-fields-repair" style="display:none;">
                                             <div class="form-group">
-                                                <label for="tanggal_kerusakan">Tanggal Kerusakan</label>
-                                                <input id="tanggal_kerusakan" class="form-control border p-2" type="date" name="tanggal_kerusakan" value="{{ old('tanggal_kerusakan') }}">
-                                                @if ($errors->has('tanggal_kerusakan'))
-                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan') }}</div>
+                                                <label for="tanggal_kerusakan_repair">Tanggal Kerusakan</label>
+                                                <input id="tanggal_kerusakan_repair" class="form-control border p-2" type="date" name="tanggal_kerusakan_repair" value="{{ old('tanggal_kerusakan_repair') }}">
+                                                <!-- Add the 'required' attribute to make the field mandatory -->
+                                                @if ($errors->has('tanggal_kerusakan_repair'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan_repair') }}</div>
                                                 @endif
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="tanggal_pengembalian">Tanggal Pengembalian</label>
-                                                <input id="tanggal_pengembalian" class="form-control border p-2" type="date" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}">
-                                                @if ($errors->has('tanggal_pengembalian'))
-                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_pengembalian') }}</div>
+                                                <label for="tanggal_pengembalian_repair">Tanggal Pengembalian</label>
+                                                <input id="tanggal_pengembalian_repair" class="form-control border p-2" type="date" name="tanggal_pengembalian_repair" value="{{ old('tanggal_pengembalian_repair') }}">
+                                                <!-- No need for 'required' attribute if this field is optional -->
+                                                @if ($errors->has('tanggal_pengembalian_repair'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_pengembalian_repair') }}</div>
                                                 @endif
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="remarks">Remarks</label>
-                                                <textarea id="remarks" class="form-control border p-2" name="remarks">{{ old('remarks') }}</textarea>
-                                                @if ($errors->has('remarks'))
-                                                <div class="text-danger mt-2">{{ $errors->first('remarks') }}</div>
+                                                <label for="remarks_repair">Remarks</label>
+                                                <textarea id="remarks_repair" class="form-control border p-2" name="remarks_repair">{{ old('remarks_repair') }}</textarea>
+                                                <!-- Add the 'required' attribute to make the field mandatory -->
+                                                @if ($errors->has('remarks_repair'))
+                                                <div class="text-danger mt-2">{{ $errors->first('remarks_repair') }}</div>
                                                 @endif
                                             </div>
                                         </div>
 
-                                        <div id="additional-fields2" style="display:none;">
+                                        <div id="additional-fields-breakdown" style="display:none;">
                                             <div class="form-group">
-                                                <label for="tanggal_kerusakan">Tanggal Kerusakan</label>
-                                                <input id="tanggal_kerusakan" class="form-control border p-2" type="date" name="tanggal_kerusakan" value="{{ old('tanggal_kerusakan') }}">
-                                                @if ($errors->has('tanggal_kerusakan'))
-                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan') }}</div>
+                                                <label for="tanggal_kerusakan_breakdown">Tanggal Kerusakan</label>
+                                                <input id="tanggal_kerusakan_breakdown" class="form-control border p-2" type="date" name="tanggal_kerusakan_breakdown" value="{{ old('tanggal_kerusakan_breakdown') }}">
+                                                @if ($errors->has('tanggal_kerusakan_breakdown'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan_breakdown') }}</div>
                                                 @endif
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="remarks">Remarks</label>
-                                                <textarea id="remarks" class="form-control border p-2" name="remarks">{{ old('remarks') }}</textarea>
-                                                @if ($errors->has('remarks'))
-                                                <div class="text-danger mt-2">{{ $errors->first('remarks') }}</div>
+                                                <label for="remarks_breakdown">Remarks</label>
+                                                <textarea id="remarks_breakdown" class="form-control border p-2" name="remarks_breakdown">{{ old('remarks_breakdown') }}</textarea>
+                                                @if ($errors->has('remarks_breakdown'))
+                                                <div class="text-danger mt-2">{{ $errors->first('remarks_breakdown') }}</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -316,8 +319,8 @@
                                 </div>
 
                                 <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-success btn-block">Add Asset</button>
-                                    <a href="{{ route('inventory') }}" class="btn btn-danger">Cancel</a>
+                                    <button type="submit" class="btn btn-success btn-block">Submit</button>
+                                    <a href="{{ route('repair_inventory') }}" class="btn btn-danger">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -332,17 +335,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.getElementById('status').addEventListener('change', function() {
-            var additionalFields = document.getElementById('additional-fields');
-            var additionalFields2 = document.getElementById('additional-fields2');
+            var additionalFieldsRepair = document.getElementById('additional-fields-repair');
+            var additionalFieldsBreakdown = document.getElementById('additional-fields-breakdown');
+
+            // Hide both additional fields by default
+            additionalFieldsRepair.style.display = 'none';
+            additionalFieldsBreakdown.style.display = 'none';
+
+            // Show the appropriate additional fields based on the selected status
             if (this.value === 'Repair') {
-                additionalFields.style.display = 'block';
-                additionalFields2.style.display = 'none';
+                additionalFieldsRepair.style.display = 'block';
             } else if (this.value === 'Breakdown') {
-                additionalFields.style.display = 'none';
-                additionalFields2.style.display = 'block';
-            } else {
-                additionalFields.style.display = 'none';
-                additionalFields2.style.display = 'none';
+                additionalFieldsBreakdown.style.display = 'block';
             }
         });
 

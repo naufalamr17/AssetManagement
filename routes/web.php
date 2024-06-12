@@ -61,6 +61,7 @@ Route::post('/inventory/{id}', [InventoryController::class, 'update'])->name('up
 Route::get('/history_inventory', [InventoryController::class, 'history'])->name('history_inventory')->middleware('auth');
 Route::get('/repair_inventory', [InventoryController::class, 'repair'])->name('repair_inventory')->middleware('auth');
 Route::get('/input_repair', [InventoryController::class, 'inputrepair'])->name('input_repair')->middleware('auth');
+Route::post('/store_repair', [InventoryController::class, 'storerepair'])->name('store_repair')->middleware('auth');
 Route::get('/get-inventory-data', [InventoryController::class, 'getInventoryData'])->name('get.inventory.data')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {

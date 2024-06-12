@@ -33,4 +33,9 @@ class inventory extends Model
     {
         return $this->hasMany(userhist::class);
     }
+
+    public function repairStatuses()
+    {
+        return $this->hasMany(repairstatus::class);
+    }
 }

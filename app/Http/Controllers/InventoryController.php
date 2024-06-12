@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\inventory;
+use App\Models\repairstatus;
 use App\Models\userhist;
 use Illuminate\Http\Request;
 
@@ -374,9 +375,44 @@ class InventoryController extends Controller
 
     public function inputrepair()
     {
-        // $inventory = inventory::all();
-        // dd($inventory);
         return view('pages.asset.inputrepair');
+    }
+
+    public function storerepair(Request $request)
+    {
+        // dd($request);
+        // Validate the request data
+        $request->validate([
+            'tanggal_kerusakan' => 'nullable|date',
+            'tanggal_pengembalian' => 'nullable|date',
+            'remarks' => 'nullable|string',
+        ]);
+
+        // Find the inventory based on the asset code
+        $inventory = inventory::where('asset_code', $request->asset_code)->first();
+
+        // Update the status of the inventory
+        $inventory->status = $request->status;
+        $inventory->save();
+
+        if ($request->status == "Breakdown") {
+            // Create the RepairStatus record
+            repairstatus::create([
+                'inv_id' => $inventory->id,
+                'tanggal_kerusakan' => $request->tanggal_kerusakan_breakdown,
+                'note' => $request->remarks_breakdown,
+            ]);
+        } else  if ($request->status == "Repair") {
+            // Create the RepairStatus record
+            repairstatus::create([
+                'inv_id' => $inventory->id,
+                'tanggal_kerusakan' => $request->tanggal_kerusakan_repair,
+                'tanggal_pengembalian' => $request->tanggal_pengembalian_repair,
+                'note' => $request->remarks_repair,
+            ]);
+        }
+
+        return redirect()->route('repair_inventory')->with('success', 'Repair status updated successfully.');
     }
 
     public function getInventoryData(Request $request)
@@ -386,6 +422,7 @@ class InventoryController extends Controller
 
         if ($inventory) {
             $data = [
+                'id' => $inventory->id,
                 'location' => $inventory->location,
                 'asset_category' => $inventory->asset_category,
                 'asset_position_dept' => $inventory->asset_position_dept,

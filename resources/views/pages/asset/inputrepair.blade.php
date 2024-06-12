@@ -269,7 +269,49 @@
                                             </select>
                                         </div>
 
+                                        <div id="additional-fields" style="display:none;">
+                                            <div class="form-group">
+                                                <label for="tanggal_kerusakan">Tanggal Kerusakan</label>
+                                                <input id="tanggal_kerusakan" class="form-control border p-2" type="date" name="tanggal_kerusakan" value="{{ old('tanggal_kerusakan') }}">
+                                                @if ($errors->has('tanggal_kerusakan'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan') }}</div>
+                                                @endif
+                                            </div>
 
+                                            <div class="form-group">
+                                                <label for="tanggal_pengembalian">Tanggal Pengembalian</label>
+                                                <input id="tanggal_pengembalian" class="form-control border p-2" type="date" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}">
+                                                @if ($errors->has('tanggal_pengembalian'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_pengembalian') }}</div>
+                                                @endif
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="remarks">Remarks</label>
+                                                <textarea id="remarks" class="form-control border p-2" name="remarks">{{ old('remarks') }}</textarea>
+                                                @if ($errors->has('remarks'))
+                                                <div class="text-danger mt-2">{{ $errors->first('remarks') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div id="additional-fields2" style="display:none;">
+                                            <div class="form-group">
+                                                <label for="tanggal_kerusakan">Tanggal Kerusakan</label>
+                                                <input id="tanggal_kerusakan" class="form-control border p-2" type="date" name="tanggal_kerusakan" value="{{ old('tanggal_kerusakan') }}">
+                                                @if ($errors->has('tanggal_kerusakan'))
+                                                <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan') }}</div>
+                                                @endif
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="remarks">Remarks</label>
+                                                <textarea id="remarks" class="form-control border p-2" name="remarks">{{ old('remarks') }}</textarea>
+                                                @if ($errors->has('remarks'))
+                                                <div class="text-danger mt-2">{{ $errors->first('remarks') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -289,6 +331,21 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        document.getElementById('status').addEventListener('change', function() {
+            var additionalFields = document.getElementById('additional-fields');
+            var additionalFields2 = document.getElementById('additional-fields2');
+            if (this.value === 'Repair') {
+                additionalFields.style.display = 'block';
+                additionalFields2.style.display = 'none';
+            } else if (this.value === 'Breakdown') {
+                additionalFields.style.display = 'none';
+                additionalFields2.style.display = 'block';
+            } else {
+                additionalFields.style.display = 'none';
+                additionalFields2.style.display = 'none';
+            }
+        });
+
         // Menggunakan jQuery untuk memudahkan pemilihan elemen dan manipulasi DOM
         $(document).ready(function() {
             // Event listener untuk input asset_code

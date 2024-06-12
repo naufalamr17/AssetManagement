@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\YourDataImport;
 use App\Models\dispose;
 use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
 {
@@ -533,5 +535,21 @@ class InventoryController extends Controller
             ->unique('asset_code');
 
         return view('pages.report.list', compact('inventoryData'));
+    }
+
+    public function inputexcel()
+    {
+        return view('pages.asset.inputexcel');
+    }
+
+    public function storeexcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        Excel::import(new YourDataImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data Imported Successfully');
     }
 }

@@ -67,6 +67,9 @@ Route::get('/dispose_inventory', [InventoryController::class, 'dispose'])->name(
 Route::get('/input_dispose', [InventoryController::class, 'inputdispose'])->name('input_dispose')->middleware('auth');
 Route::post('/store_dispose', [InventoryController::class, 'storedispose'])->name('store_dispose')->middleware('auth');
 
+Route::get('/inputexcel', [InventoryController::class, 'inputexcel'])->name('inputexcel')->middleware('auth');
+Route::post('/store_excel', [InventoryController::class, 'storeexcel'])->name('store_excel')->middleware('auth');
+
 Route::get('/report', [InventoryController::class, 'report'])->name('report')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {

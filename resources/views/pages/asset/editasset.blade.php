@@ -245,7 +245,7 @@
 
                                         <div class="form-group">
                                             <label for="useful_life">Umur ekonomis (Tahun)</label>
-                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}" required>
+                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}" disabled>
                                             @if ($errors->has('useful_life'))
                                             <div class="text-danger mt-2">{{ $errors->first('useful_life') }}</div>
                                             @endif
@@ -253,7 +253,7 @@
 
                                         <div class="form-group">
                                             <label for="acquisition_value">Nilai Perolehan</label>
-                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}">
+                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" disabled>
                                             @if ($errors->has('acquisition_value'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
                                             @endif

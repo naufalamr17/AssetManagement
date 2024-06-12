@@ -143,7 +143,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Perbulan </h6>
+                            <h6 class="mb-0 "> Dispose Asset </h6>
                             <!-- <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today
                                 sales. </p>
                             <hr class="dark horizontal">

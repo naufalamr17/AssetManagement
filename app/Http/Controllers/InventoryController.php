@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\dispose;
 use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
@@ -475,5 +476,31 @@ class InventoryController extends Controller
         // dd($inventory);
 
         return view('pages.asset.dispose', compact('inventory'));
+    }
+
+    public function inputdispose()
+    {
+        return view('pages.asset.inputdispose');
+    }
+
+    public function storedispose(Request $request)
+    {
+        // dd($request);
+
+        $assetCode = $request->input('asset_code');
+        $inventory = Inventory::where('asset_code', $assetCode)->first();
+
+        // Update the status of the inventory
+        $inventory->status = 'Dispose';
+        $inventory->disposal_date = $request->disposal_date;
+        $inventory->save();
+
+        dispose::create([
+            'inv_id' => $inventory->id,
+            'tanggal_penghapusan' => $request->disposal_date,
+            'note' => $request->remarks_repair,
+        ]);
+
+        return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
     }
 }

@@ -38,4 +38,9 @@ class inventory extends Model
     {
         return $this->hasMany(repairstatus::class);
     }
+
+    public function dispose()
+    {
+        return $this->hasMany(dispose::class);
+    }
 }

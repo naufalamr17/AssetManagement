@@ -6,7 +6,7 @@
                     © <script>
                         document.write(new Date().getFullYear())
                     </script>,
-                    <a href="#" class="font-weight-bold">PT. Makmur Lestari Primatama IT Department</a>
+                    <a href="#" class="font-weight-bold">PT. Makmur Lestari Primatama HRGA-IT Department</a>
                 </div>
             </div>
             <!-- <div class="col-lg-6">

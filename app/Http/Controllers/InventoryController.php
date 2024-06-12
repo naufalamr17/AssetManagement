@@ -12,8 +12,9 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventory = inventory::all();
-        // dd($inventory);
+        // Ambil semua inventory yang statusnya bukan 'Dispose'
+        $inventory = Inventory::where('status', '!=', 'Dispose')->get();
+
         return view('pages.asset.input', compact('inventory'));
     }
 

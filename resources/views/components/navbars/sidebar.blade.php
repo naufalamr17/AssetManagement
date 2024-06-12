@@ -52,9 +52,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'dashboard' ? ' active bg-gradient-danger' : '' }}" href="{{ route('dashboard') }}" style="color: {{ $activePage == 'dashboard' ? 'white' : 'black' }};">
+                <a class="nav-link {{ $activePage == 'report' ? ' active bg-gradient-danger' : '' }}" href="{{ route('report') }}" style="color: {{ $activePage == 'report' ? 'white' : 'black' }};">
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-chart-line" style="color: {{ $activePage == 'dashboard' ? 'white' : 'black' }};"></i>
+                        <i class="fas fa-chart-line" style="color: {{ $activePage == 'report' ? 'white' : 'black' }};"></i>
                     </div>
                     <span class="nav-link-text ms-1">Report</span>
                 </a>

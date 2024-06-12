@@ -7,6 +7,7 @@ use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InventoryController extends Controller
 {
@@ -502,5 +503,33 @@ class InventoryController extends Controller
         ]);
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
+    }
+
+    public function report()
+    {
+        $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
+            ->select(
+                'inventories.asset_code',
+                'inventories.asset_category',
+                'inventories.asset_position_dept',
+                'inventories.asset_type',
+                'inventories.description',
+                'inventories.serial_number',
+                'inventories.location',
+                'userhists.user',
+                'userhists.dept',
+                'inventories.status',
+                'repairstatuses.tanggal_kerusakan',
+                'repairstatuses.tanggal_pengembalian',
+                'disposes.tanggal_penghapusan',
+                DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
+            )
+            ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+            ->get()
+            ->unique('asset_code');
+
+        return view('pages.report.list', compact('inventoryData'));
     }
 }

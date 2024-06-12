@@ -204,7 +204,8 @@
     <script>
         $(document).ready(function() {
             var table = $('#inventoryTable').DataTable({
-                "pageLength": 50,
+                "paging": false,
+                "pageLength": -1,
                 "columnDefs": [{
                         "orderable": true,
                         "targets": 7

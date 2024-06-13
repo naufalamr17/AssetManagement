@@ -38,6 +38,8 @@ class AccessController extends Controller
 
         $userId = $user->id;
 
+        
+
         foreach ($request->access as $access) {
             // $user->accesses()->create(['type' => $access]);
             $acc = access::create([

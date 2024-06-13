@@ -1,0 +1,10 @@
+dashboard
+input asset
+update asset
+delete asset
+repair asset
+dispose asset
+history asset
+report
+user management = administrator
+import data

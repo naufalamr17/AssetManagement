@@ -39,7 +39,7 @@
 
                                         <div class="form-group">
                                             <label for="location">Location</label>
-                                            <select id="location" class="form-control border p-2" name="location" required>
+                                            <select id="location" class="form-control border p-2" name="location" readonly>
                                                 <option value="" selected disabled>Select Location</option>
                                                 <option value="Head Office" {{ $asset->location == 'Head Office' ? 'selected' : '' }}>01 Head Office</option>
                                                 <option value="Office Kendari" {{ $asset->location == 'Office Kendari' ? 'selected' : '' }}>02 Office Kendari</option>
@@ -52,7 +52,7 @@
 
                                         <div class="form-group">
                                             <label for="asset_category">Kategori</label>
-                                            <select id="asset_category" class="form-control border p-2" name="asset_category" required>
+                                            <select id="asset_category" class="form-control border p-2" name="asset_category" readonly>
                                                 <option value="" selected disabled>Select Category</option>
                                                 <option value="Kendaraan" {{ $asset->asset_category == 'Kendaraan' ? 'selected' : '' }}>01 Kendaraan</option>
                                                 <option value="Mesin" {{ $asset->asset_category == 'Mesin' ? 'selected' : '' }}>02 Mesin</option>
@@ -245,7 +245,7 @@
 
                                         <div class="form-group">
                                             <label for="useful_life">Umur ekonomis (Tahun)</label>
-                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}" disabled>
+                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}">
                                             @if ($errors->has('useful_life'))
                                             <div class="text-danger mt-2">{{ $errors->first('useful_life') }}</div>
                                             @endif
@@ -253,7 +253,7 @@
 
                                         <div class="form-group">
                                             <label for="acquisition_value">Nilai Perolehan</label>
-                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" disabled>
+                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" readonly>
                                             @if ($errors->has('acquisition_value'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
                                             @endif

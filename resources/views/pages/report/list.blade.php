@@ -156,7 +156,7 @@
                                             <td>{{ $inventory->description ?? '-' }}</td>
                                             <td>{{ $inventory->serial_number ?? '-' }}</td>
                                             <td>{{ $inventory->location ?? '-' }}</td>
-                                            <td>{{ $inventory->acquisition_date ?? '-' }}</td>
+                                            <td>{{ date('Y-m-d', strtotime($inventory->acquisition_date)) ?? '-' }}</td>
                                             <?php
                                             $acquisitionDate = new DateTime($inventory->acquisition_date);
                                             $usefulLife = $inventory->useful_life * 365; // Convert useful life from years to days

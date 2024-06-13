@@ -112,6 +112,16 @@
                             <button id="openModalButton" class="btn btn-danger my-3">
                                 <i class="fas fa-camera"></i>
                             </button>
+                            <input type="number" class="form-control border p-2 ms-2" name="yearFilter" id="yearFilter" placeholder="Filter by Year" style="max-width: 150px;">
+                            <select class="form-select border p-2 ms-2" name="statusFilter" id="statusFilter"  style="max-width: 150px;">
+                                <option value="">Filter by Status</option>
+                                <option value="Good">Good</option>
+                                <option value="Repair">Repair</option>
+                                <option value="Breakdown">Breakdown</option>
+                                <option value="Dispose">Dispose</option>
+                                <!-- Tambahkan opsi status lainnya sesuai kebutuhan -->
+                            </select>
+
 
                             <!-- The Modal -->
                             <div id="myModal" class="modal">
@@ -229,6 +239,26 @@
                     setTimeout(() => {
                         this.select(); // Seleksi seluruh teks di dalam kotak pencarian
                     }, 2000);
+                }
+            });
+
+            // Filter by year functionality
+            $('#yearFilter').on('keyup', function() {
+                var year = $(this).val().trim();
+                if (year !== '') {
+                    table.columns(7).search('^' + year, true, false).draw();
+                } else {
+                    table.columns(7).search('').draw();
+                }
+            });
+
+            // Filter by status functionality
+            $('#statusFilter').on('change', function() {
+                var status = $(this).val().trim();
+                if (status !== '') {
+                    table.columns(11).search(status).draw();
+                } else {
+                    table.columns(11).search('').draw();
                 }
             });
         });

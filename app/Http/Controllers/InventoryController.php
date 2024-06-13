@@ -223,22 +223,22 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request);
-        $request->validate([
-            'old_asset_code' => 'nullable',
-            'location' => 'required',
-            'asset_category' => 'required',
-            'asset_position_dept' => 'required',
-            'asset_type' => 'required',
-            'description' => 'required',
-            'serial_number' => 'nullable',
-            'acquisition_date' => 'required|date',
-            'useful_life' => 'required|numeric',
-            'acquisition_value' => 'required|numeric',
-            'hand_over_date' => 'nullable|date',
-            'user' => 'nullable',
-            'dept' => 'nullable',
-            'note' => 'nullable',
-        ]);
+        // $request->validate([
+        //     'old_asset_code' => 'nullable',
+        //     'location' => 'required',
+        //     'asset_category' => 'required',
+        //     'asset_position_dept' => 'required',
+        //     'asset_type' => 'required',
+        //     'description' => 'required',
+        //     'serial_number' => 'nullable',
+        //     'acquisition_date' => 'required|date',
+        //     'useful_life' => 'required|numeric',
+        //     'acquisition_value' => 'numeric|default:0',
+        //     'hand_over_date' => 'nullable|date',
+        //     'user' => 'nullable',
+        //     'dept' => 'nullable',
+        //     'note' => 'nullable',
+        // ]);
 
         $asset = inventory::findOrFail($id);
         $userhist = Userhist::where('inv_id', $id)

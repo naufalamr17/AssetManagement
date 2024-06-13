@@ -253,7 +253,7 @@
 
                                         <div class="form-group">
                                             <label for="acquisition_value">Nilai Perolehan</label>
-                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value') }}">
+                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', 0) }}">
                                             @if ($errors->has('acquisition_value'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
                                             @endif

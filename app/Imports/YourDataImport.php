@@ -27,25 +27,25 @@ class YourDataImport implements ToModel, WithHeadingRow
             $id1 = 'GA';
         }
 
-        if ($row['lokasi'] == 'Head Office') {
+        if (ucwords(strtolower($row['lokasi'])) == 'Head Office') {
             $id2 = '01';
-        } elseif ($row['lokasi'] == 'Office Kendari') {
+        } elseif (ucwords(strtolower($row['lokasi'])) == 'Office Kendari') {
             $id2 = '02';
-        } elseif ($row['lokasi'] == 'Site Molore') {
+        } elseif (ucwords(strtolower($row['lokasi'])) == 'Site Molore') {
             $id2 = '03';
         }
 
-        if ($row['kategori'] == 'Kendaraan') {
+        if (ucwords(strtolower($row['kategori'])) == 'Kendaraan') {
             $id3 = '01';
-        } elseif ($row['kategori'] == 'Mesin') {
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Mesin') {
             $id3 = '02';
-        } elseif ($row['kategori'] == 'Alat Berat') {
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Berat') {
             $id3 = '03';
-        } elseif ($row['kategori'] == 'Alat Lab') {
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Lab') {
             $id3 = '04';
-        } elseif ($row['kategori'] == 'Alat Preparasi') {
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Preparasi') {
             $id3 = '05';
-        } elseif ($row['kategori'] == 'Peralatan') {
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Peralatan') {
             $id3 = '06';
         } else {
             $id3 = '07'; // Default code if no matching category is found
@@ -69,16 +69,16 @@ class YourDataImport implements ToModel, WithHeadingRow
         }
 
         // dd($row);
-        
+
         inventory::create([
             'old_asset_code' => $row['kode_asset_lama'],
-            'location' => $row['lokasi'],
-            'asset_category' => $row['kategori'],
+            'location' => ucwords(strtolower($row['lokasi'])),
+            'asset_category' => ucwords(strtolower($row['kategori'])),
             'asset_position_dept' => $row['asset_position'],
             'asset_type' => $row['jenis'],
             'description' => $row['deskripsi'],
             'serial_number' => $row['serial_number'],
-            'acquisition_date' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tanggal_perolehan']),
+            'acquisition_date' => $row['tanggal_perolehan'],
             'useful_life' => $row['umur_ekonomis_tahun'],
             'acquisition_value' => $row['nilai_perolehan'],
             'pic_dept' => $pic_dept,

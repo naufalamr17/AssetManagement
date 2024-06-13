@@ -62,6 +62,22 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $repair = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            ->select(
+                'inventories.asset_code',
+                'inventories.asset_type',
+                'inventories.serial_number',
+                'inventories.useful_life',
+                'inventories.location',
+                'repairstatuses.status',
+                'repairstatuses.tanggal_kerusakan',
+                'repairstatuses.tanggal_pengembalian',
+                'repairstatuses.note'
+            )
+            ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+            ->take(5)
+            ->get();
+            
         // dd($monthlyGrowthFormatted);
 
         return view('dashboard.index', [
@@ -69,7 +85,8 @@ class DashboardController extends Controller
             'categoryStatusCounts' => $categoryStatusCounts,
             'yearlyGrowth' => $yearlyGrowthFormatted,
             'monthlyGrowth' => $monthlyGrowthFormatted,
-            'inventory' => $inventory
+            'inventory' => $inventory,
+            'repair' => $repair
         ]);
     }
 }

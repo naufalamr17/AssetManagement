@@ -103,6 +103,73 @@
                                                 <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                                 <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                                 <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($repair as $item)
+                                        <tr class="text-center text-xxs">
+                                            <td>{{ $item->asset_code ?? '-' }}</td>
+                                            <td>{{ $item->asset_type ?? '-' }}</td>
+                                            <td>{{ $item->serial_number ?? '-' }}</td>
+                                            <?php
+                                            $acquisitionDate = new DateTime($item->acquisition_date);
+                                            $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                            $endOfUsefulLife = clone $acquisitionDate;
+                                            $endOfUsefulLife->modify("+{$usefulLife} days");
+
+                                            $currentDate = new DateTime();
+                                            $interval = $currentDate->diff($endOfUsefulLife);
+
+                                            if ($currentDate > $endOfUsefulLife) {
+                                                $remainingDays = -$interval->days; // Use negative value for overdue days
+                                            } else {
+                                                $remainingDays = $interval->days;
+                                            }
+
+                                            $message = "{$remainingDays} hari";
+                                            ?>
+                                            <td>{{ $message }}</td>
+                                            <td>{{ $item->location ?? '-' }}</td>
+                                            <td>{{ $item->status ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
+                                            <td>{{ $item->note ?? '-' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="mb-0 "> Dispose Asset </h6>
+                            <!-- <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today
+                                sales. </p>
+                            <hr class="dark horizontal">
+                            <div class="d-flex ">
+                                <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                <p class="mb-0 text-sm"> updated 4 min ago </p>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-6 mt-4 mb-4">
+                    <div class="card z-index-2">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
+                                <div class="table-responsive p-0" style="height: 170px;">
+                                    <table id="inventoryTable" class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
+                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
                                                 <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Penghapusan') }}</th>
                                                 <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
                                             </tr>

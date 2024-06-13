@@ -107,12 +107,19 @@
                         </div>
                         @endif
 
-                        <div class="d-flex align-items-center mb-4 p-3">
-                            <input type="text" class="form-control border p-2 me-2" name="searchbox" id="searchbox" placeholder="Search..." style="max-width: 300px;" autofocus>
-                            <button id="openModalButton" class="btn btn-danger my-3">
-                                <i class="fas fa-camera"></i>
-                            </button>
-                            <div class="ms-auto my-3"> <a class="btn bg-gradient-dark mb-0" href="{{ route('input_dispose') }}"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Dispose Asset</a>
+                        <div class="d-flex flex-wrap align-items-center mb-4 p-3">
+                            <div class="mb-2 me-2">
+                                <input type="text" class="form-control border p-2" name="searchbox" id="searchbox" placeholder="Search..." style="max-width: 300px;" autofocus>
+                            </div>
+                            <div class="mb-2 me-2 mt-3">
+                                <button id="openModalButton" class="btn btn-danger">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <div class="ms-auto mb-2">
+                                <a class="btn bg-gradient-dark mb-0" href="{{ route('input_dispose') }}">
+                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Dispose Asset
+                                </a>
                             </div>
 
                             <!-- The Modal -->

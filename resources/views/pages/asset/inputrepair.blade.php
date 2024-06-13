@@ -366,17 +366,32 @@
                             asset_code: assetCode
                         },
                         success: function(response) {
-                            // Isi input lainnya dengan data yang diterima dari permintaan AJAX
-                            $('#location').val(response.location);
-                            $('#asset_category').val(response.asset_category);
-                            $('#asset_position_dept').val(response.asset_position_dept);
-                            $('#asset_type').val(response.asset_type);
-                            $('#description').val(response.description);
-                            $('#serial_number').val(response.serial_number);
-                            $('#acquisition_date').val(response.acquisition_date);
-                            $('#useful_life').val(response.useful_life);
-                            $('#acquisition_value').val(response.acquisition_value);
-                            $('#status').val(response.status);
+                            // Cek jika status adalah 'dispose' dan tampilkan alert
+                            if (response.status === 'Dispose') {
+                                $('#location').val('');
+                                $('#asset_category').val('');
+                                $('#asset_position_dept').val('');
+                                $('#asset_type').val('');
+                                $('#description').val('');
+                                $('#serial_number').val('');
+                                $('#acquisition_date').val('');
+                                $('#useful_life').val('');
+                                $('#acquisition_value').val('');
+                                $('#status').val('');
+                                alert('Status is dispose');
+                            } else {
+                                // Isi input lainnya dengan data yang diterima dari permintaan AJAX
+                                $('#location').val(response.location);
+                                $('#asset_category').val(response.asset_category);
+                                $('#asset_position_dept').val(response.asset_position_dept);
+                                $('#asset_type').val(response.asset_type);
+                                $('#description').val(response.description);
+                                $('#serial_number').val(response.serial_number);
+                                $('#acquisition_date').val(response.acquisition_date);
+                                $('#useful_life').val(response.useful_life);
+                                $('#acquisition_value').val(response.acquisition_value);
+                                $('#status').val(response.status);
+                            }
                         },
                         error: function(xhr, status, error) {
                             $('#location').val('');

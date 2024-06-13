@@ -182,7 +182,7 @@
                 "pageLength": 50,
                 "columnDefs": [{
                         "orderable": true,
-                        "targets": 7
+                        "targets": 8
                     }, // Enable ordering on the 8th column (index 7)
                     {
                         "orderable": false,
@@ -190,7 +190,7 @@
                     } // Disable ordering on all other columns
                 ],
                 "order": [
-                    [7, 'desc']
+                    [8, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
             });

@@ -107,22 +107,30 @@
                         </div>
                         @endif
 
-                        <div class="d-flex align-items-center mb-2 p-3">
-                            <input type="text" class="form-control border p-2 me-2" name="searchbox" id="searchbox" placeholder="Search..." style="max-width: 300px;" autofocus>
-                            <button id="openModalButton" class="btn btn-danger my-3">
-                                <i class="fas fa-camera"></i>
-                            </button>
-                            <input type="number" class="form-control border p-2 ms-2" name="yearFilter" id="yearFilter" placeholder="Filter by Year" style="max-width: 150px;">
-                            <select class="form-select border p-2 ms-2" name="statusFilter" id="statusFilter" style="max-width: 150px;">
-                                <option value="">Filter by Status</option>
-                                <option value="Good">Good</option>
-                                <option value="Repair">Repair</option>
-                                <option value="Breakdown">Breakdown</option>
-                                <option value="Dispose">Dispose</option>
-                                <!-- Tambahkan opsi status lainnya sesuai kebutuhan -->
-                            </select>
-                            <div class="ms-auto my-3">
-                                <button id="exportExcelButton" class="btn bg-gradient-dark mb-0">
+                        <div class="d-flex align-items-center flex-wrap mb-2 p-3">
+                            <div class="mb-2 me-2">
+                                <input type="text" class="form-control border p-2" name="searchbox" id="searchbox" placeholder="Search...">
+                            </div>
+                            <div class="mb-2 me-2 mt-3">
+                                <button id="openModalButton" class="btn btn-danger">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <div class="mb-2 me-2">
+                                <input type="number" class="form-control border p-2" name="yearFilter" id="yearFilter" placeholder="Filter by Year">
+                            </div>
+                            <div class="mb-2 me-2">
+                                <select class="form-control border p-2" name="statusFilter" id="statusFilter">
+                                    <option value="">Filter by Status</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Repair">Repair</option>
+                                    <option value="Breakdown">Breakdown</option>
+                                    <option value="Dispose">Dispose</option>
+                                    <!-- Tambahkan opsi status lainnya sesuai kebutuhan -->
+                                </select>
+                            </div>
+                            <div class="ms-auto mb-2">
+                                <button id="exportExcelButton" class="btn bg-gradient-dark">
                                     <i class="material-icons text-sm">file_download</i>&nbsp;&nbsp;Download Excel
                                 </button>
                             </div>

@@ -116,11 +116,13 @@
                                     <i class="fas fa-camera"></i>
                                 </button>
                             </div>
+                            @if (Auth::check() && Auth::user()->status != 'Viewers')
                             <div class="ms-auto mb-2">
                                 <a class="btn bg-gradient-dark mb-0" href="{{ route('add_inventory') }}">
                                     <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset
                                 </a>
                             </div>
+                            @endif
 
                             <!-- The Modal -->
                             <div id="myModal" class="modal">
@@ -150,7 +152,9 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
+                                            @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -194,6 +198,7 @@
                                             @else
                                             <td>-</td>
                                             @endif
+                                            @if (Auth::check() && Auth::user()->status == 'Administrator')
                                             <td>
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <div class="p-1">
@@ -211,6 +216,19 @@
                                                     </form>
                                                 </div>
                                             </td>
+                                            @endif
+                                            @if (Auth::check() && Auth::user()->status == 'Modified')
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="p-1">
+                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
+                                                            <i class="material-icons" style="font-size: 16px;">edit</i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="mx-1"></div>
+                                                </div>
+                                            </td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                     </tbody>

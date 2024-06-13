@@ -1,0 +1,10 @@
+dashboard = all
+input asset = all 
+update asset = modified
+delete asset = administrator
+repair asset = all
+dispose asset = all
+history asset = all 
+report = Admin, modified, administrator
+user management = administrator
+import data = administrator

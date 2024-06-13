@@ -116,11 +116,13 @@
                                     <i class="fas fa-camera"></i>
                                 </button>
                             </div>
+                            @if (Auth::check() && Auth::user()->status != 'Viewers')
                             <div class="ms-auto mb-2">
                                 <a class="btn bg-gradient-dark mb-0" href="{{ route('input_repair') }}">
                                     <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Breakdown Asset
                                 </a>
                             </div>
+                            @endif
 
                             <!-- The Modal -->
                             <div id="myModal" class="modal">

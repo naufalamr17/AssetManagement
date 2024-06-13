@@ -24,7 +24,11 @@
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-plus-circle" style="color: {{ $activePage == 'inventory' ? 'white' : 'black' }};"></i>
                     </div>
+                    @if (Auth::check() && Auth::user()->status != 'Viewers')
                     <span class="nav-link-text ms-1">Input Asset</span>
+                    @else
+                    <span class="nav-link-text ms-1">Asset</span>
+                    @endif
                 </a>
             </li>
             <li class="nav-item">
@@ -71,9 +75,11 @@
             @endif
         </ul>
     </div>
+    @if (Auth::check() && Auth::user()->status == 'Administrator')
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
         <div class="mx-3">
             <a class="btn bg-gradient-danger w-100" href="{{ route('inputexcel') }}" type="button">Import Data</a>
         </div>
     </div>
+    @endif
 </aside>

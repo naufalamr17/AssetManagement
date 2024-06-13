@@ -292,6 +292,27 @@
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.table_to_sheet(table);
 
+                const range = XLSX.utils.decode_range(ws['!ref']);
+
+                // Autofit width untuk setiap kolom
+                const colWidths = [];
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    let maxWidth = 0;
+                    for (let R = range.s.r; R <= range.e.r; ++R) {
+                        const cellAddress = XLSX.utils.encode_cell({
+                            r: R,
+                            c: C
+                        });
+                        if (!ws[cellAddress]) continue;
+                        const cellTextLength = XLSX.utils.format_cell(ws[cellAddress]).length;
+                        maxWidth = Math.max(maxWidth, cellTextLength);
+                    }
+                    colWidths[C] = {
+                        wch: maxWidth + 2
+                    };
+                }
+                ws['!cols'] = colWidths;
+
                 XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
                 XLSX.writeFile(wb, fileName + '.xlsx');

@@ -548,8 +548,12 @@ class InventoryController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
-        Excel::import(new YourDataImport, $request->file('file'));
+        try {
+            Excel::import(new YourDataImport, $request->file('file'));
 
-        return redirect()->back()->with('success', 'Data Imported Successfully');
+            return redirect()->back()->with('success', 'Data Imported Successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to import data: ' . $e->getMessage()]);
+        }
     }
 }

@@ -26,7 +26,7 @@
 
                         <div class="d-flex align-items-center mb-4 p-3">
                             <div class="ms-auto my-3">
-                                <a class="btn bg-gradient-dark mb-0" href="#">
+                                <a class="btn bg-gradient-dark mb-0" href="{{ asset('Template.xlsx') }}" download>
                                     <i class="material-icons text-sm">file_download</i>&nbsp;&nbsp;Download Template
                                 </a>
                             </div>

@@ -7,6 +7,7 @@ use App\Models\dispose;
 use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -413,6 +414,8 @@ class InventoryController extends Controller
         $inventory->status = $request->status;
         $inventory->save();
 
+        // dd($request->status);
+
         if ($request->status == "Breakdown") {
             // Create the RepairStatus record
             repairstatus::create([
@@ -430,6 +433,17 @@ class InventoryController extends Controller
                 'tanggal_pengembalian' => $request->tanggal_pengembalian_repair,
                 'note' => $request->remarks_repair,
             ]);
+        } else if ($request->status == "Good") {
+            // Check the latest RepairStatus record for the inventory
+            $latestStatus = repairstatus::where('inv_id', $inventory->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($latestStatus) {
+                // Update the tanggal_pengembalian to today
+                $latestStatus->tanggal_pengembalian = Carbon::now();
+                $latestStatus->save();
+            }
         }
 
         return redirect()->route('repair_inventory')->with('success', 'Repair status updated successfully.');

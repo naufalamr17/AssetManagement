@@ -19,7 +19,11 @@ class DashboardController extends Controller
         });
 
         // Aggregate data for asset growth per year
-        $yearlyGrowth = $assets->groupBy(function ($item) {
+        $yearlyGrowth = $assets->filter(function ($item) {
+            // Filter hanya data dengan acquisition_date tidak kosong
+            return $item->acquisition_date !== '-';
+        })->groupBy(function ($item) {
+            // Menggunakan Carbon untuk mengurai acquisition_date yang valid
             return Carbon::parse($item->acquisition_date)->format('Y');
         })->map->count();
 
@@ -31,8 +35,10 @@ class DashboardController extends Controller
         // Aggregate data for asset growth per month in the last year
         $oneYearAgo = Carbon::now()->subYear();
         $monthlyGrowth = $assets->filter(function ($item) use ($oneYearAgo) {
-            return Carbon::parse($item->acquisition_date)->greaterThanOrEqualTo($oneYearAgo);
+            // Filter hanya data dengan acquisition_date tidak sama dengan '-'
+            return $item->acquisition_date !== '-' && Carbon::parse($item->acquisition_date)->greaterThanOrEqualTo($oneYearAgo);
         })->groupBy(function ($item) {
+            // Menggunakan Carbon untuk mengurai acquisition_date yang valid
             return Carbon::parse($item->acquisition_date)->format('Y-m');
         })->map->count();
 
@@ -77,7 +83,7 @@ class DashboardController extends Controller
             ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
             ->take(5)
             ->get();
-            
+
         // dd($monthlyGrowthFormatted);
 
         return view('dashboard.index', [

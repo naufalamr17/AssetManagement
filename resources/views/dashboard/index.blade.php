@@ -109,37 +109,41 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($repair as $item)
-                                        <tr class="text-center text-xxs">
-                                            <td>{{ $item->asset_code ?? '-' }}</td>
-                                            <td>{{ $item->asset_type ?? '-' }}</td>
-                                            <td>{{ $item->serial_number ?? '-' }}</td>
-                                            <?php
-                                            $acquisitionDate = new DateTime($item->acquisition_date);
-                                            $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
-                                            $endOfUsefulLife = clone $acquisitionDate;
-                                            $endOfUsefulLife->modify("+{$usefulLife} days");
+                                            @foreach($repair as $item)
+                                            <tr class="text-center text-xxs">
+                                                <td>{{ $item->asset_code ?? '-' }}</td>
+                                                <td>{{ $item->asset_type ?? '-' }}</td>
+                                                <td>{{ $item->serial_number ?? '-' }}</td>
+                                                <?php
+                                                if ($inv->acquisition_date === '-') {
+                                                    $message = "Tanggal tidak terdefinisi";
+                                                } else {
+                                                    $acquisitionDate = new DateTime($item->acquisition_date);
+                                                    $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                                    $endOfUsefulLife = clone $acquisitionDate;
+                                                    $endOfUsefulLife->modify("+{$usefulLife} days");
 
-                                            $currentDate = new DateTime();
-                                            $interval = $currentDate->diff($endOfUsefulLife);
+                                                    $currentDate = new DateTime();
+                                                    $interval = $currentDate->diff($endOfUsefulLife);
 
-                                            if ($currentDate > $endOfUsefulLife) {
-                                                $remainingDays = -$interval->days; // Use negative value for overdue days
-                                            } else {
-                                                $remainingDays = $interval->days;
-                                            }
+                                                    if ($currentDate > $endOfUsefulLife) {
+                                                        $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                    } else {
+                                                        $remainingDays = $interval->days;
+                                                    }
 
-                                            $message = "{$remainingDays} hari";
-                                            ?>
-                                            <td>{{ $message }}</td>
-                                            <td>{{ $item->location ?? '-' }}</td>
-                                            <td>{{ $item->status ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
-                                            <td>{{ $item->note ?? '-' }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
+                                                    $message = "{$remainingDays} hari";
+                                                }
+                                                ?>
+                                                <td>{{ $message }}</td>
+                                                <td>{{ $item->location ?? '-' }}</td>
+                                                <td>{{ $item->status ?? '-' }}</td>
+                                                <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
+                                                <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
+                                                <td>{{ $item->note ?? '-' }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -181,21 +185,25 @@
                                                 <td>{{ $item->asset_type ?? '-' }}</td>
                                                 <td>{{ $item->serial_number ?? '-' }}</td>
                                                 <?php
-                                                $acquisitionDate = new DateTime($item->acquisition_date);
-                                                $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
-                                                $endOfUsefulLife = clone $acquisitionDate;
-                                                $endOfUsefulLife->modify("+{$usefulLife} days");
-
-                                                $currentDate = new DateTime();
-                                                $interval = $currentDate->diff($endOfUsefulLife);
-
-                                                if ($currentDate > $endOfUsefulLife) {
-                                                    $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                if ($inv->acquisition_date === '-') {
+                                                    $message = "Tanggal tidak terdefinisi";
                                                 } else {
-                                                    $remainingDays = $interval->days;
-                                                }
+                                                    $acquisitionDate = new DateTime($item->acquisition_date);
+                                                    $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                                    $endOfUsefulLife = clone $acquisitionDate;
+                                                    $endOfUsefulLife->modify("+{$usefulLife} days");
 
-                                                $message = "{$remainingDays} hari";
+                                                    $currentDate = new DateTime();
+                                                    $interval = $currentDate->diff($endOfUsefulLife);
+
+                                                    if ($currentDate > $endOfUsefulLife) {
+                                                        $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                    } else {
+                                                        $remainingDays = $interval->days;
+                                                    }
+
+                                                    $message = "{$remainingDays} hari";
+                                                }
                                                 ?>
                                                 <td>{{ $message }}</td>
                                                 <td>{{ $item->location ?? '-' }}</td>

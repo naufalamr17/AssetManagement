@@ -55,12 +55,11 @@
                                             <select id="asset_category" class="form-control border p-2" name="asset_category" required>
                                                 <option value="" selected disabled>Select Category</option>
                                                 <option value="Kendaraan">01 - Kendaraan</option>
-                                                <option value="Mesin">02 - Mesin</option>
-                                                <option value="Alat Berat">03 - Alat Berat</option>
-                                                <option value="Alat Lab">04 - Alat Lab</option>
-                                                <option value="Alat Preparasi">05 - Alat Preparasi</option>
-                                                <option value="Peralatan">06 - Peralatan</option>
-                                                <option value="Perlengkapan">07 - Perlengkapan</option>
+                                                <option value="Peralatan">02 - Peralatan</option>
+                                                <option value="Bangunan">03 - Bangunan</option>
+                                                <option value="Mesin">04 - Mesin</option>
+                                                <option value="Alat Berat">05 - Alat Berat</option>
+                                                <option value="Alat Lab & Preparasi">06 - Alat Lab & Preparasi</option>
                                             </select>
                                             @if ($errors->has('asset_category'))
                                             <div class="text-danger mt-2">{{ $errors->first('asset_category') }}</div>
@@ -245,7 +244,7 @@
 
                                         <div class="form-group">
                                             <label for="useful_life">Umur ekonomis (Tahun)</label>
-                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life') }}" required>
+                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life') }}" readonly>
                                             @if ($errors->has('useful_life'))
                                             <div class="text-danger mt-2">{{ $errors->first('useful_life') }}</div>
                                             @endif
@@ -310,4 +309,40 @@
         </div>
     </main>
     <x-plugins></x-plugins>
+
+    <script>
+        document.getElementById('asset_category').addEventListener('change', function() {
+            var usefulLifeInput = document.getElementById('useful_life');
+            var selectedCategory = this.value;
+            var usefulLife;
+
+            switch (selectedCategory) {
+                case 'Kendaraan':
+                    usefulLife = 8;
+                    break;
+                case 'Peralatan':
+                    usefulLife = 4;
+                    break;
+                case 'Bangunan':
+                    usefulLife = 20;
+                    break;
+                case 'Mesin':
+                    usefulLife = 16;
+                    break;
+                case 'Alat Berat':
+                    usefulLife = 16;
+                    break;
+                case 'Alat Lab & Preparasi':
+                    usefulLife = 8;
+                    break;
+                default:
+                    usefulLife = '';
+            }
+
+            usefulLifeInput.value = usefulLife;
+        });
+
+        // Trigger change event to set initial value if a category is already selected
+        document.getElementById('asset_category').dispatchEvent(new Event('change'));
+    </script>
 </x-layout>

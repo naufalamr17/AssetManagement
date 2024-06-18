@@ -246,89 +246,89 @@ class InventoryController extends Controller
             ->where('hand_over_date', $asset->hand_over_date)
             ->first();
 
-        $asset_code = $asset->asset_code;
+        // $asset_code = $asset->asset_code;
 
-        $parts = explode('-', $asset_code);
+        // $parts = explode('-', $asset_code);
 
         // Mendefinisikan PIC Dept berdasarkan acquisition_value
-        if ($request->acquisition_value > 2500000) {
-            $pic_dept = 'FAT & GA';
-            $id1 = 'FG';
-        } else {
-            $pic_dept = 'GA';
-            $id1 = 'GA';
-        }
+        // if ($request->acquisition_value > 2500000) {
+        //     $pic_dept = 'FAT & GA';
+        //     $id1 = 'FG';
+        // } else {
+        //     $pic_dept = 'GA';
+        //     $id1 = 'GA';
+        // }
 
-        if ($request->location == 'Head Office') {
-            $id2 = '01';
-        } else if ($request->location == 'Office Kendari') {
-            $id2 = '02';
-        } else if ($request->location == 'Site Molore') {
-            $id2 = '03';
-        }
+        // if ($request->location == 'Head Office') {
+        //     $id2 = '01';
+        // } else if ($request->location == 'Office Kendari') {
+        //     $id2 = '02';
+        // } else if ($request->location == 'Site Molore') {
+        //     $id2 = '03';
+        // }
 
         // Menentukan id3 berdasarkan asset_category
-        if ($request->asset_category == 'Kendaraan') {
-            $id3 = '01';
-        } elseif ($request->asset_category == 'Mesin') {
-            $id3 = '02';
-        } elseif ($request->asset_category == 'Alat Berat') {
-            $id3 = '03';
-        } elseif ($request->asset_category == 'Alat Lab') {
-            $id3 = '04';
-        } elseif ($request->asset_category == 'Alat Preparasi') {
-            $id3 = '05';
-        } elseif ($request->asset_category == 'Peralatan') {
-            $id3 = '06';
-        } else {
-            $id3 = '07'; // Default code if no matching category is found
-        }
+        // if ($request->asset_category == 'Kendaraan') {
+        //     $id3 = '01';
+        // } elseif ($request->asset_category == 'Mesin') {
+        //     $id3 = '02';
+        // } elseif ($request->asset_category == 'Alat Berat') {
+        //     $id3 = '03';
+        // } elseif ($request->asset_category == 'Alat Lab') {
+        //     $id3 = '04';
+        // } elseif ($request->asset_category == 'Alat Preparasi') {
+        //     $id3 = '05';
+        // } elseif ($request->asset_category == 'Peralatan') {
+        //     $id3 = '06';
+        // } else {
+        //     $id3 = '07'; // Default code if no matching category is found
+        // }
 
-        $ids = $id1 . ' ' . $id2 . '-' . $id3;
-        $idc = $parts[0] . '-' . $parts[1];
+        // $ids = $id1 . ' ' . $id2 . '-' . $id3;
+        // $idc = $parts[0] . '-' . $parts[1];
 
         // dd($ids, $idc);
 
-        if ($idc == $ids) {
-            // dd('halo');
-            $asset->update($request->all());
-        } else {
-            $iddb = Inventory::where('asset_code', 'LIKE', "%$ids%")->get(['asset_code']);
+        // if ($idc == $ids) {
+        // dd('halo');
+        $asset->update($request->all());
+        // } else {
+        //     $iddb = Inventory::where('asset_code', 'LIKE', "%$ids%")->get(['asset_code']);
 
-            if ($iddb->isEmpty()) {
-                $iteration = str_pad(1, 4, '0', STR_PAD_LEFT);
-                // dd($iteration);
-                $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
-                $asset['asset_code'] = $id;
-                $asset['pic_dept'] = $pic_dept;
-                $asset->update($request->all());
-                // dd($pic_dept);
-            } else {
-                $existingIterations = [];
+        //     if ($iddb->isEmpty()) {
+        //         $iteration = str_pad(1, 4, '0', STR_PAD_LEFT);
+        // dd($iteration);
+        // $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
+        // $asset['asset_code'] = $id;
+        // $asset['pic_dept'] = $pic_dept;
+        // $asset->update($request->all());
+        // dd($pic_dept);
+        // } else {
+        //     $existingIterations = [];
 
-                // Loop melalui hasil query dan simpan urutan yang ada
-                foreach ($iddb as $inventory) {
-                    $asset_code = $inventory->asset_code;
-                    $parts = explode('-', $asset_code);
-                    $iteration = end($parts); // Ambil bagian terakhir dari hasil explode
-                    $existingIterations[] = $iteration;
-                }
-                for ($i = 1; $i <= 9999; $i++) {
-                    $iteration = str_pad($i, 4, '0', STR_PAD_LEFT);
-                    if (!in_array($iteration, $existingIterations)) {
-                        // Urutan kosong ditemukan
-                        $newAssetCode = $ids . '-' . $iteration;
-                        break;
-                    }
-                }
-                // dd($existingIterations, $newAssetCode);
-                $asset['asset_code'] = $newAssetCode;
-                $asset['pic_dept'] = $pic_dept;
-                // dd($asset);
-                $asset->update($request->all());
-            }
-            // dd($iddb);
-        }
+        // Loop melalui hasil query dan simpan urutan yang ada
+        // foreach ($iddb as $inventory) {
+        //     $asset_code = $inventory->asset_code;
+        //     $parts = explode('-', $asset_code);
+        //     $iteration = end($parts); // Ambil bagian terakhir dari hasil explode
+        //     $existingIterations[] = $iteration;
+        // }
+        // for ($i = 1; $i <= 9999; $i++) {
+        //     $iteration = str_pad($i, 4, '0', STR_PAD_LEFT);
+        //     if (!in_array($iteration, $existingIterations)) {
+        // Urutan kosong ditemukan
+        // $newAssetCode = $ids . '-' . $iteration;
+        // break;
+        // }
+        // }
+        // dd($existingIterations, $newAssetCode);
+        // $asset['asset_code'] = $newAssetCode;
+        // $asset['pic_dept'] = $pic_dept;
+        // dd($asset);
+        // $asset->update($request->all());
+        // }
+        // dd($iddb);
+        // }
 
         if ($request->store_to_database == 'true') {
             // dd($request);

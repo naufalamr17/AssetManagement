@@ -330,10 +330,10 @@
                     usefulLife = 16;
                     break;
                 case 'Alat Berat':
-                    usefulLife = 16;
+                    usefulLife = 8;
                     break;
                 case 'Alat Lab & Preparasi':
-                    usefulLife = 8;
+                    usefulLife = 16;
                     break;
                 default:
                     usefulLife = '';

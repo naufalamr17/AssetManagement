@@ -148,6 +148,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Saat Ini') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
@@ -173,14 +174,30 @@
                                             @else
                                             <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
                                             @endif
+                                            @if($inv->acquisition_value == 0)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
+                                            @endif
                                             <?php
                                             if ($inv->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
                                             } else {
                                                 $acquisitionDate = new DateTime($inv->acquisition_date);
                                                 $usefulLife = $inv->useful_life * 365; // Convert useful life from years to days
+
+                                                // Calculate end of useful life considering leap years
                                                 $endOfUsefulLife = clone $acquisitionDate;
-                                                $endOfUsefulLife->modify("+{$usefulLife} days");
+                                                for ($i = 0; $i < $usefulLife; $i++) {
+                                                    $endOfUsefulLife->modify('+1 day');
+                                                    // Check for leap year if necessary (every 4 years except for multiples of 100 but not multiples of 400)
+                                                    if (($endOfUsefulLife->format('Y') % 4 === 0 && $endOfUsefulLife->format('Y') % 100 !== 0) || $endOfUsefulLife->format('Y') % 400 === 0) {
+                                                        if ($endOfUsefulLife->format('m') === 2 && $endOfUsefulLife->format('d') === 29) {
+                                                            // Skip February 29th in leap years to avoid adding an extra day
+                                                            $endOfUsefulLife->modify('+1 day');
+                                                        }
+                                                    }
+                                                }
 
                                                 $currentDate = new DateTime();
                                                 $interval = $currentDate->diff($endOfUsefulLife);

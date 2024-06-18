@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('asset_type'); // Jenis
             $table->text('description'); // Description
             $table->string('serial_number')->nullable(); // Serial Number
-            $table->date('acquisition_date'); // Tanggal Perolehan
+            $table->text('acquisition_date'); // Tanggal Perolehan
             $table->date('disposal_date')->nullable(); // Tanggal Penghapusan
             $table->integer('useful_life')->nullable(); // Umur Ekonomis (tahun)
             $table->bigInteger('acquisition_value')->default(0); // Nilai Perolehan

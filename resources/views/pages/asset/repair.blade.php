@@ -157,7 +157,7 @@
                                             <td>{{ $item->asset_type ?? '-' }}</td>
                                             <td>{{ $item->serial_number ?? '-' }}</td>
                                             <?php
-                                            if ($inv->acquisition_date === '-') {
+                                            if ($item->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
                                             } else {
                                                 $acquisitionDate = new DateTime($item->acquisition_date);

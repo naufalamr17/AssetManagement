@@ -258,7 +258,7 @@
                 "pageLength": 50,
                 "columnDefs": [{
                         "orderable": true,
-                        "targets": 7
+                        "targets": [0, 7]
                     }, // Enable ordering on the 8th column (index 7)
                     {
                         "orderable": false,

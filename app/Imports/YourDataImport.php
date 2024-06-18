@@ -52,19 +52,22 @@ class YourDataImport implements ToModel, WithHeadingRow
         }
 
         // Fetch last iteration value from the database
-        $lastAsset = Inventory::orderBy('id', 'desc')->first();
-        $iteration = $lastAsset ? $lastAsset->id + 1 : 1; // Start from 1 if no data
-        $iteration = str_pad($iteration, 4, '0', STR_PAD_LEFT); // Ensure 4 digits with padding
+        // $lastAsset = Inventory::orderBy('id', 'desc')->first();
+        // $iteration = $lastAsset ? $lastAsset->id + 1 : 1; // Start from 1 if no data
+        // $iteration = str_pad($iteration, 4, '0', STR_PAD_LEFT); // Ensure 4 digits with padding
 
         $id = $id1 . ' ' . $id2 . '-' . $id3;
 
         $ids = Inventory::where('asset_code', 'LIKE', "%$id%")->get();
+        // dd($ids);
 
         if ($ids->isNotEmpty()) {
             $dataCount = $ids->count();
             $iteration = str_pad($dataCount + 1, 4, '0', STR_PAD_LEFT);
             $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
         } else {
+            $dataCount = $ids->count();
+            $iteration = str_pad($dataCount + 1, 4, '0', STR_PAD_LEFT);
             $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
         }
 

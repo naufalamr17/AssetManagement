@@ -57,7 +57,7 @@
                                             <td class="border-b border-gray-200 py-2" rowspan="{{ $userAccesses->count() + 1 }}">
                                                 <div class="flex items-center justify-center">
                                                     @php
-                                                    $disabled = $user->status === 'Administrator' ? 'disabled' : '';
+                                                    $disabled = $user->status === 'Administrator' && Auth::user()->status === 'Super Admin' ? 'disabled' : '';
                                                     @endphp
 
                                                     <a rel="tooltip" class="btn btn-success btn-link btn-sm {{ $disabled }}" href="{{ route('edit_user', ['id' => $user->id]) }}" data-original-title="" title="" style="font-size: 0.875rem; padding: 0.5rem;" {{ $disabled }}>

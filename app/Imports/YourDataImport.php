@@ -37,18 +37,22 @@ class YourDataImport implements ToModel, WithHeadingRow
 
         if (ucwords(strtolower($row['kategori'])) == 'Kendaraan') {
             $id3 = '01';
-        } elseif (ucwords(strtolower($row['kategori'])) == 'Mesin') {
-            $id3 = '02';
-        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Berat') {
-            $id3 = '03';
-        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Lab') {
-            $id3 = '04';
-        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Preparasi') {
-            $id3 = '05';
+            $useful_life = 8;
         } elseif (ucwords(strtolower($row['kategori'])) == 'Peralatan') {
+            $id3 = '02';
+            $useful_life = 4;
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Bangunan') {
+            $id3 = '03';
+            $useful_life = 20;
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Mesin') {
+            $id3 = '04';
+            $useful_life = 16;
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Berat') {
+            $id3 = '05';
+            $useful_life = 8;
+        } elseif (ucwords(strtolower($row['kategori'])) == 'Alat Lab & Preparasi') {
             $id3 = '06';
-        } else {
-            $id3 = '07'; // Default code if no matching category is found
+            $useful_life = 16;
         }
 
         // Fetch last iteration value from the database
@@ -82,7 +86,7 @@ class YourDataImport implements ToModel, WithHeadingRow
             'description' => $row['deskripsi'],
             'serial_number' => $row['serial_number'],
             'acquisition_date' => $row['tanggal_perolehan'],
-            'useful_life' => $row['umur_ekonomis_tahun'],
+            'useful_life' => $useful_life,
             'acquisition_value' => $row['nilai_perolehan'],
             'pic_dept' => $pic_dept,
             'asset_code' => $id,

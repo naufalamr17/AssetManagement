@@ -54,7 +54,9 @@
                                             <label for="status">Status</label>
                                             <select id="status" class="form-control border p-2" name="status" required>
                                                 <option value="" disabled>Select Status</option>
+                                                @if (Auth::check() && Auth::user()->status == 'Administrator')
                                                 <option value="Administrator" {{ $user->status == 'Administrator' ? 'selected' : '' }}>Administrator</option>
+                                                @endif
                                                 <option value="Super Admin" {{ $user->status == 'Super Admin' ? 'selected' : '' }}>Super Admin</option>
                                                 <option value="Creator" {{ $user->status == 'Creator' ? 'selected' : '' }}>Creator</option>
                                                 <option value="Modified" {{ $user->status == 'Modified' ? 'selected' : '' }}>Modified</option>

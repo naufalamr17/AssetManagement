@@ -56,10 +56,15 @@
                                         <tr class="text-center text-xs">
                                             <td class="border-b border-gray-200 py-2" rowspan="{{ $userAccesses->count() + 1 }}">
                                                 <div class="flex items-center justify-center">
-                                                    <a rel="tooltip" class="btn btn-success btn-link btn-sm" href="{{ route('edit_user', ['id' => $user->id]) }}" data-original-title="" title="" style="font-size: 0.875rem; padding: 0.5rem;">
+                                                    @php
+                                                    $disabled = $user->status === 'Administrator' ? 'disabled' : '';
+                                                    @endphp
+
+                                                    <a rel="tooltip" class="btn btn-success btn-link btn-sm {{ $disabled }}" href="{{ route('edit_user', ['id' => $user->id]) }}" data-original-title="" title="" style="font-size: 0.875rem; padding: 0.5rem;" {{ $disabled }}>
                                                         <i class="material-icons" style="font-size: 16px;">edit</i>
                                                         <div class="ripple-container"></div>
                                                     </a>
+                                                    @if (Auth::check() && Auth::user()->status == 'Administrator')
                                                     <form action="{{ route('destroy_user', ['id' => $user->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
@@ -68,6 +73,7 @@
                                                             <div class="ripple-container"></div>
                                                         </button>
                                                     </form>
+                                                    @endif
                                                 </div>
 
                                             </td>

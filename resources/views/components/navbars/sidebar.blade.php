@@ -63,7 +63,7 @@
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
             </li>
-            @if (Auth::check() && Auth::user()->status == 'Administrator')
+            @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
             <li class="nav-item">
                 <a class="nav-link {{ $activePage == 'user-management' ? 'active bg-gradient-danger' : '' }}" href="{{ route('user-management') }}" style="color: {{ $activePage == 'user-management' ? 'white' : 'black' }};">
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
@@ -75,7 +75,7 @@
             @endif
         </ul>
     </div>
-    @if (Auth::check() && Auth::user()->status == 'Administrator')
+    @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
         <div class="mx-3">
             <a class="btn bg-gradient-danger w-100" href="{{ route('inputexcel') }}" type="button">Import Data</a>

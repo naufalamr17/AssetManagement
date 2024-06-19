@@ -153,7 +153,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
-                                            @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified'))
+                                            @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified' || Auth::user()->status == 'Super Admin'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                             @endif
                                         </tr>
@@ -243,7 +243,7 @@
                                             @else
                                             <td>-</td>
                                             @endif
-                                            @if (Auth::check() && Auth::user()->status == 'Administrator')
+                                            @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
                                             <td>
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <div class="p-1">

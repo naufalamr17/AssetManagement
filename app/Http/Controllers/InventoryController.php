@@ -68,18 +68,16 @@ class InventoryController extends Controller
         // Menentukan id3 berdasarkan asset_category
         if ($request->asset_category == 'Kendaraan') {
             $id3 = '01';
-        } elseif ($request->asset_category == 'Mesin') {
-            $id3 = '02';
-        } elseif ($request->asset_category == 'Alat Berat') {
-            $id3 = '03';
-        } elseif ($request->asset_category == 'Alat Lab') {
-            $id3 = '04';
-        } elseif ($request->asset_category == 'Alat Preparasi') {
-            $id3 = '05';
         } elseif ($request->asset_category == 'Peralatan') {
+            $id3 = '02';
+        } elseif ($request->asset_category == 'Bangunan') {
+            $id3 = '03';
+        } elseif ($request->asset_category == 'Mesin') {
+            $id3 = '04';
+        } elseif ($request->asset_category == 'Alat Berat') {
+            $id3 = '05';
+        } elseif ($request->asset_category == 'Alat Lab & Preparasi') {
             $id3 = '06';
-        } else {
-            $id3 = '07'; // Default code if no matching category is found
         }
 
         // if ($request->asset_type == 'LV') {

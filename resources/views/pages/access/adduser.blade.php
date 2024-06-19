@@ -54,7 +54,8 @@
                                             <select id="status" class="form-control border p-2" name="status" required>
                                                 <option value="" selected disabled>Select Status</option>
                                                 <option value="Administrator">Administrator</option>
-                                                <option value="Admin">Admin</option>
+                                                <option value="Super Admin">Super Admin</option>
+                                                <option value="Creator">Creator</option>
                                                 <option value="Modified">Modified</option>
                                                 <option value="Viewers">Viewers</option>
                                             </select>
@@ -70,21 +71,21 @@
                                         <div>
                                             <div class="form-group d-flex justify-content-between align-items-center">
                                                 <label for="access">Access</label>
-                                                <button type="button" id="add-access" class="btn btn-primary">
+                                                <!-- <button type="button" id="add-access" class="btn btn-primary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                                     </svg>
-                                                </button>
+                                                </button> -->
                                             </div>
                                             <div id="access-container" class="space-y-4">
                                                 <div class="d-flex align-items-center">
-                                                    <select name="access[]" class="form-control border p-2" style="margin-right: 10px;" required>
-                                                        <option value="" disabled selected>Select Access</option>
-                                                        <option value="Asset Management">Asset Management</option>
-                                                        <option value="IT Asset Management">IT Asset Management</option>
-                                                        <option value="ATK Management">ATK Management</option>
+                                                    <select name="access[]" class="form-control border p-2" style="margin-right: 10px;" readonly>
+                                                        <!-- <option value="" disabled selected>Select Access</option> -->
+                                                        <option value="Asset Management" selected>Asset Management</option>
+                                                        <!-- <option value="IT Asset Management">IT Asset Management</option> -->
+                                                        <!-- <option value="ATK Management">ATK Management</option> -->
                                                     </select>
-                                                    <button type="button" class="btn btn-danger remove-access mt-3">X</button>
+                                                    <!-- <button type="button" class="btn btn-danger remove-access mt-3">X</button> -->
                                                 </div>
                                             </div>
                                         </div>

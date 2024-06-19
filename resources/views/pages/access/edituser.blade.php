@@ -55,7 +55,8 @@
                                             <select id="status" class="form-control border p-2" name="status" required>
                                                 <option value="" disabled>Select Status</option>
                                                 <option value="Administrator" {{ $user->status == 'Administrator' ? 'selected' : '' }}>Administrator</option>
-                                                <option value="Admin" {{ $user->status == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                                <option value="Super Admin" {{ $user->status == 'Super Admin' ? 'selected' : '' }}>Super Admin</option>
+                                                <option value="Creator" {{ $user->status == 'Creator' ? 'selected' : '' }}>Creator</option>
                                                 <option value="Modified" {{ $user->status == 'Modified' ? 'selected' : '' }}>Modified</option>
                                                 <option value="Viewers" {{ $user->status == 'Viewers' ? 'selected' : '' }}>Viewers</option>
                                             </select>

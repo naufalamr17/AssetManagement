@@ -151,6 +151,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset Lama') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Asset Position') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
@@ -158,6 +159,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Useful Life (Tahun)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (Hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
@@ -172,6 +174,7 @@
                                         @foreach($inventoryData as $inventory)
                                         <tr class="text-center text-xxs">
                                             <td>{{ $inventory->asset_code ?? '-' }}</td>
+                                            <td>{{ $inventory->old_asset_code ?? '-' }}</td>
                                             <td>{{ $inventory->asset_category ?? '-' }}</td>
                                             <td>{{ $inventory->asset_position_dept ?? '-' }}</td>
                                             <td>{{ $inventory->asset_type ?? '-' }}</td>
@@ -179,6 +182,7 @@
                                             <td>{{ $inventory->serial_number ?? '-' }}</td>
                                             <td>{{ $inventory->location ?? '-' }}</td>
                                             <td>{{ $inventory->acquisition_date ?? '-' }}</td>
+                                            <td>{{ $inventory->useful_life ?? '-' }}</td>
                                             <?php
                                             if ($inventory->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
@@ -236,7 +240,7 @@
                 "pageLength": -1,
                 "columnDefs": [{
                         "orderable": true,
-                        "targets": 7
+                        "targets": 8
                     }, // Enable ordering on the 8th column (index 7)
                     {
                         "orderable": false,
@@ -244,7 +248,7 @@
                     } // Disable ordering on all other columns
                 ],
                 "order": [
-                    [7, 'desc']
+                    [8, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
             });

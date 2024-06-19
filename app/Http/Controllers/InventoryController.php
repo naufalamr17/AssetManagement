@@ -528,6 +528,7 @@ class InventoryController extends Controller
             ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
             ->select(
                 'inventories.asset_code',
+                'inventories.old_asset_code',
                 'inventories.asset_category',
                 'inventories.asset_position_dept',
                 'inventories.asset_type',

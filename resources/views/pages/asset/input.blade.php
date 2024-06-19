@@ -174,32 +174,18 @@
                                             @else
                                             <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
                                             @endif
-                                            @if($inv->acquisition_value == 0)
-                                            <td>-</td>
-                                            @else
-                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
-                                            @endif
                                             <?php
                                             if ($inv->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
                                             } else {
                                                 $acquisitionDate = new DateTime($inv->acquisition_date);
-                                                $usefulLife = $inv->useful_life * 365; // Convert useful life from years to days
-
-                                                // Calculate end of useful life considering leap years
-                                                $endOfUsefulLife = clone $acquisitionDate;
-                                                for ($i = 0; $i < $usefulLife; $i++) {
-                                                    $endOfUsefulLife->modify('+1 day');
-                                                    // Check for leap year if necessary (every 4 years except for multiples of 100 but not multiples of 400)
-                                                    if (($endOfUsefulLife->format('Y') % 4 === 0 && $endOfUsefulLife->format('Y') % 100 !== 0) || $endOfUsefulLife->format('Y') % 400 === 0) {
-                                                        if ($endOfUsefulLife->format('m') === 2 && $endOfUsefulLife->format('d') === 29) {
-                                                            // Skip February 29th in leap years to avoid adding an extra day
-                                                            $endOfUsefulLife->modify('+1 day');
-                                                        }
-                                                    }
-                                                }
-
+                                                $usefulLifeYears = $inv->useful_life;
                                                 $currentDate = new DateTime();
+
+                                                // Calculate the end date of the useful life directly
+                                                $endOfUsefulLife = clone $acquisitionDate;
+                                                $endOfUsefulLife->modify("+{$usefulLifeYears} years");
+
                                                 $interval = $currentDate->diff($endOfUsefulLife);
 
                                                 if ($currentDate > $endOfUsefulLife) {
@@ -209,8 +195,46 @@
                                                 }
 
                                                 $message = "{$remainingDays} hari";
+
+                                                // Output the message
+                                                echo $message;
+
+                                                $usefulLifeYears = $inv->useful_life;
+                                                $depreciationRate = 1 / $usefulLifeYears; // Calculate the depreciation rate
+
+                                                // Initialize variables
+                                                $acquisitionValue = $inv->acquisition_value;
+                                                $yearsUsed = $acquisitionDate->diff($currentDate)->y;
+                                                $depreciatedValue = $acquisitionValue;
+                                                $accumulatedDepreciation = 0;
+
+                                                for ($year = 1; $year <= $yearsUsed; $year++) {
+                                                    $annualDepreciation = $depreciatedValue * $depreciationRate;
+                                                    $accumulatedDepreciation += $annualDepreciation;
+                                                    $depreciatedValue -= $annualDepreciation;
+
+                                                    // Ensure depreciated value doesn't go below zero
+                                                    if ($depreciatedValue < 0) {
+                                                        $depreciatedValue = 0;
+                                                        break;
+                                                    }
+                                                }
+
+                                                // Ensure the values are appropriately handled when useful life is zero or not defined
+                                                if ($usefulLifeYears == 0) {
+                                                    $depreciatedValue = $acquisitionValue;
+                                                }
+
+                                                // Output the final depreciated value and accumulated depreciation
+                                                // echo "Depreciated Value: " . $depreciatedValue . "\n";
+                                                // echo "Accumulated Depreciation: " . $accumulatedDepreciation . "\n";
                                             }
                                             ?>
+                                            @if($inv->acquisition_value == 0)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{ number_format($depreciatedValue, 0, ',', '.') }}</td>
+                                            @endif
                                             <td>{{ $message }}</td>
                                             <td>{{ $inv->location }}</td>
                                             <td>{{ $inv->status }}</td>

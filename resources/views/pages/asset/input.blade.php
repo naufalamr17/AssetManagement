@@ -197,7 +197,7 @@
                                                 $message = "{$remainingDays} hari";
 
                                                 // Output the message
-                                                echo $message;
+                                                // echo $message;
 
                                                 $usefulLifeYears = $inv->useful_life;
                                                 $depreciationRate = 1 / $usefulLifeYears; // Calculate the depreciation rate

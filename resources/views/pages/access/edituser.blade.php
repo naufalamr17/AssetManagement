@@ -65,6 +65,15 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="hirar">Hirarki</label>
+                                            <select id="hirar" class="form-control border p-2" name="hirar" required>
+                                                <option value="" disabled>Select Hirarki</option>
+                                                <option value="Manager" {{ $user->hirar == 'Manager' ? 'selected' : '' }}>Manager</option>
+                                                <option value="Deputy General Manager" {{ $user->hirar == 'Deputy General Manager' ? 'selected' : '' }}>Deputy General Manager</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="password">Password</label>
                                             <input id="password" class="form-control border p-2" type="password" name="password">
                                             <small>Leave blank to keep current password</small>
@@ -75,11 +84,11 @@
                                         <div>
                                             <div class="form-group d-flex justify-content-between align-items-center">
                                                 <label for="access">Access</label>
-                                                <button type="button" id="add-access" class="btn btn-primary">
+                                                <!-- <button type="button" id="add-access" class="btn btn-primary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                                     </svg>
-                                                </button>
+                                                </button> -->
                                             </div>
                                             <div id="access-container" class="space-y-4">
                                                 @foreach($user->accesses as $access)
@@ -89,13 +98,13 @@
                                                 // dump($accessName);
                                                 ?>
                                                 <div class="d-flex align-items-center">
-                                                    <select name="access[]" class="form-control border p-2" style="margin-right: 10px;" required>
-                                                        <option value="" disabled>Select Access</option>
+                                                    <select name="access[]" class="form-control border p-2" style="margin-right: 10px;" readonly>
+                                                        <!-- <option value="" disabled>Select Access</option> -->
                                                         <option value="Asset Management" {{ $accessName == 'Asset Management' ? 'selected' : '' }}>Asset Management</option>
-                                                        <option value="IT Asset Management" {{ $accessName == 'IT Asset Management' ? 'selected' : '' }}>IT Asset Management</option>
-                                                        <option value="ATK Management" {{ $accessName == 'ATK Management' ? 'selected' : '' }}>ATK Management</option>
+                                                        <!-- <option value="IT Asset Management" {{ $accessName == 'IT Asset Management' ? 'selected' : '' }}>IT Asset Management</option>
+                                                        <option value="ATK Management" {{ $accessName == 'ATK Management' ? 'selected' : '' }}>ATK Management</option> -->
                                                     </select>
-                                                    <button type="button" class="btn btn-danger remove-access mt-3">X</button>
+                                                    <!-- <button type="button" class="btn btn-danger remove-access mt-3">X</button> -->
                                                 </div>
                                                 @endforeach
                                             </div>

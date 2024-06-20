@@ -45,6 +45,8 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Hirar</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Access</th>
                                         </tr>
                                     </thead>
@@ -88,6 +90,9 @@
                                             </td>
                                             <td class="border-b border-gray-200 py-2" rowspan="{{ $userAccesses->count() + 1 }}">
                                                 <div class="flex items-center justify-center">{{ $user->status }}</div>
+                                            </td>
+                                            <td class="border-b border-gray-200 py-2" rowspan="{{ $userAccesses->count() + 1 }}">
+                                                <div class="flex items-center justify-center">{{ $user->hirar }}</div>
                                             </td>
                                         </tr>
                                         @foreach($userAccesses as $access)

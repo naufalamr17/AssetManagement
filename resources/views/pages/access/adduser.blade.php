@@ -64,6 +64,15 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="hirar">Hirarki</label>
+                                            <select id="hirar" class="form-control border p-2" name="hirar" required>
+                                                <option value="" selected disabled>Select Hirarki</option>
+                                                <option value="Manager">Manager</option>
+                                                <option value="Deputy General Manager">Deputy General Manager</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="password">Password</label>
                                             <input id="password" class="form-control border p-2" type="password" name="password" required>
                                         </div>

@@ -33,6 +33,7 @@ class AccessController extends Controller
             'email' => $request->email,
             'location' => $request->location,
             'status' => $request->status,
+            'hirar' => $request->hirar,
             'password' => $request->password,
         ]);
 
@@ -72,6 +73,7 @@ class AccessController extends Controller
         $user->email = $request->email;
         $user->location = $request->location;
         $user->status = $request->status;
+        $user->hirar = $request->hirar;
         if ($request->filled('password')) {
             $user->password = $request->password;
         }

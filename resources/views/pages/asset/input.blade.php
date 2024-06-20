@@ -177,6 +177,7 @@
                                             <?php
                                             if ($inv->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
+                                                $depreciatedValue = "-";
                                             } else {
                                                 $acquisitionDate = new DateTime($inv->acquisition_date);
                                                 $usefulLifeYears = $inv->useful_life;
@@ -233,7 +234,7 @@
                                             @if($inv->acquisition_value == 0)
                                             <td>-</td>
                                             @else
-                                            <td>{{ number_format($depreciatedValue, 0, ',', '.') }}</td>
+                                            <td>{{ $depreciatedValueFormatted = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.'); }}</td>
                                             @endif
                                             <td>{{ $message }}</td>
                                             <td>{{ $inv->location }}</td>

@@ -204,7 +204,7 @@
 
                                                     @if(Auth::user()->hirar == 'Manager')
                                                     <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
+                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
                                                         disabled
                                                         @endif
                                                         >
@@ -212,7 +212,7 @@
                                                     </button>
 
                                                     <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
+                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
                                                         disabled
                                                         @endif
                                                         >
@@ -220,7 +220,7 @@
                                                     </button>
                                                     @elseif(Auth::user()->hirar == 'Deputy General Manager')
                                                     <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Pending')
                                                         disabled
                                                         @endif
                                                         >
@@ -228,7 +228,7 @@
                                                     </button>
 
                                                     <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Pending')
                                                         disabled
                                                         @endif
                                                         >

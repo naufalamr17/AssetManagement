@@ -266,6 +266,7 @@
                                                 <option value="Good">Good</option>
                                                 <option value="Breakdown">Breakdown</option>
                                                 <option value="Repair">Repair</option>
+                                                <option value="Waiting Dispose">Waiting Dispose</option>
                                             </select>
                                             <div class="form-check mt-2">
                                                 <input id="store_to_database" type="checkbox" class="form-check-input" name="store_to_database" value="true" @if(old('store_to_database')=='true' ) checked @endif>
@@ -354,7 +355,7 @@
                             asset_code: assetCode
                         },
                         success: function(response) {
-                            if (response.status === 'Dispose' || response.status === 'Waiting Dispose') {
+                            if (response.status === 'Dispose') {
                                 $('#location').val('');
                                 $('#asset_category').val('');
                                 $('#asset_position_dept').val('');
@@ -365,7 +366,7 @@
                                 $('#useful_life').val('');
                                 $('#acquisition_value').val('');
                                 $('#status').val('');
-                                alert('Status is waiting dispose or dispose');
+                                alert('Status is dispose');
                             } else {
                                 // Isi input lainnya dengan data yang diterima dari permintaan AJAX
                                 $('#location').val(response.location);

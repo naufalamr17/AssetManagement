@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tanggal_penghapusan')->nullable();
             $table->string('note')->nullable();
             $table->string('disposal_document');
+            $table->string('approval')->default('Pending');
             $table->timestamps(); // Menambahkan kolom created_at dan updated_at
         });
     }

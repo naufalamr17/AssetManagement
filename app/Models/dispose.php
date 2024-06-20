@@ -14,6 +14,7 @@ class dispose extends Model
         'tanggal_penghapusan',
         'note',
         'disposal_document',
+        'approval',
     ];
 
     public function inventory()

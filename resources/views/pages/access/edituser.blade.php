@@ -66,8 +66,8 @@
 
                                         <div class="form-group">
                                             <label for="hirar">Hirarki</label>
-                                            <select id="hirar" class="form-control border p-2" name="hirar" required>
-                                                <option value="" disabled>Select Hirarki</option>
+                                            <select id="hirar" class="form-control border p-2" name="hirar">
+                                                <option value="">Select Hirarki</option>
                                                 <option value="Manager" {{ $user->hirar == 'Manager' ? 'selected' : '' }}>Manager</option>
                                                 <option value="Deputy General Manager" {{ $user->hirar == 'Deputy General Manager' ? 'selected' : '' }}>Deputy General Manager</option>
                                             </select>

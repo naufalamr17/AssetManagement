@@ -23,7 +23,9 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
-
+use App\Models\dispose;
+use App\Models\inventory;
+use Illuminate\Http\Request;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/home', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
@@ -71,6 +73,27 @@ Route::get('/inputexcel', [InventoryController::class, 'inputexcel'])->name('inp
 Route::post('/store_excel', [InventoryController::class, 'storeexcel'])->name('store_excel')->middleware('auth');
 
 Route::get('/report', [InventoryController::class, 'report'])->name('report')->middleware('auth');
+
+Route::post('/approval', function (Request $request) {
+	// Access form data using $request object
+	$itemId = $request->input('itemId');
+	$itemId2 = $request->input('itemId2');
+	$hirar = $request->input('hirar');
+	$approvalStatus = $request->input('approval_action');
+	$approval = $approvalStatus . ' by ' . $hirar;
+
+	dispose::where('id', $itemId)->update([
+		'Approval' => $approval
+	]);
+
+	if ($hirar === "Deputy General Manager" && $approvalStatus === "Approve") {
+		inventory::where('asset_code', $itemId2)->update([
+			'status' => 'Dispose'
+		]);
+	}
+
+	return redirect()->route('dispose_inventory')->with('success', 'Approval processed successfully!');
+})->name('approval')->middleware('auth');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {

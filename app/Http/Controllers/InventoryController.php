@@ -486,8 +486,10 @@ class InventoryController extends Controller
                 'inventories.acquisition_date',
                 'inventories.location',
                 'inventories.status',
+                'disposes.id',
                 'disposes.tanggal_penghapusan',
                 'disposes.note',
+                'disposes.approval',
                 'disposes.disposal_document',
             )->get();
 

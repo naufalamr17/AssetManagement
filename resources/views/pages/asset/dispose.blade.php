@@ -149,6 +149,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dokumen') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status Approval') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Approval') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -184,13 +185,31 @@
                                             <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
                                             <td>
                                                 @if ($item->disposal_document)
-                                                <a href="{{ asset('storage/' . $item->disposal_document) }}">Download Dokumen</a>
+                                                <a href="{{ asset('storage/' . $item->disposal_document) }}" class="btn btn-sm mt-3 btn-secondary">Download Dokumen</a>
                                                 @else
                                                 -
                                                 @endif
                                             </td>
-                                            <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
+                                            <td>{{ $item->approval ?? '-' }}</td>
                                             <td>{{ $item->note ?? '-' }}</td>
+                                            <td>
+                                                <form action="{{ route('approval') }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="itemId" value="{{ $item->id }}">
+                                                    <input type="hidden" name="itemId2" value="{{ $item->asset_code }}">
+                                                    <input type="hidden" name="hirar" value="{{ Auth::user()->hirar }}">
+
+                                                    <!-- Tombol Approve -->
+                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+
+                                                    <!-- Tombol Reject -->
+                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>

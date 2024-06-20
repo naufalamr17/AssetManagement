@@ -266,6 +266,7 @@
                                                 <option value="Good">Good</option>
                                                 <option value="Breakdown">Breakdown</option>
                                                 <option value="Repair">Repair</option>
+                                                <option value="Waiting Dispose" disabled>Waiting Dispose</option>
                                             </select>
                                         </div>
 

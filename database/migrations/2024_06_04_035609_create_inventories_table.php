@@ -26,7 +26,7 @@ return new class extends Migration
             $table->date('disposal_date')->nullable(); // Tanggal Penghapusan
             $table->integer('useful_life')->nullable(); // Umur Ekonomis (tahun)
             $table->bigInteger('acquisition_value')->default(0); // Nilai Perolehan
-            $table->enum('status', ['Good', 'Breakdown', 'Repair', 'Dispose'])->default('Good');
+            $table->enum('status', ['Good', 'Breakdown', 'Repair', 'Waiting Dispose', 'Dispose'])->default('Good');
             $table->date('hand_over_date')->nullable();
             $table->string('user')->nullable();
             $table->string('dept')->nullable();

@@ -508,7 +508,7 @@ class InventoryController extends Controller
         $inventory = Inventory::where('asset_code', $assetCode)->first();
 
         // Update the status of the inventory
-        $inventory->status = 'Dispose';
+        $inventory->status = 'Waiting Dispose';
         $inventory->disposal_date = $request->disposal_date;
         $inventory->save();
 

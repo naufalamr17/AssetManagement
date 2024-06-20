@@ -487,7 +487,8 @@ class InventoryController extends Controller
                 'inventories.location',
                 'inventories.status',
                 'disposes.tanggal_penghapusan',
-                'disposes.note'
+                'disposes.note',
+                'disposes.disposal_document',
             )->get();
 
         // dd($inventory);
@@ -508,6 +509,11 @@ class InventoryController extends Controller
         $inventory = Inventory::where('asset_code', $assetCode)->first();
 
         // Update the status of the inventory
+        // Handle file upload
+        if ($request->hasFile('disposal_document')) {
+            $fileName = time() . '_' . $request->file('disposal_document')->getClientOriginalName();
+            $filePath = $request->file('disposal_document')->storeAs('uploads', $fileName, 'public');
+        }
         $inventory->status = 'Waiting Dispose';
         $inventory->disposal_date = $request->disposal_date;
         $inventory->save();
@@ -516,6 +522,7 @@ class InventoryController extends Controller
             'inv_id' => $inventory->id,
             'tanggal_penghapusan' => $request->disposal_date,
             'note' => $request->remarks_repair,
+            'disposal_document' => $filePath
         ]);
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');

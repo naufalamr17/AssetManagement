@@ -13,6 +13,7 @@ class dispose extends Model
         'inv_id',
         'tanggal_penghapusan',
         'note',
+        'disposal_document',
     ];
 
     public function inventory()

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('inv_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->date('tanggal_penghapusan')->nullable();
             $table->string('note')->nullable();
+            $table->string('disposal_document');
             $table->timestamps(); // Menambahkan kolom created_at dan updated_at
         });
     }

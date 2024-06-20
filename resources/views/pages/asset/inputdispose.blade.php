@@ -25,13 +25,13 @@
                         </div>
                         @endif
                         <div class="p-6">
-                            <form method="POST" action="{{ route('store_dispose') }}">
+                            <form method="POST" action="{{ route('store_dispose') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="asset_code">Kode Asset</label>
-                                            <input id="asset_code" class="form-control border p-2" type="text" name="asset_code" value="{{ old('asset_code') }}" autofocus>
+                                            <input id="asset_code" class="form-control border p-2" type="text" name="asset_code" value="{{ old('asset_code') }}" autofocus required>
                                             @if ($errors->has('asset_code'))
                                             <div class="text-danger mt-2">{{ $errors->first('asset_code') }}</div>
                                             @endif
@@ -276,7 +276,7 @@
                                         <div id="additional-fields" style="display:none;">
                                             <div class="form-group">
                                                 <label for="acquisition_date">Tanggal Penghapusan</label>
-                                                <input type="date" class="form-control border p-2" id="disposal_date" name="disposal_date">
+                                                <input type="date" class="form-control border p-2" id="disposal_date" name="disposal_date" required>
                                                 @if ($errors->has('disposal_date'))
                                                 <div class="text-danger mt-2">{{ $errors->first('disposal_date') }}</div>
                                                 @endif
@@ -284,9 +284,17 @@
 
                                             <div class="form-group">
                                                 <label for="remarks_repair">Remarks</label>
-                                                <textarea id="remarks_repair" class="form-control border p-2" name="remarks_repair">{{ old('remarks_repair') }}</textarea>
+                                                <textarea id="remarks_repair" class="form-control border p-2" name="remarks_repair" required>{{ old('remarks_repair') }}</textarea>
                                                 @if ($errors->has('remarks_repair'))
                                                 <div class="text-danger mt-2">{{ $errors->first('remarks_repair') }}</div>
+                                                @endif
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="disposal_document">Dokumen Disposal</label>
+                                                <input type="file" class="form-control border p-2" id="disposal_document" name="disposal_document" required>
+                                                @if ($errors->has('disposal_document'))
+                                                <div class="text-danger mt-2">{{ $errors->first('disposal_document') }}</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -346,17 +354,31 @@
                             asset_code: assetCode
                         },
                         success: function(response) {
-                            // Isi input lainnya dengan data yang diterima dari permintaan AJAX
-                            $('#location').val(response.location);
-                            $('#asset_category').val(response.asset_category);
-                            $('#asset_position_dept').val(response.asset_position_dept);
-                            $('#asset_type').val(response.asset_type);
-                            $('#description').val(response.description);
-                            $('#serial_number').val(response.serial_number);
-                            $('#acquisition_date').val(response.acquisition_date);
-                            $('#useful_life').val(response.useful_life);
-                            $('#acquisition_value').val(response.acquisition_value);
-                            $('#status').val(response.status);
+                            if (response.status === 'Dispose' || response.status === 'Waiting Dispose') {
+                                $('#location').val('');
+                                $('#asset_category').val('');
+                                $('#asset_position_dept').val('');
+                                $('#asset_type').val('');
+                                $('#description').val('');
+                                $('#serial_number').val('');
+                                $('#acquisition_date').val('');
+                                $('#useful_life').val('');
+                                $('#acquisition_value').val('');
+                                $('#status').val('');
+                                alert('Status is waiting dispose or dispose');
+                            } else {
+                                // Isi input lainnya dengan data yang diterima dari permintaan AJAX
+                                $('#location').val(response.location);
+                                $('#asset_category').val(response.asset_category);
+                                $('#asset_position_dept').val(response.asset_position_dept);
+                                $('#asset_type').val(response.asset_type);
+                                $('#description').val(response.description);
+                                $('#serial_number').val(response.serial_number);
+                                $('#acquisition_date').val(response.acquisition_date);
+                                $('#useful_life').val(response.useful_life);
+                                $('#acquisition_value').val(response.acquisition_value);
+                                $('#status').val(response.status);
+                            }
                         },
                         error: function(xhr, status, error) {
                             $('#location').val('');

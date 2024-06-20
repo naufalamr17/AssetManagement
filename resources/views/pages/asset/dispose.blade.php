@@ -146,6 +146,8 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Penghapusan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dokumen') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status Approval') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
                                         </tr>
                                     </thead>
@@ -179,6 +181,14 @@
                                             <td>{{ $message }}</td>
                                             <td>{{ $item->location ?? '-' }}</td>
                                             <td>{{ $item->status ?? '-' }}</td>
+                                            <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
+                                            <td>
+                                                @if ($item->disposal_document)
+                                                <a href="{{ asset('storage/' . $item->disposal_document) }}">Download Dokumen</a>
+                                                @else
+                                                -
+                                                @endif
+                                            </td>
                                             <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
                                             <td>{{ $item->note ?? '-' }}</td>
                                         </tr>

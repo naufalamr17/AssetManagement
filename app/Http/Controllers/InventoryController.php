@@ -17,8 +17,14 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        // Ambil semua inventory yang statusnya bukan 'Dispose'
-        $inventory = Inventory::where('status', '!=', 'Dispose')->get();
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            // Ambil semua inventory yang statusnya bukan 'Dispose'
+            $inventory = Inventory::where('status', '!=', 'Dispose')->get();
+        } else {
+            $inventory = Inventory::where('status', '!=', 'Dispose')
+                ->where('location', Auth::user()->location)
+                ->get();
+        }
 
         return view('pages.asset.input', compact('inventory'));
     }

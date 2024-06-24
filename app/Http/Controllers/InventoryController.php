@@ -404,19 +404,37 @@ class InventoryController extends Controller
 
     public function repair()
     {
-        $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
-            ->select(
-                'inventories.asset_code',
-                'inventories.asset_type',
-                'inventories.serial_number',
-                'inventories.useful_life',
-                'inventories.acquisition_date',
-                'inventories.location',
-                'repairstatuses.status',
-                'repairstatuses.tanggal_kerusakan',
-                'repairstatuses.tanggal_pengembalian',
-                'repairstatuses.note'
-            )->get();
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.acquisition_date',
+                    'inventories.location',
+                    'repairstatuses.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'repairstatuses.note'
+                )->get();
+        } else {
+            $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.acquisition_date',
+                    'inventories.location',
+                    'repairstatuses.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'repairstatuses.note'
+                )
+                ->where('inventories.location', Auth::user()->location)
+                ->get();
+        }
 
         // dd($inventory);
 
@@ -509,21 +527,42 @@ class InventoryController extends Controller
 
     public function dispose()
     {
-        $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
-            ->select(
-                'inventories.asset_code',
-                'inventories.asset_type',
-                'inventories.serial_number',
-                'inventories.useful_life',
-                'inventories.acquisition_date',
-                'inventories.location',
-                'inventories.status',
-                'disposes.id',
-                'disposes.tanggal_penghapusan',
-                'disposes.note',
-                'disposes.approval',
-                'disposes.disposal_document',
-            )->get();
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.acquisition_date',
+                    'inventories.location',
+                    'inventories.status',
+                    'disposes.id',
+                    'disposes.tanggal_penghapusan',
+                    'disposes.note',
+                    'disposes.approval',
+                    'disposes.disposal_document',
+                )->get();
+        } else {
+            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.acquisition_date',
+                    'inventories.location',
+                    'inventories.status',
+                    'disposes.id',
+                    'disposes.tanggal_penghapusan',
+                    'disposes.note',
+                    'disposes.approval',
+                    'disposes.disposal_document',
+                )
+                ->where('inventories.location', Auth::user()->location)
+                ->get();
+        }
+
 
         // dd($inventory);
 
@@ -564,31 +603,60 @@ class InventoryController extends Controller
 
     public function report()
     {
-        $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
-            ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
-            ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
-            ->select(
-                'inventories.asset_code',
-                'inventories.old_asset_code',
-                'inventories.asset_category',
-                'inventories.asset_position_dept',
-                'inventories.asset_type',
-                'inventories.description',
-                'inventories.serial_number',
-                'inventories.location',
-                'inventories.acquisition_date',
-                'inventories.useful_life',
-                'userhists.user',
-                'userhists.dept',
-                'inventories.status',
-                'repairstatuses.tanggal_kerusakan',
-                'repairstatuses.tanggal_pengembalian',
-                'disposes.tanggal_penghapusan',
-                DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
-            )
-            ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
-            ->get()
-            ->unique('asset_code');
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.old_asset_code',
+                    'inventories.asset_category',
+                    'inventories.asset_position_dept',
+                    'inventories.asset_type',
+                    'inventories.description',
+                    'inventories.serial_number',
+                    'inventories.location',
+                    'inventories.acquisition_date',
+                    'inventories.useful_life',
+                    'userhists.user',
+                    'userhists.dept',
+                    'inventories.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'disposes.tanggal_penghapusan',
+                    DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
+                )
+                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->get()
+                ->unique('asset_code');
+        } else {
+            $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.old_asset_code',
+                    'inventories.asset_category',
+                    'inventories.asset_position_dept',
+                    'inventories.asset_type',
+                    'inventories.description',
+                    'inventories.serial_number',
+                    'inventories.location',
+                    'inventories.acquisition_date',
+                    'inventories.useful_life',
+                    'userhists.user',
+                    'userhists.dept',
+                    'inventories.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'disposes.tanggal_penghapusan',
+                    DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
+                )
+                ->where('inventories.location', Auth::user()->location)
+                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->get()
+                ->unique('asset_code');
+        }
 
         return view('pages.report.list', compact('inventoryData'));
     }

@@ -16,6 +16,22 @@ class DashboardController extends Controller
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $assets = Inventory::all();
 
+            // Aggregate data for asset growth per year and location
+            $yearlyGrowth = $assets->filter(function ($item) {
+                // Filter hanya data dengan acquisition_date tidak kosong
+                return $item->acquisition_date !== '-';
+            })->groupBy(function ($item) {
+                // Menggunakan Carbon untuk mengurai acquisition_date yang valid dan lokasi
+                return Carbon::parse($item->acquisition_date)->format('Y') . '_' . $item->location;
+            })->map->count();
+
+            // Convert to a format suitable for charts (if necessary)
+            $yearlyGrowthFormatted = $yearlyGrowth->sortKeys()->map(function ($count, $year_location) {
+                // Memisahkan tahun dan lokasi dari kunci yang digunakan untuk pengelompokan
+                list($year, $location) = explode('_', $year_location);
+                return ['year' => $year, 'location' => $location, 'count' => $count];
+            })->values();
+
             $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
@@ -48,6 +64,20 @@ class DashboardController extends Controller
                 ->get();
         } else {
             $assets = Inventory::where('location', Auth::user()->location)->get();
+
+            // Aggregate data for asset growth per year
+            $yearlyGrowth = $assets->filter(function ($item) {
+                // Filter hanya data dengan acquisition_date tidak kosong
+                return $item->acquisition_date !== '-';
+            })->groupBy(function ($item) {
+                // Menggunakan Carbon untuk mengurai acquisition_date yang valid
+                return Carbon::parse($item->acquisition_date)->format('Y');
+            })->map->count();
+
+            // Convert to a format suitable for charts (if necessary)
+            $yearlyGrowthFormatted = $yearlyGrowth->sortKeys()->map(function ($count, $year) {
+                return ['year' => $year, 'count' => $count];
+            })->values();
 
             // Query untuk mengambil data inventory yang telah dipindahkan
             $inventory = Inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
@@ -90,20 +120,6 @@ class DashboardController extends Controller
         $categoryStatusCounts = $assets->groupBy('asset_category')->map(function ($category) {
             return $category->groupBy('status')->map->count();
         });
-
-        // Aggregate data for asset growth per year
-        $yearlyGrowth = $assets->filter(function ($item) {
-            // Filter hanya data dengan acquisition_date tidak kosong
-            return $item->acquisition_date !== '-';
-        })->groupBy(function ($item) {
-            // Menggunakan Carbon untuk mengurai acquisition_date yang valid
-            return Carbon::parse($item->acquisition_date)->format('Y');
-        })->map->count();
-
-        // Convert to a format suitable for charts (if necessary)
-        $yearlyGrowthFormatted = $yearlyGrowth->sortKeys()->map(function ($count, $year) {
-            return ['year' => $year, 'count' => $count];
-        })->values();
 
         // Aggregate data for asset growth per month in the last year
         $oneYearAgo = Carbon::now()->subYear();

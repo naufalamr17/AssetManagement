@@ -34,6 +34,36 @@
                         </div>
                     </div>
                 </div>
+                @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager')
+                <div class="col-lg-4 col-md-6 mt-4 mb-4">
+                    <div class="card z-index-2">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
+                                <div class="chart">
+                                    <canvas id="yearlyGrowthChartSpecial" class="chart-canvas" height="170"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mt-4 mb-4" style="display: none;">
+                    <div class="card z-index-2">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
+                                <div class="chart">
+                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="170"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
+                        </div>
+                    </div>
+                </div>
+                @else
                 <div class="col-lg-4 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -48,6 +78,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="col-lg-4 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -188,7 +219,8 @@
                         </div>
                     </div>
                 </div>
-            <x-footers.auth></x-footers.auth>
+                <x-footers.auth></x-footers.auth>
+            </div>
         </div>
     </main>
     <x-plugins></x-plugins>
@@ -384,6 +416,86 @@
                 maintainAspectRatio: false
             }
         });
+    </script>
+
+    <script>
+        // Data yang dikirim dari controller
+        const yearlyGrowthSpecial = @json($yearlyGrowth);
+
+        // Mengelompokkan data berdasarkan lokasi
+        const groupedData = {};
+        yearlyGrowth.forEach(item => {
+            if (!groupedData[item.location]) {
+                groupedData[item.location] = {
+                    label: item.location,
+                    data: [],
+                    backgroundColor: getRandomColor(),
+                    borderColor: getRandomColor(),
+                    borderWidth: 1,
+                    fill: false
+                };
+            }
+            groupedData[item.location].data.push({
+                x: item.year,
+                y: item.count
+            });
+        });
+
+        // Memisahkan labels tahun
+        const yearLabels = [...new Set(yearlyGrowthSpecial.map(item => item.year))].sort();
+
+        // Membuat array objek dari groupedData
+        const datasets = Object.values(groupedData);
+
+        // Inisialisasi Chart.js
+        const ctx2 = document.getElementById('yearlyGrowthChartSpecial').getContext('2d');
+        const yearlyGrowthChartSpecial = new Chart(ctx2, {
+            type: 'line', // atau 'bar', 'pie', dll sesuai kebutuhan
+            data: {
+                labels: yearLabels,
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: false,
+                            text: 'Count'
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Asset Growth per Year and Location'
+                    }
+                }
+            }
+        });
+
+        // Fungsi untuk mendapatkan warna acak
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
     </script>
     @endpush
 </x-layout>

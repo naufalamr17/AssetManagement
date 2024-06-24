@@ -11,7 +11,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvsas id="pieChart" class="chart-canvas" height="170"></canvsas>
+                                    <canvas id="pieChart" class="chart-canvas" height="170"></canvas>
                                 </div>
                             </div>
                         </div>

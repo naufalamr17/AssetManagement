@@ -9,6 +9,7 @@ use App\Models\repairstatus;
 use App\Models\userhist;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -24,7 +25,12 @@ class InventoryController extends Controller
 
     public function addinventory()
     {
-        return view('pages.asset.inputasset');
+        $user = Auth::user();
+        $userLocation = $user->location;
+
+        // dd($userLocation);
+
+        return view('pages.asset.inputasset', compact('userLocation'));
     }
 
     public function store(Request $request)

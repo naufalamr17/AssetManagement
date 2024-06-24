@@ -39,11 +39,11 @@
 
                                         <div class="form-group">
                                             <label for="location">Location</label>
-                                            <select id="location" class="form-control border p-2" name="location" required>
+                                            <select id="location" class="form-control border p-2" name="location" required disabled>
                                                 <option value="" selected disabled>Select Location</option>
-                                                <option value="Head Office">01 - Head Office</option>
-                                                <option value="Office Kendari">02 - Office Kendari</option>
-                                                <option value="Site Molore">03 - Site Molore</option>
+                                                <option value="Head Office" {{ $userLocation == 'Head Office' ? 'selected' : '' }}>01 - Head Office</option>
+                                                <option value="Office Kendari" {{ $userLocation == 'Office Kendari' ? 'selected' : '' }}>02 - Office Kendari</option>
+                                                <option value="Site Molore" {{ $userLocation == 'Site Molore' ? 'selected' : '' }}>03 - Site Molore</option>
                                             </select>
                                             @if ($errors->has('location'))
                                             <div class="text-danger mt-2">{{ $errors->first('location') }}</div>

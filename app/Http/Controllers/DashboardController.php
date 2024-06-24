@@ -5,12 +5,85 @@ namespace App\Http\Controllers;
 use App\Models\inventory;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $assets = Inventory::all();
+        // dd(Auth::user());
+
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            $assets = Inventory::all();
+
+            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.location',
+                    'inventories.status',
+                    'disposes.tanggal_penghapusan',
+                    'disposes.note'
+                )
+                ->orderBy('disposes.tanggal_penghapusan', 'desc')
+                ->take(5)
+                ->get();
+
+            $repair = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.location',
+                    'repairstatuses.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'repairstatuses.note'
+                )
+                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->take(5)
+                ->get();
+        } else {
+            $assets = Inventory::where('location', Auth::user()->location)->get();
+
+            // Query untuk mengambil data inventory yang telah dipindahkan
+            $inventory = Inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.location',
+                    'inventories.status',
+                    'disposes.tanggal_penghapusan',
+                    'disposes.note'
+                )
+                ->where('inventories.location', '=', Auth::user()->location)
+                ->orderBy('disposes.tanggal_penghapusan', 'desc')
+                ->take(5)
+                ->get();
+
+            // Query untuk mengambil data inventory yang perlu direparasi
+            $repair = Inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+                ->select(
+                    'inventories.asset_code',
+                    'inventories.asset_type',
+                    'inventories.serial_number',
+                    'inventories.useful_life',
+                    'inventories.location',
+                    'repairstatuses.status',
+                    'repairstatuses.tanggal_kerusakan',
+                    'repairstatuses.tanggal_pengembalian',
+                    'repairstatuses.note'
+                )
+                ->where('inventories.location', '=', Auth::user()->location)
+                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->take(5)
+                ->get();
+        }
 
         // Aggregate data for the charts
         $statusCounts = $assets->groupBy('status')->map->count();
@@ -52,37 +125,6 @@ class DashboardController extends Controller
             ]);
         }
         $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
-
-        $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
-            ->select(
-                'inventories.asset_code',
-                'inventories.asset_type',
-                'inventories.serial_number',
-                'inventories.useful_life',
-                'inventories.location',
-                'inventories.status',
-                'disposes.tanggal_penghapusan',
-                'disposes.note'
-            )
-            ->orderBy('disposes.tanggal_penghapusan', 'desc')
-            ->take(5)
-            ->get();
-
-        $repair = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
-            ->select(
-                'inventories.asset_code',
-                'inventories.asset_type',
-                'inventories.serial_number',
-                'inventories.useful_life',
-                'inventories.location',
-                'repairstatuses.status',
-                'repairstatuses.tanggal_kerusakan',
-                'repairstatuses.tanggal_pengembalian',
-                'repairstatuses.note'
-            )
-            ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
-            ->take(5)
-            ->get();
 
         // dd($monthlyGrowthFormatted);
 

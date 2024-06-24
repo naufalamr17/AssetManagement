@@ -363,22 +363,42 @@ class InventoryController extends Controller
 
     public function history()
     {
-        $userhist = Userhist::join('inventories', 'userhists.inv_id', '=', 'inventories.id')
-            ->select(
-                'inventories.asset_code as kode_asset',
-                'inventories.asset_category',
-                'inventories.asset_position_dept',
-                'inventories.asset_type',
-                'inventories.description',
-                'inventories.serial_number',
-                'inventories.location',
-                'inventories.status',
-                'userhists.hand_over_date as serah_terima',
-                'userhists.user',
-                'userhists.dept',
-                'userhists.note'
-            )
-            ->get();
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            $userhist = Userhist::join('inventories', 'userhists.inv_id', '=', 'inventories.id')
+                ->select(
+                    'inventories.asset_code as kode_asset',
+                    'inventories.asset_category',
+                    'inventories.asset_position_dept',
+                    'inventories.asset_type',
+                    'inventories.description',
+                    'inventories.serial_number',
+                    'inventories.location',
+                    'inventories.status',
+                    'userhists.hand_over_date as serah_terima',
+                    'userhists.user',
+                    'userhists.dept',
+                    'userhists.note'
+                )
+                ->get();
+        } else {
+            $userhist = Userhist::join('inventories', 'userhists.inv_id', '=', 'inventories.id')
+                ->select(
+                    'inventories.asset_code as kode_asset',
+                    'inventories.asset_category',
+                    'inventories.asset_position_dept',
+                    'inventories.asset_type',
+                    'inventories.description',
+                    'inventories.serial_number',
+                    'inventories.location',
+                    'inventories.status',
+                    'userhists.hand_over_date as serah_terima',
+                    'userhists.user',
+                    'userhists.dept',
+                    'userhists.note'
+                )
+                ->where('inventories.location', Auth::user()->location)
+                ->get();
+        }
         return view('pages.asset.history', compact('userhist'));
     }
 

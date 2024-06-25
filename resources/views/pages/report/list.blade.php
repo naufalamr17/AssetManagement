@@ -87,6 +87,16 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        /* Media query for landscape orientation on mobile devices */
+        @media only screen and (max-width: 600px){
+            .modal-content {
+                width: 90%;
+                max-width: none;
+                height: 40vh;
+                overflow-y: auto;
+            }
+        }
     </style>
 
     <x-navbars.sidebar activePage="report"></x-navbars.sidebar>

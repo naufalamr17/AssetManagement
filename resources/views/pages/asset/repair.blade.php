@@ -20,6 +20,13 @@
         #inventoryTable td {
             padding: 4px 8px;
         }
+
+        /* CSS to make the table scrollable */
+        .table-responsive {
+            max-height: 400px;
+            /* Set the desired maximum height */
+            overflow-y: auto;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>

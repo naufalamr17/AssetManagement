@@ -172,6 +172,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Asset Position') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Merk') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
@@ -195,6 +196,7 @@
                                             <td>{{ $inventory->asset_category ?? '-' }}</td>
                                             <td>{{ $inventory->asset_position_dept ?? '-' }}</td>
                                             <td>{{ $inventory->asset_type ?? '-' }}</td>
+                                            <td>{{ $inventory->merk ?? '-' }}</td>
                                             <td>{{ $inventory->description ?? '-' }}</td>
                                             <td>{{ $inventory->serial_number ?? '-' }}</td>
                                             <td>{{ $inventory->location ?? '-' }}</td>
@@ -257,7 +259,7 @@
                 "pageLength": -1,
                 "columnDefs": [{
                         "orderable": true,
-                        "targets": 8
+                        "targets": 9
                     }, // Enable ordering on the 8th column (index 7)
                     {
                         "orderable": false,
@@ -265,7 +267,7 @@
                     } // Disable ordering on all other columns
                 ],
                 "order": [
-                    [8, 'desc']
+                    [9, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
             });

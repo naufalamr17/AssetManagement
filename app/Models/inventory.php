@@ -17,6 +17,7 @@ class inventory extends Model
         'asset_category',
         'asset_position_dept',
         'asset_type',
+        'merk',
         'description',
         'serial_number',
         'acquisition_date',

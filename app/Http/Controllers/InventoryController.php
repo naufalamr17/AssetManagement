@@ -51,6 +51,7 @@ class InventoryController extends Controller
             'asset_category' => 'required|string',
             'asset_position_dept' => 'required|string',
             'asset_type' => 'required|string',
+            'merk' => 'nullable|string',
             'description' => 'required|string',
             'serial_number' => 'nullable|string',
             'acquisition_date' => 'required|date',
@@ -196,6 +197,8 @@ class InventoryController extends Controller
         // Simpan data aset ke dalam database
         $asset = Inventory::create($validatedData);
 
+        // dd($asset);
+        
         if ($request->store_to_database == 'true') {
             // Ambil ID aset yang baru saja disimpan
             $inv_id = $asset->id;
@@ -616,6 +619,7 @@ class InventoryController extends Controller
                     'inventories.asset_category',
                     'inventories.asset_position_dept',
                     'inventories.asset_type',
+                    'inventories.merk',
                     'inventories.description',
                     'inventories.serial_number',
                     'inventories.location',
@@ -642,6 +646,7 @@ class InventoryController extends Controller
                     'inventories.asset_category',
                     'inventories.asset_position_dept',
                     'inventories.asset_type',
+                    'inventories.merk',
                     'inventories.description',
                     'inventories.serial_number',
                     'inventories.location',

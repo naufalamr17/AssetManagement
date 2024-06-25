@@ -217,6 +217,14 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="merk">Merk</label>
+                                            <input id="merk" class="form-control border p-2" type="text" name="merk" value="{{ old('merk', $asset->merk) }}">
+                                            @if ($errors->has('merk'))
+                                            <div class="text-danger mt-2">{{ $errors->first('merk') }}</div>
+                                            @endif
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="description">Deskripsi</label>
                                             <textarea id="description" class="form-control border p-2" name="description" required>{{ old('description', $asset->description) }}</textarea>
                                             @if ($errors->has('description'))

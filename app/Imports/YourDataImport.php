@@ -82,6 +82,7 @@ class YourDataImport implements ToModel, WithHeadingRow
             'location' => ucwords(strtolower($row['lokasi'])),
             'asset_category' => ucwords(strtolower($row['kategori'])),
             'asset_position_dept' => $row['asset_position'],
+            'merk' => $row['merk'],
             'asset_type' => $row['jenis'],
             'description' => $row['deskripsi'],
             'serial_number' => $row['serial_number'],
@@ -90,6 +91,8 @@ class YourDataImport implements ToModel, WithHeadingRow
             'acquisition_value' => $row['nilai_perolehan'],
             'pic_dept' => $pic_dept,
             'asset_code' => $id,
+            'user' => $row['user'],
+            'dept' => $row['dept'],
         ]);
     }
 }

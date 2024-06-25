@@ -32,6 +32,39 @@ class DashboardController extends Controller
                 return ['year' => $year, 'location' => $location, 'count' => $count];
             })->values();
 
+            // Aggregate data for the charts
+            $statusCounts = $assets->groupBy('status')->map->count();
+            $categoryStatusCounts = $assets->groupBy('asset_category')->map(function ($category) {
+                return $category->groupBy('status')->map->count();
+            });
+
+            // Aggregate data for asset growth per month in the last year
+            $oneYearAgo = Carbon::now()->subYear();
+            $locations = ['Head Office', 'Office Kendari', 'Site Molore']; // Tambahkan lokasi yang Anda inginkan
+
+            $monthlyGrowth = $assets->filter(function ($item) use ($oneYearAgo) {
+                // Filter hanya data dengan acquisition_date tidak sama dengan '-'
+                return $item->acquisition_date !== '-' && Carbon::parse($item->acquisition_date)->greaterThanOrEqualTo($oneYearAgo);
+            })->groupBy(function ($item) {
+                // Mengelompokkan data berdasarkan bulan dan lokasi
+                return Carbon::parse($item->acquisition_date)->format('Y-m') . '|' . $item->location;
+            })->map->count();
+
+            // Ensure every month in the last year is represented, even if the count is zero
+            $monthlyGrowthFormatted = collect();
+            for ($i = 0; $i < 12; $i++) {
+                $date = Carbon::now()->subMonths($i)->format('Y-m');
+                foreach ($locations as $location) {
+                    $key = $date . '|' . $location;
+                    $monthlyGrowthFormatted->push([
+                        'month' => $date,
+                        'location' => $location,
+                        'count' => $monthlyGrowth->get($key, 0)
+                    ]);
+                }
+            }
+            $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
+
             $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
@@ -79,6 +112,33 @@ class DashboardController extends Controller
                 return ['year' => $year, 'count' => $count];
             })->values();
 
+            // Aggregate data for the charts
+            $statusCounts = $assets->groupBy('status')->map->count();
+            $categoryStatusCounts = $assets->groupBy('asset_category')->map(function ($category) {
+                return $category->groupBy('status')->map->count();
+            });
+
+            // Aggregate data for asset growth per month in the last year
+            $oneYearAgo = Carbon::now()->subYear();
+            $monthlyGrowth = $assets->filter(function ($item) use ($oneYearAgo) {
+                // Filter hanya data dengan acquisition_date tidak sama dengan '-'
+                return $item->acquisition_date !== '-' && Carbon::parse($item->acquisition_date)->greaterThanOrEqualTo($oneYearAgo);
+            })->groupBy(function ($item) {
+                // Menggunakan Carbon untuk mengurai acquisition_date yang valid
+                return Carbon::parse($item->acquisition_date)->format('Y-m');
+            })->map->count();
+
+            // Ensure every month in the last year is represented, even if the count is zero
+            $monthlyGrowthFormatted = collect();
+            for ($i = 0; $i < 12; $i++) {
+                $date = Carbon::now()->subMonths($i)->format('Y-m');
+                $monthlyGrowthFormatted->push([
+                    'month' => $date,
+                    'count' => $monthlyGrowth->get($date, 0)
+                ]);
+            }
+            $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
+
             // Query untuk mengambil data inventory yang telah dipindahkan
             $inventory = Inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
@@ -114,33 +174,6 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
         }
-
-        // Aggregate data for the charts
-        $statusCounts = $assets->groupBy('status')->map->count();
-        $categoryStatusCounts = $assets->groupBy('asset_category')->map(function ($category) {
-            return $category->groupBy('status')->map->count();
-        });
-
-        // Aggregate data for asset growth per month in the last year
-        $oneYearAgo = Carbon::now()->subYear();
-        $monthlyGrowth = $assets->filter(function ($item) use ($oneYearAgo) {
-            // Filter hanya data dengan acquisition_date tidak sama dengan '-'
-            return $item->acquisition_date !== '-' && Carbon::parse($item->acquisition_date)->greaterThanOrEqualTo($oneYearAgo);
-        })->groupBy(function ($item) {
-            // Menggunakan Carbon untuk mengurai acquisition_date yang valid
-            return Carbon::parse($item->acquisition_date)->format('Y-m');
-        })->map->count();
-
-        // Ensure every month in the last year is represented, even if the count is zero
-        $monthlyGrowthFormatted = collect();
-        for ($i = 0; $i < 12; $i++) {
-            $date = Carbon::now()->subMonths($i)->format('Y-m');
-            $monthlyGrowthFormatted->push([
-                'month' => $date,
-                'count' => $monthlyGrowth->get($date, 0)
-            ]);
-        }
-        $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
 
         // dd($monthlyGrowthFormatted);
 

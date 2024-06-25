@@ -49,17 +49,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mt-4 mb-4" style="display: none;">
+                <div class="col-lg-4 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="monthlyGrowthChartSpecial" class="chart-canvas" height="170"></canvas>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
+                            <h6 class="mb-0 "> Pertumbuhan Asset Perbulan </h6>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,6 @@
                         </div>
                     </div>
                 </div>
-                @endif
                 <div class="col-lg-4 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -93,6 +92,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="col-lg-8 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -462,6 +462,87 @@
             data: {
                 labels: yearLabels,
                 datasets: datasets
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: false,
+                            text: 'Count'
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Asset Growth per Year and Location'
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // Data yang dikirim dari controller
+        const monthlyGrowthSpecial = @json($monthlyGrowth);
+
+        // Mengelompokkan data berdasarkan lokasi
+        const groupedData2 = {};
+        const locationColors2 = {
+            'Head Office': '#FF5733', // Misalnya warna oranye
+            'Office Kendari': '#33FF57', // Misalnya warna hijau
+            'Site Molore': '#5733FF' // Misalnya warna biru
+        };
+
+        monthlyGrowthSpecial.forEach(item => {
+            if (Object.keys(locationColors2).includes(item.location)) {
+                if (!groupedData2[item.location]) {
+                    groupedData2[item.location] = {
+                        label: item.location,
+                        data: [],
+                        backgroundColor: locationColors2[item.location],
+                        borderColor: locationColors2[item.location],
+                        borderWidth: 2,
+                        fill: false
+                    };
+                }
+                groupedData2[item.location].data.push({
+                    x: item.month,
+                    y: item.count
+                });
+            }
+        });
+
+        // Memisahkan labels tahun
+        // Dapatkan label tahun dari data bulanan yang disediakan
+        const yearLabels2 = monthlyGrowthSpecial
+            .map(item => item.year) // Ambil semua nilai tahun dari setiap item
+            .filter(year => year !== undefined) // Hapus nilai undefined
+
+        // Membuat array objek dari groupedData2 (bukan dari groupedData)
+        const datasets2 = Object.values(groupedData2);
+
+        // Inisialisasi Chart.js
+        const ctx3 = document.getElementById('monthlyGrowthChartSpecial').getContext('2d');
+        const monthlyGrowthChartSpecial = new Chart(ctx3, {
+            type: 'line', // atau 'bar', 'pie', dll sesuai kebutuhan
+            data: {
+                labels: yearLabels2, // Menggunakan yearLabels2 untuk labels
+                datasets: datasets2 // Menggunakan datasets2 yang sesuai
             },
             options: {
                 scales: {

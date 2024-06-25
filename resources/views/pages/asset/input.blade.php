@@ -166,7 +166,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($inventory as $inv)
-                                        <tr class="text-center text-xxs">
+                                        <tr class="text-center" style="font-size: 14px;">
                                             <td>{{ $inv->asset_code }}</td>
                                             <td>{{ $inv->old_asset_code != 0 ? $inv->old_asset_code : '-' }}</td>
                                             <td>{{ $inv->asset_category }}</td>

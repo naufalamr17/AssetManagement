@@ -151,7 +151,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($userhist as $history)
-                                        <tr class="border-b border-gray-200 text-center text-xs">
+                                        <tr class="border-b border-gray-200 text-center" style="font-size: 14px;">
                                             <td>{{ $history->kode_asset }}</td>
                                             <td>{{ $history->asset_category }}</td>
                                             <td>{{ $history->asset_position_dept }}</td>

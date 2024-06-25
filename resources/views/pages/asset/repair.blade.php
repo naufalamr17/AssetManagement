@@ -159,7 +159,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($inventory as $item)
-                                        <tr class="text-center text-xxs">
+                                        <tr class="text-center" style="font-size: 14px;">
                                             <td>{{ $item->asset_code ?? '-' }}</td>
                                             <td>{{ $item->asset_type ?? '-' }}</td>
                                             <td>{{ $item->serial_number ?? '-' }}</td>

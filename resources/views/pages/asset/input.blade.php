@@ -23,7 +23,8 @@
 
         /* CSS to make the table scrollable */
         .table-responsive {
-            max-height: 500px; /* Set the desired maximum height */
+            max-height: 500px;
+            /* Set the desired maximum height */
             overflow-y: auto;
         }
     </style>
@@ -153,8 +154,10 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
+                                            @if (Auth::check() && (Auth::user()->location != 'Site Molore' && Auth::user()->location != 'Office Kendari'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Saat Ini') }}</th>
+                                            @endif
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
@@ -175,11 +178,6 @@
                                             <td>{{ $inv->description }}</td>
                                             <td>{{ !empty($inv->serial_number) ? $inv->serial_number : '-' }}</td>
                                             <td>{{ $inv->acquisition_date }}</td>
-                                            @if($inv->acquisition_value == 0)
-                                            <td>-</td>
-                                            @else
-                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
-                                            @endif
                                             <?php
                                             if ($inv->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
@@ -237,10 +235,17 @@
                                                 // echo "Accumulated Depreciation: " . $accumulatedDepreciation . "\n";
                                             }
                                             ?>
+                                            @if (Auth::check() && (Auth::user()->location != 'Site Molore' && Auth::user()->location != 'Office Kendari'))
+                                            @if($inv->acquisition_value == 0)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
+                                            @endif
                                             @if($inv->acquisition_value == 0)
                                             <td>-</td>
                                             @else
                                             <td>{{ $depreciatedValueFormatted = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.'); }}</td>
+                                            @endif
                                             @endif
                                             <td>{{ $message }}</td>
                                             <td>{{ $inv->location }}</td>

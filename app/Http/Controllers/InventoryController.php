@@ -18,11 +18,14 @@ class InventoryController extends Controller
     public function index()
     {
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-            // Ambil semua inventory yang statusnya bukan 'Dispose'
-            $inventory = Inventory::where('status', '!=', 'Dispose')->get();
+            // Ambil semua inventory yang statusnya bukan 'Dispose' dan urutkan berdasarkan acquisition_date desc
+            $inventory = Inventory::where('status', '!=', 'Dispose')
+                ->orderBy('acquisition_date', 'desc')
+                ->get();
         } else {
             $inventory = Inventory::where('status', '!=', 'Dispose')
                 ->where('location', Auth::user()->location)
+                ->orderBy('acquisition_date', 'desc')
                 ->get();
         }
 
@@ -626,7 +629,7 @@ class InventoryController extends Controller
                     'disposes.tanggal_penghapusan',
                     DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
                 )
-                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->orderBy('inventories.acquisition_date', 'desc')
                 ->get()
                 ->unique('asset_code');
         } else {
@@ -653,7 +656,7 @@ class InventoryController extends Controller
                     DB::raw('COALESCE(disposes.note, repairstatuses.note) as remarks')
                 )
                 ->where('inventories.location', Auth::user()->location)
-                ->orderBy('repairstatuses.tanggal_kerusakan', 'desc')
+                ->orderBy('inventories.acquisition_date', 'desc')
                 ->get()
                 ->unique('asset_code');
         }

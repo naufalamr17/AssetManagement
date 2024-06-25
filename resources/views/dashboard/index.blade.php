@@ -424,21 +424,29 @@
 
         // Mengelompokkan data berdasarkan lokasi
         const groupedData = {};
-        yearlyGrowth.forEach(item => {
-            if (!groupedData[item.location]) {
-                groupedData[item.location] = {
-                    label: item.location,
-                    data: [],
-                    backgroundColor: getRandomColor(),
-                    borderColor: getRandomColor(),
-                    borderWidth: 1,
-                    fill: false
-                };
+        const locationColors = {
+            'Head Office': '#FF5733', // Misalnya warna oranye
+            'Office Kendari': '#33FF57', // Misalnya warna hijau
+            'Site Molore': '#5733FF' // Misalnya warna biru
+        };
+
+        yearlyGrowthSpecial.forEach(item => {
+            if (Object.keys(locationColors).includes(item.location)) {
+                if (!groupedData[item.location]) {
+                    groupedData[item.location] = {
+                        label: item.location,
+                        data: [],
+                        backgroundColor: locationColors[item.location],
+                        borderColor: locationColors[item.location],
+                        borderWidth: 2,
+                        fill: false
+                    };
+                }
+                groupedData[item.location].data.push({
+                    x: item.year,
+                    y: item.count
+                });
             }
-            groupedData[item.location].data.push({
-                x: item.year,
-                y: item.count
-            });
         });
 
         // Memisahkan labels tahun
@@ -486,16 +494,7 @@
                 }
             }
         });
-
-        // Fungsi untuk mendapatkan warna acak
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
     </script>
+
     @endpush
 </x-layout>

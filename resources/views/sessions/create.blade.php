@@ -62,16 +62,6 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn w-100 my-4 mb-2" style="background-color: rgb(8, 47, 73); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer;">Log In</button>
                                     </div>
-                                    <!-- <p class="mt-4 text-sm text-center">
-                                            Don't have an account?
-                                            <a href="{{ route('register') }}"
-                                                class="text-primary text-gradient font-weight-bold">Sign up</a>
-                                        </p>
-                                        <p class="text-sm text-center">
-                                            Forgot your password? Reset your password
-                                            <a href="{{ route('verify') }}"
-                                                class="text-primary text-gradient font-weight-bold">here</a>
-                                        </p> -->
                                 </form>
                             </div>
                         </div>

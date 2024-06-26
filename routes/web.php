@@ -30,8 +30,8 @@ use Illuminate\Http\Request;
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/home', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
-Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
+// Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
+// Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
 Route::get('sign-in', [SessionsController::class, 'create'])->middleware('guest')->name('login');
 Route::post('sign-in', [SessionsController::class, 'store'])->middleware('guest');
 Route::post('verify', [SessionsController::class, 'show'])->middleware('guest');
@@ -95,35 +95,35 @@ Route::post('/approval', function (Request $request) {
 	return redirect()->route('dispose_inventory')->with('success', 'Approval processed successfully!');
 })->name('approval')->middleware('auth');
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('billing', function () {
-		return view('pages.billing');
-	})->name('billing');
-	Route::get('tables', function () {
-		return view('pages.tables');
-	})->name('tables');
-	Route::get('rtl', function () {
-		return view('pages.rtl');
-	})->name('rtl');
-	Route::get('virtual-reality', function () {
-		return view('pages.virtual-reality');
-	})->name('virtual-reality');
-	Route::get('notifications', function () {
-		return view('pages.notifications');
-	})->name('notifications');
-	Route::get('static-sign-in', function () {
-		return view('pages.static-sign-in');
-	})->name('static-sign-in');
-	Route::get('static-sign-up', function () {
-		return view('pages.static-sign-up');
-	})->name('static-sign-up');
-	// Route::get('user-management', function () {
-	// 	return view('pages.laravel-examples.user-management');
-	// })->name('user-management');
-	Route::get('user-profile', function () {
-		return view('pages.laravel-examples.user-profile');
-	})->name('user-profile');
-});
+// Route::group(['middleware' => 'auth'], function () {
+// 	Route::get('billing', function () {
+// 		return view('pages.billing');
+// 	})->name('billing');
+// 	Route::get('tables', function () {
+// 		return view('pages.tables');
+// 	})->name('tables');
+// 	Route::get('rtl', function () {
+// 		return view('pages.rtl');
+// 	})->name('rtl');
+// 	Route::get('virtual-reality', function () {
+// 		return view('pages.virtual-reality');
+// 	})->name('virtual-reality');
+// 	Route::get('notifications', function () {
+// 		return view('pages.notifications');
+// 	})->name('notifications');
+// 	Route::get('static-sign-in', function () {
+// 		return view('pages.static-sign-in');
+// 	})->name('static-sign-in');
+// 	Route::get('static-sign-up', function () {
+// 		return view('pages.static-sign-up');
+// 	})->name('static-sign-up');
+// 	// Route::get('user-management', function () {
+// 	// 	return view('pages.laravel-examples.user-management');
+// 	// })->name('user-management');
+// 	Route::get('user-profile', function () {
+// 		return view('pages.laravel-examples.user-profile');
+// 	})->name('user-profile');
+// });
 
 // Route::middleware('auth')->group(function () {
 	// 	Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

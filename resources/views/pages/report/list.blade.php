@@ -287,9 +287,9 @@
             $('#yearFilter').on('keyup', function() {
                 var year = $(this).val().trim();
                 if (year !== '') {
-                    table.columns(7).search('^' + year, true, false).draw();
+                    table.columns(9).search('^' + year, true, false).draw();
                 } else {
-                    table.columns(7).search('').draw();
+                    table.columns(9).search('').draw();
                 }
             });
 
@@ -297,9 +297,9 @@
             $('#statusFilter').on('change', function() {
                 var status = $(this).val().trim();
                 if (status !== '') {
-                    table.columns(11).search(status).draw();
+                    table.columns(14).search(status).draw();
                 } else {
-                    table.columns(11).search('').draw();
+                    table.columns(14).search('').draw();
                 }
             });
 

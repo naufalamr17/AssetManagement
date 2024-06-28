@@ -190,63 +190,6 @@
                                             <td>{{ $inv->description }}</td>
                                             <td>{{ !empty($inv->serial_number) ? $inv->serial_number : '-' }}</td>
                                             <td>{{ $inv->acquisition_date }}</td>
-                                            <?php
-                                            if ($inv->acquisition_date === '-') {
-                                                $message = "Tanggal tidak terdefinisi";
-                                                $depreciatedValue = "-";
-                                            } else {
-                                                $acquisitionDate = new DateTime($inv->acquisition_date);
-                                                $usefulLifeYears = $inv->useful_life;
-                                                $currentDate = new DateTime();
-
-                                                // Calculate the end date of the useful life directly
-                                                $endOfUsefulLife = clone $acquisitionDate;
-                                                $endOfUsefulLife->modify("+{$usefulLifeYears} years");
-
-                                                $interval = $currentDate->diff($endOfUsefulLife);
-
-                                                if ($currentDate > $endOfUsefulLife) {
-                                                    $remainingDays = -$interval->days; // Use negative value for overdue days
-                                                } else {
-                                                    $remainingDays = $interval->days;
-                                                }
-
-                                                $message = "{$remainingDays} hari";
-
-                                                // Output the message
-                                                // echo $message;
-
-                                                $usefulLifeYears = $inv->useful_life;
-                                                $depreciationRate = 1 / $usefulLifeYears; // Calculate the depreciation rate
-
-                                                // Initialize variables
-                                                $acquisitionValue = $inv->acquisition_value;
-                                                $yearsUsed = $acquisitionDate->diff($currentDate)->y;
-                                                $depreciatedValue = $acquisitionValue;
-                                                $accumulatedDepreciation = 0;
-
-                                                for ($year = 1; $year <= $yearsUsed; $year++) {
-                                                    $annualDepreciation = $depreciatedValue * $depreciationRate;
-                                                    $accumulatedDepreciation += $annualDepreciation;
-                                                    $depreciatedValue -= $annualDepreciation;
-
-                                                    // Ensure depreciated value doesn't go below zero
-                                                    if ($depreciatedValue < 0) {
-                                                        $depreciatedValue = 0;
-                                                        break;
-                                                    }
-                                                }
-
-                                                // Ensure the values are appropriately handled when useful life is zero or not defined
-                                                if ($usefulLifeYears == 0) {
-                                                    $depreciatedValue = $acquisitionValue;
-                                                }
-
-                                                // Output the final depreciated value and accumulated depreciation
-                                                // echo "Depreciated Value: " . $depreciatedValue . "\n";
-                                                // echo "Accumulated Depreciation: " . $accumulatedDepreciation . "\n";
-                                            }
-                                            ?>
                                             @if (Auth::check() && (Auth::user()->location != 'Site Molore' && Auth::user()->location != 'Office Kendari'))
                                             @if($inv->acquisition_value == 0)
                                             <td>-</td>
@@ -256,10 +199,10 @@
                                             @if($inv->acquisition_value == 0)
                                             <td>-</td>
                                             @else
-                                            <td>{{ $depreciatedValueFormatted = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.'); }}</td>
+                                            <td>{{ $inv->depreciated_value }}</td>
                                             @endif
                                             @endif
-                                            <td>{{ $message }}</td>
+                                            <td>{{ $inv->message }}</td>
                                             <td>{{ $inv->location }}</td>
                                             <td>{{ $inv->status }}</td>
                                             @if(isset($inv->user))

@@ -8,6 +8,7 @@ use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,60 @@ class InventoryController extends Controller
                 ->orderBy('acquisition_date', 'desc')
                 ->get();
         }
+
+        // Proses setiap item dalam inventory untuk menghitung message dan depreciatedValue
+        $inventory = $inventory->map(function ($inv) {
+            if ($inv->acquisition_date === '-') {
+                $message = "Tanggal tidak terdefinisi";
+                $depreciatedValue = "-";
+            } else {
+                $acquisitionDate = new DateTime($inv->acquisition_date);
+                $usefulLifeYears = $inv->useful_life;
+                $currentDate = new DateTime();
+
+                // Calculate the end date of the useful life directly
+                $endOfUsefulLife = clone $acquisitionDate;
+                $endOfUsefulLife->modify("+{$usefulLifeYears} years");
+
+                $interval = $currentDate->diff($endOfUsefulLife);
+
+                if ($currentDate > $endOfUsefulLife) {
+                    $remainingDays = -$interval->days; // Use negative value for overdue days
+                } else {
+                    $remainingDays = $interval->days;
+                }
+
+                $message = "{$remainingDays} hari";
+
+                $depreciationRate = 1 / $usefulLifeYears; // Calculate the depreciation rate
+
+                $acquisitionValue = $inv->acquisition_value;
+                $yearsUsed = $acquisitionDate->diff($currentDate)->y;
+                $depreciatedValue = $acquisitionValue;
+                $accumulatedDepreciation = 0;
+
+                for ($year = 1; $year <= $yearsUsed; $year++) {
+                    $annualDepreciation = $depreciatedValue * $depreciationRate;
+                    $accumulatedDepreciation += $annualDepreciation;
+                    $depreciatedValue -= $annualDepreciation;
+
+                    if ($depreciatedValue < 0) {
+                        $depreciatedValue = 0;
+                        break;
+                    }
+                }
+
+                if ($usefulLifeYears == 0) {
+                    $depreciatedValue = $acquisitionValue;
+                }
+            }
+
+            // Tambahkan message dan depreciatedValue ke item inventory
+            $inv->message = $message;
+            $inv->depreciated_value = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.');
+
+            return $inv;
+        });
 
         return view('pages.asset.input', compact('inventory'));
     }
@@ -198,7 +253,7 @@ class InventoryController extends Controller
         $asset = Inventory::create($validatedData);
 
         // dd($asset);
-        
+
         if ($request->store_to_database == 'true') {
             // Ambil ID aset yang baru saja disimpan
             $inv_id = $asset->id;

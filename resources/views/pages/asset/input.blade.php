@@ -89,7 +89,7 @@
         }
 
         /* Media query for landscape orientation on mobile devices */
-        @media only screen and (max-width: 600px){
+        @media only screen and (max-width: 600px) {
             .modal-content {
                 width: 90%;
                 max-width: none;
@@ -178,71 +178,7 @@
                                             @endif
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach($inventory as $inv)
-                                        <tr class="text-center" style="font-size: 14px;">
-                                            <td>{{ $inv->asset_code }}</td>
-                                            <td>{{ $inv->old_asset_code != 0 ? $inv->old_asset_code : '-' }}</td>
-                                            <td>{{ $inv->asset_category }}</td>
-                                            <td>{{ $inv->asset_position_dept }}</td>
-                                            <td>{{ $inv->asset_type }}</td>
-                                            <td>{{ !empty($inv->merk) ? $inv->merk : '-' }}</td>
-                                            <td>{{ $inv->description }}</td>
-                                            <td>{{ !empty($inv->serial_number) ? $inv->serial_number : '-' }}</td>
-                                            <td>{{ $inv->acquisition_date }}</td>
-                                            @if (Auth::check() && (Auth::user()->location != 'Site Molore' && Auth::user()->location != 'Office Kendari'))
-                                            @if($inv->acquisition_value == 0)
-                                            <td>-</td>
-                                            @else
-                                            <td>{{ number_format($inv->acquisition_value, 0, ',', '.') }}</td>
-                                            @endif
-                                            @if($inv->acquisition_value == 0)
-                                            <td>-</td>
-                                            @else
-                                            <td>{{ $inv->depreciated_value }}</td>
-                                            @endif
-                                            @endif
-                                            <td>{{ $inv->message }}</td>
-                                            <td>{{ $inv->location }}</td>
-                                            <td>{{ $inv->status }}</td>
-                                            @if(isset($inv->user))
-                                            <td>{{ $inv->user }}</td>
-                                            @else
-                                            <td>-</td>
-                                            @endif
-                                            @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
-                                            <td>
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="p-1">
-                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                                            <i class="material-icons" style="font-size: 16px;">edit</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="mx-1"></div>
-                                                    <form action="{{ route('destroy_inventory', ['id' => $inv->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this asset?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                                            <i class="material-icons" style="font-size: 16px;">close</i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            @endif
-                                            @if (Auth::check() && Auth::user()->status == 'Modified')
-                                            <td>
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="p-1">
-                                                        <a href="{{ route('edit_inventory', ['id' => $inv->id]) }}" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                                            <i class="material-icons" style="font-size: 16px;">edit</i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="mx-1"></div>
-                                                </div>
-                                            </td>
-                                            @endif
-                                        </tr>
-                                        @endforeach
+                                    <tbody class="text-center">
                                     </tbody>
                                 </table>
                             </div>
@@ -261,31 +197,137 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <!-- Initialize DataTable -->
     <script>
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function(n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
         $(document).ready(function() {
             var table = $('#inventoryTable').DataTable({
-                "pageLength": 50,
-                "columnDefs": [{
-                        "orderable": true,
-                        "targets": [0, 8]
-                    }, // Enable ordering on the 8th column (index 7)
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('inventory') }}",
+                columns: [{
+                        data: 'asset_code',
+                        name: 'asset_code'
+                    },
                     {
-                        "orderable": false,
-                        "targets": '_all'
-                    } // Disable ordering on all other columns
+                        data: 'old_asset_code',
+                        name: 'old_asset_code',
+                        render: function(data) {
+                            return data != 0 ? data : '-';
+                        }
+                    },
+                    {
+                        data: 'asset_category',
+                        name: 'asset_category'
+                    },
+                    {
+                        data: 'asset_position_dept',
+                        name: 'asset_position_dept'
+                    },
+                    {
+                        data: 'asset_type',
+                        name: 'asset_type'
+                    },
+                    {
+                        data: 'merk',
+                        name: 'merk',
+                        render: function(data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    {
+                        data: 'serial_number',
+                        name: 'serial_number',
+                        render: function(data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: 'acquisition_date',
+                        name: 'acquisition_date'
+                    },
+                    @if(Auth::check() && (Auth::user() -> location != 'Site Molore' && Auth::user() -> location != 'Office Kendari')) {
+                        data: 'acquisition_value',
+                        name: 'acquisition_value',
+                        render: function(data) {
+                            return data == 0 ? '-' : number_format(data, 0, ',', '.');
+                        }
+                    },
+                    {
+                        data: 'depreciated_value',
+                        name: 'depreciated_value'
+                    },
+                    @endif {
+                        data: 'message',
+                        name: 'message'
+                    },
+                    {
+                        data: 'location',
+                        name: 'location'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'user',
+                        name: 'user',
+                        render: function(data) {
+                            return data ? data : '-';
+                        }
+                    },
+                    @if(Auth::check() && (Auth::user() -> status == 'Administrator' || Auth::user() -> status == 'Super Admin' || Auth::user() -> status == 'Modified')) {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                    @endif
                 ],
-                "order": [
+                pageLength: 50,
+                order: [
                     [8, 'desc']
                 ],
-                "dom": '<"top">rt<"bottom"ip><"clear">',
+                dom: '<"top">rt<"bottom"ip><"clear">',
+                language: {
+                    processing: "<div class='d-flex justify-content-center align-items-center' style='position: fixed; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); top: 0; left: 0; z-index: 1000;'>" +
+                        "<div class='spinner-border' role='status'>" +
+                        "<span class='sr-only'>Loading...</span>" +
+                        "</div>" +
+                        "</div>"
+                }
             });
 
-            // Add the search functionality
             $('#searchbox').on('keyup', function() {
                 table.search(this.value).draw();
 
                 if (this.value.length >= 13) {
                     setTimeout(() => {
-                        this.select(); // Seleksi seluruh teks di dalam kotak pencarian
+                        this.select();
                     }, 2000);
                 }
             });

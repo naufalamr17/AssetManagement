@@ -61,6 +61,7 @@
                     <span class="nav-link-text ms-1">History Asset</span>
                 </a>
             </li>
+            @if (Auth::check() && Auth::user()->status != 'Auditor')
             <li class="nav-item">
                 <a class="nav-link {{ $activePage == 'report' ? ' active bg-gradient-danger' : '' }}" href="{{ route('report') }}" style="color: {{ $activePage == 'report' ? 'white' : 'black' }};">
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
@@ -69,6 +70,7 @@
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
             </li>
+            @endif
             @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
             <li class="nav-item">
                 <a class="nav-link {{ $activePage == 'user-management' ? 'active bg-gradient-danger' : '' }}" href="{{ route('user-management') }}" style="color: {{ $activePage == 'user-management' ? 'white' : 'black' }};">

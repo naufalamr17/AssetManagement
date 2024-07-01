@@ -61,6 +61,7 @@
                                                 <option value="Creator" {{ $user->status == 'Creator' ? 'selected' : '' }}>Creator</option>
                                                 <option value="Modified" {{ $user->status == 'Modified' ? 'selected' : '' }}>Modified</option>
                                                 <option value="Viewers" {{ $user->status == 'Viewers' ? 'selected' : '' }}>Viewers</option>
+                                                <option value="Auditor" {{ $user->status == 'Auditor' ? 'selected' : '' }}>Auditor</option>
                                             </select>
                                         </div>
 

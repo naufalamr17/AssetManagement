@@ -60,6 +60,7 @@
                                                 <option value="Creator">Creator</option>
                                                 <option value="Modified">Modified</option>
                                                 <option value="Viewers">Viewers</option>
+                                                <option value="Auditor">Auditor</option>
                                             </select>
                                         </div>
 

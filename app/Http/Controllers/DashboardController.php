@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         // dd(Auth::user());
 
-        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $assets = Inventory::all();
 
             // Aggregate data for asset growth per year and location

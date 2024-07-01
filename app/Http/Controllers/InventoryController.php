@@ -21,7 +21,7 @@ class InventoryController extends Controller
     {
         if ($request->ajax()) {
             // Query inventaris berdasarkan status pengguna
-            if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+            if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
                 $inventory = Inventory::where('status', '!=', 'Dispose')->orderBy('acquisition_date', 'desc')->get();
             } else {
                 $inventory = Inventory::where('status', '!=', 'Dispose')
@@ -80,7 +80,7 @@ class InventoryController extends Controller
 
                 // Menetapkan variabel action berdasarkan status pengguna
                 if (Auth::check()) {
-                    if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin') {
+                    if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor') {
                         $inv->action = '<div class="d-flex align-items-center justify-content-center">
                         <div class="p-1">
                             <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
@@ -466,7 +466,7 @@ class InventoryController extends Controller
 
     public function history()
     {
-        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $userhist = Userhist::join('inventories', 'userhists.inv_id', '=', 'inventories.id')
                 ->select(
                     'inventories.asset_code as kode_asset',
@@ -507,7 +507,7 @@ class InventoryController extends Controller
 
     public function repair()
     {
-        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->select(
                     'inventories.asset_code',
@@ -630,7 +630,7 @@ class InventoryController extends Controller
 
     public function dispose()
     {
-        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
@@ -706,7 +706,7 @@ class InventoryController extends Controller
 
     public function report()
     {
-        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
+        if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')

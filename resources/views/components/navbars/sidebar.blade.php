@@ -30,7 +30,7 @@
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-plus-circle" style="color: {{ $activePage == 'inventory' ? 'white' : 'black' }};"></i>
                     </div>
-                    @if (Auth::check() && Auth::user()->status != 'Viewers')
+                    @if (Auth::check() && (Auth::user()->status != 'Viewers' && Auth::user()->status != 'Auditor'))
                     <span class="nav-link-text ms-1">Input Asset</span>
                     @else
                     <span class="nav-link-text ms-1">Asset</span>

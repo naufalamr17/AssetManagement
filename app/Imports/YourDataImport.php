@@ -89,6 +89,7 @@ class YourDataImport implements ToModel, WithHeadingRow
             'acquisition_date' => $row['tanggal_perolehan'],
             'useful_life' => $useful_life,
             'acquisition_value' => $row['nilai_perolehan'],
+            'status' => $row['status'],
             'pic_dept' => $pic_dept,
             'asset_code' => $id,
             'user' => $row['user'],

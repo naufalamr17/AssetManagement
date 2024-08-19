@@ -29,13 +29,13 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label for="old_asset_code">Kode Asset Lama</label>
-                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code') }}" autofocus>
+                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code') }}" readonly>
                                             @if ($errors->has('old_asset_code'))
                                             <div class="text-danger mt-2">{{ $errors->first('old_asset_code') }}</div>
                                             @endif
-                                        </div>
+                                        </div> -->
 
                                         <div class="form-group">
                                             <label for="location">Location</label>
@@ -52,7 +52,7 @@
 
                                         <div class="form-group">
                                             <label for="asset_category">Kategori</label>
-                                            <select id="asset_category" class="form-control border p-2" name="asset_category" required>
+                                            <select id="asset_category" class="form-control border p-2" name="asset_category" autofocus required>
                                                 <option value="" selected disabled>Select Category</option>
                                                 <option value="Kendaraan">01 - Kendaraan</option>
                                                 <option value="Peralatan">02 - Peralatan</option>

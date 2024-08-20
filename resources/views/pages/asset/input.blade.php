@@ -179,7 +179,7 @@
                                             @endif
                                         </tr>
                                     </thead>
-                                    <tbody class="text-center">
+                                    <tbody class="text-center text-lg">
                                     </tbody>
                                 </table>
                             </div>

@@ -1650,7 +1650,7 @@ progress {
   --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
   width: 100%;
   margin-bottom: 1rem;
-  color: #7b809a;
+  color: #000000;
   vertical-align: top;
   border-color: #f0f2f5; }
   .table > :not(caption) > * > * {

@@ -253,12 +253,21 @@
                         data: 'merk',
                         name: 'merk',
                         render: function(data) {
-                            return data ? data : '-';
+                            if (!data) return '-';
+                            return data.replace(/\w\S*/g, function(txt) {
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                            });
                         }
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        render: function(data) {
+                            if (!data) return '-';
+                            return data.replace(/\w\S*/g, function(txt) {
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                            });
+                        }
                     },
                     {
                         data: 'serial_number',

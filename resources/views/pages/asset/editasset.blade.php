@@ -244,7 +244,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="acquisition_date">Tanggal Perolehan</label>
-                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}" required>
+                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}">
                                             @if ($errors->has('acquisition_date'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_date') }}</div>
                                             @endif

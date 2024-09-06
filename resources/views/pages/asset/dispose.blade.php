@@ -206,7 +206,7 @@
                                                 @if ($item->disposal_document)
                                                 <!-- Tampilkan tombol download jika disposal_document ada -->
                                                 <a href="{{ asset('storage/' . $item->disposal_document) }}" class="btn btn-sm mt-3 btn-secondary">Download Dokumen</a>
-                                                @elseif ($item->approval === 'Approve by Deputy General Manager')
+                                                @elseif ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Approve by Manager')
                                                 <!-- Jika approval adalah 'Approve by Deputy General Manager', tampilkan tombol 'Add Document' -->
                                                 <a href="{{ route('add.document', $item->id) }}" class="btn btn-sm mt-3 btn-primary">Add Document</a>
                                                 @else

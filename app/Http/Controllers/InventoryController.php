@@ -406,11 +406,9 @@ class InventoryController extends Controller
         // dd('halo');
         $data = $request->all(); // Ambil semua data dari request
 
-        // Loop untuk menggantikan nilai kosong dengan '-'
-        foreach ($data as $key => $value) {
-            if (empty($value)) {
-                $data[$key] = '-';
-            }
+        // Cek apakah 'acquisition_date' kosong
+        if (empty($data['acquisition_date'])) {
+            $data['acquisition_date'] = '-';
         }
 
         // Update data ke database

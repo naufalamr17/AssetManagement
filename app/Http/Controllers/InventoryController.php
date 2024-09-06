@@ -404,7 +404,17 @@ class InventoryController extends Controller
 
         // if ($idc == $ids) {
         // dd('halo');
-        $asset->update($request->all());
+        $data = $request->all(); // Ambil semua data dari request
+
+        // Loop untuk menggantikan nilai kosong dengan '-'
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                $data[$key] = '-';
+            }
+        }
+
+        // Update data ke database
+        $asset->update($data);
         // } else {
         //     $iddb = Inventory::where('asset_code', 'LIKE', "%$ids%")->get(['asset_code']);
 

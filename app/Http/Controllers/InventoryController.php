@@ -693,23 +693,59 @@ class InventoryController extends Controller
         $inventory = Inventory::where('asset_code', $assetCode)->first();
 
         // Update the status of the inventory
-        // Handle file upload
-        if ($request->hasFile('disposal_document')) {
-            $fileName = time() . '_' . $request->file('disposal_document')->getClientOriginalName();
-            $filePath = $request->file('disposal_document')->storeAs('uploads', $fileName, 'public');
-        }
         $inventory->status = 'Waiting Dispose';
         $inventory->disposal_date = $request->disposal_date;
         $inventory->save();
 
-        dispose::create([
+        $data = [
             'inv_id' => $inventory->id,
             'tanggal_penghapusan' => $request->disposal_date,
             'note' => $request->remarks_repair,
-            'disposal_document' => $filePath
-        ]);
+        ];
+
+        // Handle file upload
+        if ($request->hasFile('disposal_document')) {
+            $fileName = time() . '_' . $request->file('disposal_document')->getClientOriginalName();
+            $filePath = $request->file('disposal_document')->storeAs('uploads', $fileName, 'public');
+            $data['disposal_document'] = $filePath;
+        }
+
+        Dispose::create($data);
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
+    }
+
+    public function document_dispose($id)
+    {
+        $dispose = dispose::findOrFail($id);
+        return view('pages.asset.disposedoc', compact('dispose'));
+    }
+
+    public function storedisposedoc(Request $request)
+    {
+        // Validasi jika diperlukan
+        $request->validate([
+            'disposal_document' => 'required|mimes:pdf,jpg,jpeg,png|max:2048', // Sesuaikan dengan kebutuhan
+        ]);
+
+        // Cari disposal berdasarkan ID
+        $dispose = Dispose::findOrFail($request->id);
+
+        // Inisialisasi array untuk menyimpan data
+        $data = [];
+
+        // Handle file upload
+        if ($request->hasFile('disposal_document')) {
+            $fileName = time() . '_' . $request->file('disposal_document')->getClientOriginalName();
+            $filePath = $request->file('disposal_document')->storeAs('disposal_documents', $fileName, 'public');
+            $data['disposal_document'] = $filePath;
+        }
+
+        // Update disposal dengan data baru
+        $dispose->update($data);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('dispose_inventory')->with('success', 'Document uploaded successfully!');
     }
 
     public function report()

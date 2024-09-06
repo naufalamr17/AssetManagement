@@ -74,6 +74,9 @@ Route::post('/store_excel', [InventoryController::class, 'storeexcel'])->name('s
 
 Route::get('/report', [InventoryController::class, 'report'])->name('report')->middleware('auth');
 
+Route::get('/add-document/{id}', [InventoryController::class, 'document_dispose'])->name('add.document')->middleware('auth');
+Route::post('/store_disposedoc', [InventoryController::class, 'storedisposedoc'])->name('store_disposedoc')->middleware('auth');
+
 Route::post('/approval', function (Request $request) {
 	// Access form data using $request object
 	$itemId = $request->input('itemId');

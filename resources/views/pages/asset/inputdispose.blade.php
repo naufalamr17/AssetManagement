@@ -293,7 +293,7 @@
 
                                             <div class="form-group">
                                                 <label for="disposal_document">Dokumen Disposal</label>
-                                                <input type="file" class="form-control border p-2" id="disposal_document" name="disposal_document" required>
+                                                <input type="file" class="form-control border p-2" id="disposal_document" name="disposal_document">
                                                 @if ($errors->has('disposal_document'))
                                                 <div class="text-danger mt-2">{{ $errors->first('disposal_document') }}</div>
                                                 @endif

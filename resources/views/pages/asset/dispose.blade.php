@@ -89,7 +89,7 @@
         }
 
         /* Media query for landscape orientation on mobile devices */
-        @media only screen and (max-width: 600px){
+        @media only screen and (max-width: 600px) {
             .modal-content {
                 width: 90%;
                 max-width: none;
@@ -204,8 +204,13 @@
                                             <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
                                             <td>
                                                 @if ($item->disposal_document)
+                                                <!-- Tampilkan tombol download jika disposal_document ada -->
                                                 <a href="{{ asset('storage/' . $item->disposal_document) }}" class="btn btn-sm mt-3 btn-secondary">Download Dokumen</a>
+                                                @elseif ($item->approval === 'Approve by Deputy General Manager')
+                                                <!-- Jika approval adalah 'Approve by Deputy General Manager', tampilkan tombol 'Add Document' -->
+                                                <a href="{{ route('add.document', $item->id) }}" class="btn btn-sm mt-3 btn-primary">Add Document</a>
                                                 @else
+                                                <!-- Jika tidak ada document dan approval bukan 'Approve by Deputy General Manager', tampilkan '-' -->
                                                 -
                                                 @endif
                                             </td>

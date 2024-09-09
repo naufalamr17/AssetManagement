@@ -737,7 +737,7 @@ class InventoryController extends Controller
         // Handle file upload
         if ($request->hasFile('disposal_document')) {
             $fileName = time() . '_' . $request->file('disposal_document')->getClientOriginalName();
-            $filePath = $request->file('disposal_document')->storeAs('disposal_documents', $fileName, 'public');
+            $filePath = $request->file('disposal_document')->storeAs('uploads', $fileName, 'public');
             $data['disposal_document'] = $filePath;
         }
 

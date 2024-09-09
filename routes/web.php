@@ -89,7 +89,7 @@ Route::post('/approval', function (Request $request) {
 		'Approval' => $approval
 	]);
 
-	if ($hirar === "Deputy General Manager" && $approvalStatus === "Approve") {
+	if (($hirar === "Deputy General Manager" || $hirar === "Manager") && $approvalStatus === "Approve") {
 		inventory::where('asset_code', $itemId2)->update([
 			'status' => 'Dispose'
 		]);

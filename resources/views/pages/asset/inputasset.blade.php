@@ -39,11 +39,20 @@
 
                                         <div class="form-group">
                                             <label for="location">Location</label>
-                                            <select id="location" class="form-control border p-2" name="location" required readonly>
+                                            <select id="location" class="form-control border p-2" name="location" required {{ Auth::user()->email === 'info@mlpmining.com' ? '' : 'readonly' }}>
                                                 <option value="" selected disabled>Select Location</option>
-                                                <option value="Head Office" {{ $userLocation == 'Head Office' ? 'selected' : 'disabled' }}>01 - Head Office</option>
-                                                <option value="Office Kendari" {{ $userLocation == 'Office Kendari' ? 'selected' : 'disabled' }}>02 - Office Kendari</option>
-                                                <option value="Site Molore" {{ $userLocation == 'Site Molore' ? 'selected' : 'disabled' }}>03 - Site Molore</option>
+                                                <option value="Head Office" {{ $userLocation == 'Head Office' ? 'selected' : '' }}
+                                                    {{ Auth::user()->email === 'info@mlpmining.com' ? '' : ($userLocation == 'Head Office' ? '' : 'disabled') }}>
+                                                    01 - Head Office
+                                                </option>
+                                                <option value="Office Kendari" {{ $userLocation == 'Office Kendari' ? 'selected' : '' }}
+                                                    {{ Auth::user()->email === 'info@mlpmining.com' ? '' : ($userLocation == 'Office Kendari' ? '' : 'disabled') }}>
+                                                    02 - Office Kendari
+                                                </option>
+                                                <option value="Site Molore" {{ $userLocation == 'Site Molore' ? 'selected' : '' }}
+                                                    {{ Auth::user()->email === 'info@mlpmining.com' ? '' : ($userLocation == 'Site Molore' ? '' : 'disabled') }}>
+                                                    03 - Site Molore
+                                                </option>
                                             </select>
                                             @if ($errors->has('location'))
                                             <div class="text-danger mt-2">{{ $errors->first('location') }}</div>

@@ -89,7 +89,7 @@
         }
 
         /* Media query for landscape orientation on mobile devices */
-        @media only screen and (max-width: 600px){
+        @media only screen and (max-width: 600px) {
             .modal-content {
                 width: 90%;
                 max-width: none;
@@ -201,7 +201,7 @@
                                             <td>{{ $inventory->serial_number ?? '-' }}</td>
                                             <td>{{ $inventory->location ?? '-' }}</td>
                                             <td>{{ $inventory->acquisition_date ?? '-' }}</td>
-                                            <td>{{ $inventory->useful_life ?? '-' }}</td>
+                                            <td>{{ $inventory->useful_life ? $inventory->useful_life . ' tahun' : '-' }}</td>
                                             <?php
                                             if ($inventory->acquisition_date === '-') {
                                                 $message = "Tanggal tidak terdefinisi";
@@ -310,7 +310,6 @@
 
                 const table = document.getElementById('inventoryTable');
 
-                // Memastikan tabel ditemukan sebelum melanjutkan
                 if (!table) {
                     console.error('Tabel tidak ditemukan.');
                     return;
@@ -321,7 +320,28 @@
 
                 const range = XLSX.utils.decode_range(ws['!ref']);
 
-                // Autofit width untuk setiap kolom
+                for (let R = range.s.r + 1; R <= range.e.r; ++R) { // Looping setiap baris (lewati header)
+                    const cellAddress = XLSX.utils.encode_cell({
+                        r: R,
+                        c: 9
+                    }); // Mengambil kolom 'acquisition_date' (index 0)
+                    const cell = ws[cellAddress];
+
+                    if (cell && cell.t === 'n') { // Jika sel berisi angka (tipe 'n' untuk angka)
+                        const dateValue = new Date((cell.v - 25569) * 86400 * 1000); // Konversi angka Excel ke Date
+                        if (!isNaN(dateValue.getTime())) { // Pastikan tanggal valid
+                            const day = String(dateValue.getUTCDate()).padStart(2, '0');
+                            const month = String(dateValue.getUTCMonth() + 1).padStart(2, '0');
+                            const year = dateValue.getUTCFullYear();
+                            cell.v = `${day}-${month}-${year}`; // Format dd-mm-yyyy
+                            cell.t = 's'; // Ubah tipe sel menjadi string
+                        } else {
+                            cell.v = '-'; // Jika tanggal tidak valid
+                        }
+                    }
+                }
+
+                // Autofit kolom
                 const colWidths = [];
                 for (let C = range.s.c; C <= range.e.c; ++C) {
                     let maxWidth = 0;
@@ -341,9 +361,9 @@
                 ws['!cols'] = colWidths;
 
                 XLSX.utils.book_append_sheet(wb, ws, sheetName);
-
                 XLSX.writeFile(wb, fileName + '.xlsx');
             });
+
         });
     </script>
 

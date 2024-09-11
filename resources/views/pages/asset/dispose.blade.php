@@ -93,7 +93,7 @@
             .modal-content {
                 width: 90%;
                 max-width: none;
-                height: 40vh;
+                height: 60vh;
                 overflow-y: auto;
             }
         }
@@ -311,6 +311,8 @@
         });
     </script>
 
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
     <script>
         document.getElementById('openModalButton').addEventListener('click', function() {
             var modal = document.getElementById('myModal');
@@ -321,60 +323,63 @@
         document.getElementsByClassName('close')[0].addEventListener('click', function() {
             var modal = document.getElementById('myModal');
             modal.style.display = "none";
-            Quagga.stop();
+            html5QrCode.stop().catch(err => console.error(err));
         });
 
         window.onclick = function(event) {
             var modal = document.getElementById('myModal');
             if (event.target == modal) {
                 modal.style.display = "none";
-                Quagga.stop();
+                html5QrCode.stop().catch(err => console.error(err));
             }
         };
 
         function startScanner() {
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector('#interactive'), // Target the div element, not the video directly
-                    constraints: {
-                        facingMode: "environment" // Ensure back camera is used
-                    }
-                },
-                decoder: {
-                    readers: [
-                        "code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader",
-                        "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader"
-                    ]
-                }
-            }, function(err) {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                console.log("Initialization finished. Ready to start");
-                Quagga.start();
-            });
+            const html5QrCode = new Html5Qrcode("interactive");
 
-            Quagga.onDetected(function(result) {
-                if (result.codeResult) {
-                    var code = result.codeResult.code;
-                    document.getElementById('result').innerText = 'Barcode detected: ' + code;
+            html5QrCode.start({
+                    facingMode: "environment"
+                }, {
+                    fps: 10, // Set the framerate to 10 frames per second
+                    qrbox: {
+                        width: 250,
+                        height: 250
+                    } // Set the dimensions of the QR code scanning box
+                },
+                (decodedText, decodedResult) => {
+                    // Handle the result here
+                    document.getElementById('result').innerText = 'QR Code detected: ' + decodedText;
 
                     // Set the code in the search box
                     var searchBox = document.getElementById('searchbox');
-                    searchBox.value = code;
-
-                    // Search the table
-                    var table = $('#inventoryTable').DataTable();
-                    table.search(code).draw();
+                    searchBox.value = decodedText.substring(0, 13);
 
                     // Close the modal
                     var modal = document.getElementById('myModal');
                     modal.style.display = "none";
-                    Quagga.stop();
+                    html5QrCode.stop().catch(err => console.error(err));
+
+                    // Search the table
+                    var table = $('#inventoryTable').DataTable();
+                    table.search(searchBox.value).draw();
+                },
+                (errorMessage) => {
+                    // Handle error here
+                    console.warn(`QR Code no longer in front of camera: ${errorMessage}`);
                 }
+            ).then(() => {
+                // Apply video constraints after starting the scanner
+                setTimeout(() => {
+                    html5QrCode.applyVideoConstraints({
+                        focusMode: "continuous",
+                        advanced: [{
+                            zoom: 2.0
+                        }]
+                    }).catch(err => console.error(err));
+                }, 2000);
+            }).catch(err => {
+                // Start failed, handle it here
+                console.error(`Unable to start scanning, error: ${err}`);
             });
         }
     </script>

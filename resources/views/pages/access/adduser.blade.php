@@ -68,6 +68,7 @@
                                             <label for="hirar">Hirarki</label>
                                             <select id="hirar" class="form-control border p-2" name="hirar">
                                                 <option value="" selected disabled>Select Hirarki</option>
+                                                <option value="Supervisor">Supervisor</option>
                                                 <option value="Manager">Manager</option>
                                                 <option value="Deputy General Manager">Deputy General Manager</option>
                                             </select>

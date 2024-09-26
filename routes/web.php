@@ -23,9 +23,11 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
+use App\Mail\DisposeNotification;
 use App\Models\dispose;
 use App\Models\inventory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/home', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
@@ -84,6 +86,35 @@ Route::post('/approval', function (Request $request) {
 	$hirar = $request->input('hirar');
 	$approvalStatus = $request->input('approval_action');
 	$approval = $approvalStatus . ' by ' . $hirar;
+
+	if ($hirar = 'Supervisor') {
+		$dispose = dispose::where('id', $itemId)->get();
+
+		// Prepare email details
+		$details = [
+			'asset_code' => $itemId2,
+			'disposal_date' => $dispose->tanggal_penghapusan,
+			'remarks' => $dispose->note,
+		];
+
+		// Send email notification from noreply email
+		Mail::to('galuh.swasintari@mlpmining.com')  // Ganti dengan email tujuan
+			->send(new DisposeNotification($details));
+	} elseif ($hirar = 'Manager') {
+		$dispose = dispose::where('id', $itemId)->get();
+
+		// Prepare email details
+		$details = [
+			'asset_code' => $itemId2,
+			'disposal_date' => $dispose->tanggal_penghapusan,
+			'remarks' => $dispose->note,
+		];
+
+		// Send email notification from noreply email
+		Mail::to('andisari.dewi@mlpmining.com')  // Ganti dengan email tujuan
+			->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
+			->send(new DisposeNotification($details));
+	}
 
 	dispose::where('id', $itemId)->update([
 		'Approval' => $approval

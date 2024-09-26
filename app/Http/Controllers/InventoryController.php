@@ -715,16 +715,16 @@ class InventoryController extends Controller
         Dispose::create($data);
 
         // Prepare email details
-    $details = [
-        'asset_code' => $inventory->asset_code,
-        'disposal_date' => $request->disposal_date,
-        'remarks' => $request->remarks_repair,
-    ];
+        $details = [
+            'asset_code' => $inventory->asset_code,
+            'disposal_date' => $request->disposal_date,
+            'remarks' => $request->remarks_repair,
+        ];
 
-    // Send email notification from noreply email
-    Mail::to('endra.putra@mlpmining.com')  // Ganti dengan email tujuan
-        ->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
-        ->send(new DisposeNotification($details));
+        // Send email notification from noreply email
+        Mail::to('endra.putra@mlpmining.com')  // Ganti dengan email tujuan
+            ->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
+            ->send(new DisposeNotification($details));
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
     }

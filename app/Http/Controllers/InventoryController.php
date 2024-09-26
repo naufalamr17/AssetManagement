@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\YourDataImport;
+use App\Mail\DisposeNotification;
 use App\Models\dispose;
 use App\Models\inventory;
 use App\Models\repairstatus;
@@ -12,6 +13,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -711,6 +713,18 @@ class InventoryController extends Controller
         }
 
         Dispose::create($data);
+
+        // Prepare email details
+    $details = [
+        'asset_code' => $inventory->asset_code,
+        'disposal_date' => $request->disposal_date,
+        'remarks' => $request->remarks_repair,
+    ];
+
+    // Send email notification from noreply email
+    Mail::to('endra.putra@mlpmining.com')  // Ganti dengan email tujuan
+        ->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
+        ->send(new DisposeNotification($details));
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
     }

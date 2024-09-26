@@ -162,7 +162,7 @@ class InventoryController extends Controller
         ]);
 
         // Mendefinisikan PIC Dept berdasarkan acquisition_value
-        if ($request->acquisition_value > 2500000) {
+        if ($request->acquisition_value > 2499999) {
             $pic_dept = 'FAT & GA';
             $id1 = 'FG';
         } else {

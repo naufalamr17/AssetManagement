@@ -19,7 +19,7 @@ class YourDataImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         // Define PIC Dept and other ID components based on the acquisition_value
-        if ($row['nilai_perolehan'] > 2500000) {
+        if ($row['nilai_perolehan'] > 2499999) {
             $pic_dept = 'FAT & GA';
             $id1 = 'FG';
         } else {

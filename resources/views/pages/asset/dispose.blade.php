@@ -174,15 +174,15 @@
                                     <tbody>
                                         @foreach($inventory as $item)
                                         <tr class="text-center" style="font-size: 14px;">
-                                            <td>{{ $item->asset_code ?? '-' }}</td>
-                                            <td>{{ $item->asset_type ?? '-' }}</td>
-                                            <td>{{ $item->serial_number ?? '-' }}</td>
+                                            <td>{{ strtoupper($item->asset_code ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->asset_type ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->serial_number ?? '-') }}</td>
                                             <?php
                                             if ($item->acquisition_date === '-') {
-                                                $message = "Tanggal tidak terdefinisi";
+                                                $message = "TANGGAL TIDAK TERDEFINISI";
                                             } else {
                                                 $acquisitionDate = new DateTime($item->acquisition_date);
-                                                $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                                $usefulLife = $item->useful_life * 365; // Ubah umur manfaat dari tahun ke hari
                                                 $endOfUsefulLife = clone $acquisitionDate;
                                                 $endOfUsefulLife->modify("+{$usefulLife} days");
 
@@ -190,43 +190,43 @@
                                                 $interval = $currentDate->diff($endOfUsefulLife);
 
                                                 if ($currentDate > $endOfUsefulLife) {
-                                                    $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                    $remainingDays = -$interval->days; // Nilai negatif untuk hari keterlambatan
                                                 } else {
                                                     $remainingDays = $interval->days;
                                                 }
 
-                                                $message = "{$remainingDays} hari";
+                                                $message = strtoupper("{$remainingDays} HARI");
                                             }
                                             ?>
                                             <td>{{ $message }}</td>
-                                            <td>{{ $item->location ?? '-' }}</td>
-                                            <td>{{ $item->status ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
+                                            <td>{{ strtoupper($item->location ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->status ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->tanggal_penghapusan ?? '-') }}</td>
                                             <td>
                                                 @if ($item->disposal_document)
                                                 <!-- Tampilkan tombol download jika disposal_document ada -->
-                                                <a href="{{ asset('storage/' . $item->disposal_document) }}" class="btn btn-sm mt-3 btn-secondary">Download Dokumen</a>
-                                                @elseif ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Approve by Manager')
+                                                <a href="{{ asset('storage/' . strtoupper($item->disposal_document)) }}" class="btn btn-sm mt-3 btn-secondary">DOWNLOAD DOKUMEN</a>
+                                                @elseif ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'APPROVE BY MANAGER')
                                                 <!-- Jika approval adalah 'Approve by Deputy General Manager', tampilkan tombol 'Add Document' -->
-                                                <a href="{{ route('add.document', $item->id) }}" class="btn btn-sm mt-3 btn-primary">Add Document</a>
+                                                <a href="{{ route('add.document', $item->id) }}" class="btn btn-sm mt-3 btn-primary">ADD DOCUMENT</a>
                                                 @else
                                                 <!-- Jika tidak ada document dan approval bukan 'Approve by Deputy General Manager', tampilkan '-' -->
                                                 -
                                                 @endif
                                             </td>
-                                            <td>{{ $item->approval ?? '-' }}</td>
-                                            <td>{{ $item->note ?? '-' }}</td>
-                                            @if (Auth::user()->hirar === "Manager" || Auth::user()->hirar === "Deputy General Manager" || Auth::user()->hirar === "Supervisor")
+                                            <td>{{ strtoupper($item->approval ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->note ?? '-') }}</td>
+                                            @if (Auth::user()->hirar === "MANAGER" || Auth::user()->hirar === "DEPUTY GENERAL MANAGER" || Auth::user()->hirar === "SUPERVISOR")
                                             <td>
                                                 <form action="{{ route('approval') }}" method="post">
                                                     @csrf
                                                     <input type="hidden" name="itemId" value="{{ $item->id }}">
-                                                    <input type="hidden" name="itemId2" value="{{ $item->asset_code }}">
+                                                    <input type="hidden" name="itemId2" value="{{ strtoupper($item->asset_code) }}">
                                                     <input type="hidden" name="hirar" value="{{ Auth::user()->hirar }}">
 
-                                                    @if(Auth::user()->hirar == 'Supervisor')
+                                                    @if(Auth::user()->hirar == 'SUPERVISOR')
                                                     <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Approve by Manager' || $item->approval === 'Reject by Manager' || $item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY MANAGER' || $item->approval === 'REJECT BY MANAGER' || $item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER')
                                                         disabled
                                                         @endif
                                                         >
@@ -234,15 +234,15 @@
                                                     </button>
 
                                                     <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Approve by Manager' || $item->approval === 'Reject by Manager' || $item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager')
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY MANAGER' || $item->approval === 'REJECT BY MANAGER' || $item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER')
                                                         disabled
                                                         @endif
                                                         >
                                                         <i class="fas fa-times"></i>
                                                     </button>
-                                                    @elseif(Auth::user()->hirar == 'Manager')
+                                                    @elseif(Auth::user()->hirar == 'MANAGER')
                                                     <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager' || $item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER' || $item->approval === 'PENDING')
                                                         disabled
                                                         @endif
                                                         >
@@ -250,15 +250,15 @@
                                                     </button>
 
                                                     <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Approve by Deputy General Manager' || $item->approval === 'Reject by Deputy General Manager' || $item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER' || $item->approval === 'PENDING')
                                                         disabled
                                                         @endif
                                                         >
                                                         <i class="fas fa-times"></i>
                                                     </button>
-                                                    @elseif(Auth::user()->hirar == 'Deputy General Manager')
+                                                    @elseif(Auth::user()->hirar == 'DEPUTY GENERAL MANAGER')
                                                     <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="Approve" class="btn btn-success btn-sm mt-3" title="Approve" @if ($item->approval === 'Approve by Supervisor' || $item->approval === 'Reject by Supervisor' || $item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY SUPERVISOR' || $item->approval === 'REJECT BY SUPERVISOR' || $item->approval === 'PENDING')
                                                         disabled
                                                         @endif
                                                         >
@@ -266,7 +266,7 @@
                                                     </button>
 
                                                     <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="Reject" class="btn btn-danger btn-sm mt-3" title="Reject" @if ($item->approval === 'Approve by Supervisor' || $item->approval === 'Reject by Supervisor' || $item->approval === 'Pending')
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY SUPERVISOR' || $item->approval === 'REJECT BY SUPERVISOR' || $item->approval === 'PENDING')
                                                         disabled
                                                         @endif
                                                         >

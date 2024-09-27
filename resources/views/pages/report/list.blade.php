@@ -191,23 +191,23 @@
                                     <tbody>
                                         @foreach($inventoryData as $inventory)
                                         <tr class="text-center" style="font-size: 14px;">
-                                            <td>{{ $inventory->asset_code ?? '-' }}</td>
-                                            <td>{{ $inventory->old_asset_code ?? '-' }}</td>
-                                            <td>{{ $inventory->asset_category ?? '-' }}</td>
-                                            <td>{{ $inventory->asset_position_dept ?? '-' }}</td>
-                                            <td>{{ $inventory->asset_type ?? '-' }}</td>
-                                            <td>{{ $inventory->merk ?? '-' }}</td>
-                                            <td>{{ $inventory->description ?? '-' }}</td>
-                                            <td>{{ $inventory->serial_number ?? '-' }}</td>
-                                            <td>{{ $inventory->location ?? '-' }}</td>
-                                            <td>{{ $inventory->acquisition_date ?? '-' }}</td>
-                                            <td>{{ $inventory->useful_life ? $inventory->useful_life . ' tahun' : '-' }}</td>
+                                            <td>{{ strtoupper($inventory->asset_code ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->old_asset_code ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->asset_category ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->asset_position_dept ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->asset_type ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->merk ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->description ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->serial_number ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->location ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->acquisition_date ?? '-') }}</td>
+                                            <td>{{ $inventory->useful_life ? strtoupper($inventory->useful_life . ' TAHUN') : '-' }}</td>
                                             <?php
                                             if ($inventory->acquisition_date === '-') {
-                                                $message = "Tanggal tidak terdefinisi";
+                                                $message = "TANGGAL TIDAK TERDEFINISI";
                                             } else {
                                                 $acquisitionDate = new DateTime($inventory->acquisition_date);
-                                                $usefulLife = $inventory->useful_life * 365; // Convert useful life from years to days
+                                                $usefulLife = $inventory->useful_life * 365; // Ubah umur manfaat dari tahun ke hari
                                                 $endOfUsefulLife = clone $acquisitionDate;
                                                 $endOfUsefulLife->modify("+{$usefulLife} days");
 
@@ -215,22 +215,22 @@
                                                 $interval = $currentDate->diff($endOfUsefulLife);
 
                                                 if ($currentDate > $endOfUsefulLife) {
-                                                    $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                    $remainingDays = -$interval->days; // Nilai negatif untuk hari keterlambatan
                                                 } else {
                                                     $remainingDays = $interval->days;
                                                 }
 
-                                                $message = "{$remainingDays} hari";
+                                                $message = strtoupper("{$remainingDays} HARI");
                                             }
                                             ?>
                                             <td>{{ $message }}</td>
-                                            <td>{{ $inventory->user ?? '-' }}</td>
-                                            <td>{{ $inventory->dept ?? '-' }}</td>
-                                            <td>{{ $inventory->status ?? '-' }}</td>
-                                            <td>{{ $inventory->tanggal_kerusakan ?? '-' }}</td>
-                                            <td>{{ $inventory->tanggal_pengembalian ?? '-' }}</td>
-                                            <td>{{ $inventory->tanggal_penghapusan ?? '-' }}</td>
-                                            <td>{{ $inventory->remarks ?? '-' }}</td>
+                                            <td>{{ strtoupper($inventory->user ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->dept ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->status ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->tanggal_kerusakan ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->tanggal_pengembalian ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->tanggal_penghapusan ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->remarks ?? '-') }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

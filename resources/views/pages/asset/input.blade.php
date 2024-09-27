@@ -239,41 +239,44 @@
                     // },
                     {
                         data: 'asset_category',
-                        name: 'asset_category'
+                        name: 'asset_category',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'asset_position_dept',
-                        name: 'asset_position_dept'
+                        name: 'asset_position_dept',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'asset_type',
-                        name: 'asset_type'
+                        name: 'asset_type',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'merk',
                         name: 'merk',
                         render: function(data) {
-                            if (!data) return '-';
-                            return data.replace(/\w\S*/g, function(txt) {
-                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                            });
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     {
                         data: 'description',
                         name: 'description',
                         render: function(data) {
-                            if (!data) return '-';
-                            return data.replace(/\w\S*/g, function(txt) {
-                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                            });
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     {
                         data: 'serial_number',
                         name: 'serial_number',
                         render: function(data) {
-                            return data ? data : '-';
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     {
@@ -286,35 +289,45 @@
                         render: function(data) {
                             return data == 0 ? '-' : number_format(data, 0, ',', '.');
                         }
-                    },
+                    }
+                    @endif,
                     {
                         data: 'depreciated_value',
                         name: 'depreciated_value'
                     },
-                    @endif {
+                    {
                         data: 'message',
-                        name: 'message'
+                        name: 'message',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'location',
-                        name: 'location'
+                        name: 'location',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'status',
-                        name: 'status'
+                        name: 'status',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
+                        }
                     },
                     {
                         data: 'user',
                         name: 'user',
                         render: function(data) {
-                            return data ? data : '-';
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     {
                         data: 'dept',
                         name: 'dept',
                         render: function(data) {
-                            return data ? data : '-';
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     @if(Auth::check() && (Auth::user() -> status == 'Administrator' || Auth::user() -> status == 'Super Admin' || Auth::user() -> status == 'Modified')) {

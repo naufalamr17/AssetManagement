@@ -162,18 +162,18 @@
                                     <tbody>
                                         @foreach($userhist as $history)
                                         <tr class="border-b border-gray-200 text-center" style="font-size: 14px;">
-                                            <td>{{ $history->kode_asset }}</td>
-                                            <td>{{ $history->asset_category }}</td>
-                                            <td>{{ $history->asset_position_dept }}</td>
-                                            <td>{{ $history->asset_type }}</td>
-                                            <td>{{ $history->description }}</td>
-                                            <td>{{ $history->serial_number }}</td>
-                                            <td>{{ $history->location }}</td>
-                                            <td>{{ $history->status }}</td>
-                                            <td>{{ isset($history->serah_terima) ? $history->serah_terima : '-' }}</td>
-                                            <td>{{ isset($history->user) ?  $history->user : '-' }}</td>
-                                            <td>{{ isset($history->dept) ?  $history->dept : '-' }}</td>
-                                            <td>{{ isset($history->note) ?  $history->note : '-' }}</td>
+                                            <td>{{ strtoupper($history->kode_asset) }}</td>
+                                            <td>{{ strtoupper($history->asset_category) }}</td>
+                                            <td>{{ strtoupper($history->asset_position_dept) }}</td>
+                                            <td>{{ strtoupper($history->asset_type) }}</td>
+                                            <td>{{ strtoupper($history->description) }}</td>
+                                            <td>{{ strtoupper($history->serial_number) }}</td>
+                                            <td>{{ strtoupper($history->location) }}</td>
+                                            <td>{{ strtoupper($history->status) }}</td>
+                                            <td>{{ isset($history->serah_terima) ? strtoupper($history->serah_terima) : '-' }}</td>
+                                            <td>{{ isset($history->user) ? strtoupper($history->user) : '-' }}</td>
+                                            <td>{{ isset($history->dept) ? strtoupper($history->dept) : '-' }}</td>
+                                            <td>{{ isset($history->note) ? strtoupper($history->note) : '-' }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

@@ -170,15 +170,15 @@
                                     <tbody>
                                         @foreach($inventory as $item)
                                         <tr class="text-center" style="font-size: 14px;">
-                                            <td>{{ $item->asset_code ?? '-' }}</td>
-                                            <td>{{ $item->asset_type ?? '-' }}</td>
-                                            <td>{{ $item->serial_number ?? '-' }}</td>
+                                            <td>{{ strtoupper($item->asset_code ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->asset_type ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->serial_number ?? '-') }}</td>
                                             <?php
                                             if ($item->acquisition_date === '-') {
-                                                $message = "Tanggal tidak terdefinisi";
+                                                $message = "TANGGAL TIDAK TERDEFINISI";
                                             } else {
                                                 $acquisitionDate = new DateTime($item->acquisition_date);
-                                                $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
+                                                $usefulLife = $item->useful_life * 365; // Ubah umur manfaat dari tahun ke hari
                                                 $endOfUsefulLife = clone $acquisitionDate;
                                                 $endOfUsefulLife->modify("+{$usefulLife} days");
 
@@ -186,20 +186,20 @@
                                                 $interval = $currentDate->diff($endOfUsefulLife);
 
                                                 if ($currentDate > $endOfUsefulLife) {
-                                                    $remainingDays = -$interval->days; // Use negative value for overdue days
+                                                    $remainingDays = -$interval->days; // Nilai negatif untuk hari keterlambatan
                                                 } else {
                                                     $remainingDays = $interval->days;
                                                 }
 
-                                                $message = "{$remainingDays} hari";
+                                                $message = strtoupper("{$remainingDays} HARI");
                                             }
                                             ?>
                                             <td>{{ $message }}</td>
-                                            <td>{{ $item->location ?? '-' }}</td>
-                                            <td>{{ $item->status ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
-                                            <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
-                                            <td>{{ $item->note ?? '-' }}</td>
+                                            <td>{{ strtoupper($item->location ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->status ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->tanggal_kerusakan ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->tanggal_pengembalian ?? '-') }}</td>
+                                            <td>{{ strtoupper($item->note ?? '-') }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

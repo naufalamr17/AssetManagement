@@ -146,6 +146,15 @@
                                     <!-- Tambahkan opsi status lainnya sesuai kebutuhan -->
                                 </select>
                             </div>
+                            <div class="mb-2 me-2">
+                                <select class="form-control border p-2" name="locationFilter" id="locationFilter">
+                                    <option value="">Filter by Location</option>
+                                    <option value="Head Office">Head Office</option>
+                                    <option value="Office Kendari">Office Kendari</option>
+                                    <option value="Site Molore">Site Molore</option>
+                                    <!-- Tambahkan opsi status lainnya sesuai kebutuhan -->
+                                </select>
+                            </div>
                             <div class="ms-auto mb-2">
                                 <button id="exportExcelButton" class="btn bg-gradient-dark">
                                     <i class="material-icons text-sm">file_download</i>&nbsp;&nbsp;Download Excel
@@ -300,6 +309,16 @@
                     table.columns(14).search(status).draw();
                 } else {
                     table.columns(14).search('').draw();
+                }
+            });
+
+            // Filter by location functionality
+            $('#locationFilter').on('change', function() {
+                var status = $(this).val().trim();
+                if (status !== '') {
+                    table.columns(8).search(status).draw();
+                } else {
+                    table.columns(8).search('').draw();
                 }
             });
 

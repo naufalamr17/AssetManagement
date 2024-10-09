@@ -157,7 +157,6 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
-                                            <!-- <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset Lama') }}</th> -->
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Asset Position') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
@@ -230,13 +229,6 @@
                         data: 'asset_code',
                         name: 'asset_code'
                     },
-                    // {
-                    //     data: 'old_asset_code',
-                    //     name: 'old_asset_code',
-                    //     render: function(data) {
-                    //         return data != 0 ? data : '-';
-                    //     }
-                    // },
                     {
                         data: 'asset_category',
                         name: 'asset_category',
@@ -289,13 +281,15 @@
                         render: function(data) {
                             return data == 0 ? '-' : number_format(data, 0, ',', '.');
                         }
-                    }
-                    @endif,
-                    {
-                        data: 'depreciated_value',
-                        name: 'depreciated_value'
                     },
                     {
+                        data: 'depreciated_value',
+                        name: 'depreciated_value',
+                        render: function(data) {
+                            return data == 0 ? '-' : number_format(data, 0, ',', '.');
+                        }
+                    },
+                    @endif {
                         data: 'message',
                         name: 'message',
                         render: function(data) {

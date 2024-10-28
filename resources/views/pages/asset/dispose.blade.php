@@ -206,7 +206,7 @@
                                                 @if ($item->disposal_document)
                                                 <!-- Tampilkan tombol download jika disposal_document ada -->
                                                 <a href="{{ asset('storage/' . $item->disposal_document) }}" class="btn btn-sm mt-3 btn-secondary">DOWNLOAD DOKUMEN</a>
-                                                @elseif ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'APPROVE BY MANAGER')
+                                                @elseif (strtoupper($item->approval) === 'APPROVE BY DEPUTY GENERAL MANAGER' || strtoupper($item->approval) === 'APPROVE BY MANAGER')
                                                 <!-- Jika approval adalah 'Approve by Deputy General Manager', tampilkan tombol 'Add Document' -->
                                                 <a href="{{ route('add.document', $item->id) }}" class="btn btn-sm mt-3 btn-primary">ADD DOCUMENT</a>
                                                 @else
@@ -216,7 +216,7 @@
                                             </td>
                                             <td>{{ strtoupper($item->approval ?? '-') }}</td>
                                             <td>{{ strtoupper($item->note ?? '-') }}</td>
-                                            @if (Auth::user()->hirar === "MANAGER" || Auth::user()->hirar === "DEPUTY GENERAL MANAGER" || Auth::user()->hirar === "SUPERVISOR")
+                                            @if (Auth::user()->hirar === "Manager" || Auth::user()->hirar === "Deputy General Manager" || Auth::user()->hirar === "Supervisor")
                                             <td>
                                                 <form action="{{ route('approval') }}" method="post">
                                                     @csrf
@@ -224,58 +224,41 @@
                                                     <input type="hidden" name="itemId2" value="{{ strtoupper($item->asset_code) }}">
                                                     <input type="hidden" name="hirar" value="{{ Auth::user()->hirar }}">
 
-                                                    @if(Auth::user()->hirar == 'SUPERVISOR')
-                                                    <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY MANAGER' || $item->approval === 'REJECT BY MANAGER' || $item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    @if(strtoupper(Auth::user()->hirar) == 'SUPERVISOR')
+                                                    <!-- Approval button -->
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if (strtoupper($item->approval) === 'APPROVE BY MANAGER' || strtoupper($item->approval) === 'REJECT BY MANAGER' || strtoupper($item->approval) === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER') disabled @endif>
                                                         <i class="fas fa-check"></i>
                                                     </button>
 
-                                                    <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY MANAGER' || $item->approval === 'REJECT BY MANAGER' || $item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    <!-- Rejection button -->
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if (strtoupper($item->approval) === 'APPROVE BY MANAGER' || strtoupper($item->approval) === 'REJECT BY MANAGER' || strtoupper($item->approval) === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER') disabled @endif>
                                                         <i class="fas fa-times"></i>
                                                     </button>
-                                                    @elseif(Auth::user()->hirar == 'MANAGER')
-                                                    <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER' || $item->approval === 'PENDING')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    @elseif(strtoupper(Auth::user()->hirar) == 'MANAGER')
+                                                    <!-- Approval button -->
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if (strtoupper($item->approval) === 'APPROVE BY DEPUTY GENERAL MANAGER' || strtoupper($item->approval) === 'REJECT BY DEPUTY GENERAL MANAGER' || strtoupper($item->approval) === 'PENDING') disabled @endif>
                                                         <i class="fas fa-check"></i>
                                                     </button>
 
-                                                    <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY DEPUTY GENERAL MANAGER' || $item->approval === 'REJECT BY DEPUTY GENERAL MANAGER' || $item->approval === 'PENDING')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    <!-- Rejection button -->
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if (strtoupper($item->approval) === 'APPROVE BY DEPUTY GENERAL MANAGER' || strtoupper($item->approval) === 'REJECT BY DEPUTY GENERAL MANAGER' || strtoupper($item->approval) === 'PENDING') disabled @endif>
                                                         <i class="fas fa-times"></i>
                                                     </button>
-                                                    @elseif(Auth::user()->hirar == 'DEPUTY GENERAL MANAGER')
-                                                    <!-- Tombol Approve -->
-                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if ($item->approval === 'APPROVE BY SUPERVISOR' || $item->approval === 'REJECT BY SUPERVISOR' || $item->approval === 'PENDING')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    @elseif(strtoupper(Auth::user()->hirar) == 'DEPUTY GENERAL MANAGER')
+                                                    <!-- Approval button -->
+                                                    <button type="submit" name="approval_action" value="APPROVE" class="btn btn-success btn-sm mt-3" title="APPROVE" @if (strtoupper($item->approval) === 'APPROVE BY SUPERVISOR' || strtoupper($item->approval) === 'REJECT BY SUPERVISOR' || strtoupper($item->approval) === 'PENDING') disabled @endif>
                                                         <i class="fas fa-check"></i>
                                                     </button>
 
-                                                    <!-- Tombol Reject -->
-                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if ($item->approval === 'APPROVE BY SUPERVISOR' || $item->approval === 'REJECT BY SUPERVISOR' || $item->approval === 'PENDING')
-                                                        disabled
-                                                        @endif
-                                                        >
+                                                    <!-- Rejection button -->
+                                                    <button type="submit" name="approval_action" value="REJECT" class="btn btn-danger btn-sm mt-3" title="REJECT" @if (strtoupper($item->approval) === 'APPROVE BY SUPERVISOR' || strtoupper($item->approval) === 'REJECT BY SUPERVISOR' || strtoupper($item->approval) === 'PENDING') disabled @endif>
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                     @endif
                                                 </form>
                                             </td>
                                             @endif
+
                                         </tr>
                                         @endforeach
                                     </tbody>

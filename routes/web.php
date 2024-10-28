@@ -93,8 +93,8 @@ Route::post('/approval', function (Request $request) {
 		// Prepare email details
 		$details = [
 			'asset_code' => $itemId2,
-			'disposal_date' => $dispose->tanggal_penghapusan,
-			'remarks' => $dispose->note,
+			'disposal_date' => $dispose[0]->tanggal_penghapusan,
+			'remarks' => $dispose[0]->note,
 		];
 
 		// Send email notification from noreply email
@@ -106,8 +106,8 @@ Route::post('/approval', function (Request $request) {
 		// Prepare email details
 		$details = [
 			'asset_code' => $itemId2,
-			'disposal_date' => $dispose->tanggal_penghapusan,
-			'remarks' => $dispose->note,
+			'disposal_date' =>$dispose[0]->tanggal_penghapusan,
+			'remarks' => $dispose[0]->note,
 		];
 
 		// Send email notification from noreply email

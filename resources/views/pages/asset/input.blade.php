@@ -173,6 +173,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Created at') }}</th>
                                             @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified' || Auth::user()->status == 'Super Admin'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                             @endif
@@ -324,6 +325,19 @@
                             return data ? data.toUpperCase() : '-';
                         }
                     },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row) {
+                            // Create a new Date object from the timestamp
+                            const date = new Date(data);
+
+                            // Format the date as needed (e.g., YYYY-MM-DD)
+                            const formattedDate = date.toISOString().split('T')[0];
+
+                            return formattedDate;
+                        }
+                    },
                     @if(Auth::check() && (Auth::user() -> status == 'Administrator' || Auth::user() -> status == 'Super Admin' || Auth::user() -> status == 'Modified')) {
                         data: 'action',
                         name: 'action',
@@ -334,7 +348,7 @@
                 ],
                 pageLength: 50,
                 order: [
-                    [8, 'desc']
+                    [15, 'desc']
                 ],
                 dom: '<"top">rt<"bottom"ip><"clear">',
                 language: {

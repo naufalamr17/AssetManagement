@@ -723,7 +723,6 @@ class InventoryController extends Controller
 
         // Send email notification from noreply email
         Mail::to('endra.putra@mlpmining.com')  // Ganti dengan email tujuan
-            ->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
             ->send(new DisposeNotification($details));
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');

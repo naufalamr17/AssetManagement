@@ -101,19 +101,19 @@ Route::post('/approval', function (Request $request) {
 		Mail::to('galuh.swasintari@mlpmining.com')  // Ganti dengan email tujuan
 			->send(new DisposeNotification($details));
 	} elseif ($hirar = 'Manager') {
-		$dispose = dispose::where('id', $itemId)->get();
+		// $dispose = dispose::where('id', $itemId)->get();
 
-		// Prepare email details
-		$details = [
-			'asset_code' => $itemId2,
-			'disposal_date' =>$dispose[0]->tanggal_penghapusan,
-			'remarks' => $dispose[0]->note,
-		];
+		// // Prepare email details
+		// $details = [
+		// 	'asset_code' => $itemId2,
+		// 	'disposal_date' =>$dispose[0]->tanggal_penghapusan,
+		// 	'remarks' => $dispose[0]->note,
+		// ];
 
-		// Send email notification from noreply email
-		Mail::to('andisari.dewi@mlpmining.com')  // Ganti dengan email tujuan
-			->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
-			->send(new DisposeNotification($details));
+		// // Send email notification from noreply email
+		// Mail::to('andisari.dewi@mlpmining.com')  // Ganti dengan email tujuan
+		// 	->cc(['galuh.swasintari@mlpmining.com'])   // Tambahkan email CC jika diperlukan
+		// 	->send(new DisposeNotification($details));
 	}
 
 	dispose::where('id', $itemId)->update([

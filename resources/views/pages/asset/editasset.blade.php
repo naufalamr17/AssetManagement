@@ -54,12 +54,12 @@
                                             <label for="asset_category">Kategori</label>
                                             <select id="asset_category" class="form-control border p-2" name="asset_category" disabled required>
                                                 <option value="" selected disabled>Select Category</option>
-                                                <option value="Kendaraan" {{ $asset->asset_category == 'Kendaraan' ? 'selected' : '' }}>01 Kendaraan</option>
-                                                <option value="Peralatan" {{ $asset->asset_category == 'Peralatan' ? 'selected' : '' }}>02 Peralatan</option>
-                                                <option value="Bangunan" {{ $asset->asset_category == 'Bangunan' ? 'selected' : '' }}>03 Bangunan</option>
-                                                <option value="Mesin" {{ $asset->asset_category == 'Mesin' ? 'selected' : '' }}>04 Mesin</option>
-                                                <option value="Alat Berat" {{ $asset->asset_category == 'Alat Berat' ? 'selected' : '' }}>05 Alat Berat</option>
-                                                <option value="Alat Lab & Preparasi" {{ $asset->asset_category == 'Alat Lab & Preparasi' ? 'selected' : '' }}>06 Alat Lab & Preparasi</option>
+                                                <option value="Kendaraan" {{ strtolower($asset->asset_category) == 'kendaraan' ? 'selected' : '' }}>01 Kendaraan</option>
+                                                <option value="Peralatan" {{ strtolower($asset->asset_category) == 'peralatan' ? 'selected' : '' }}>02 Peralatan</option>
+                                                <option value="Bangunan" {{ strtolower($asset->asset_category) == 'bangunan' ? 'selected' : '' }}>03 Bangunan</option>
+                                                <option value="Mesin" {{ strtolower($asset->asset_category) == 'mesin' ? 'selected' : '' }}>04 Mesin</option>
+                                                <option value="Alat Berat" {{ strtolower($asset->asset_category) == 'alat berat' ? 'selected' : '' }}>05 Alat Berat</option>
+                                                <option value="Alat Lab & Preparasi" {{ strtolower($asset->asset_category) == 'alat lab & preparasi' ? 'selected' : '' }}>06 Alat Lab & Preparasi</option>
                                             </select>
                                             @if ($errors->has('asset_category'))
                                             <div class="text-danger mt-2">{{ $errors->first('asset_category') }}</div>

@@ -285,10 +285,7 @@
                     },
                     {
                         data: 'depreciated_value',
-                        name: 'depreciated_value',
-                        render: function(data) {
-                            return data == 0 ? '-' : number_format(data, 0, ',', '.');
-                        }
+                        name: 'depreciated_value'
                     },
                     @endif {
                         data: 'message',

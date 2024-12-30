@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\LetterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
@@ -30,8 +31,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-Route::get('/home', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
 // Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 // Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
 Route::get('sign-in', [SessionsController::class, 'create'])->middleware('guest')->name('login');
@@ -48,6 +48,8 @@ Route::get('/reset-password/{token}', function ($token) {
 Route::post('sign-out', [SessionsController::class, 'destroy'])->middleware('auth')->name('logout');
 Route::get('profile', [ProfileController::class, 'create'])->middleware('auth')->name('profile');
 Route::post('user-profile', [ProfileController::class, 'update'])->middleware('auth');
+
+Route::get('/generate-letter', [LetterController::class, 'generate'])->middleware('auth')->name('generate-letter');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

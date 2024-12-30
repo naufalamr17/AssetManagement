@@ -70,6 +70,14 @@
                     <span class="nav-link-text ms-1">Report</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ $activePage == 'generate-letter' ? ' active bg-gradient-danger' : '' }}" href="{{ route('generate-letter') }}" style="color: {{ $activePage == 'generate-letter' ? 'white' : 'black' }};">
+                    <div class="text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-file-alt" style="color: {{ $activePage == 'generate-letter' ? 'white' : 'black' }};"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Generate Letter</span>
+                </a>
+            </li>
             @endif
             @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
             <li class="nav-item">

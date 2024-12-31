@@ -285,7 +285,7 @@
                 var perihal = $('#perihal');
                 var hiddenPerihal = $('#hiddenPerihal');
 
-                if (jenisBA === 'PERPINDAHAN ASSET') {
+                if (jenisBA === 'ASSET SERAH TERIMA') {
                     perihal.prop('disabled', false);
                     hiddenPerihal.val('');
                 } else {

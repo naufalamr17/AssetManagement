@@ -51,6 +51,9 @@ Route::post('user-profile', [ProfileController::class, 'update'])->middleware('a
 
 Route::get('/generate-letter', [LetterController::class, 'generate'])->middleware('auth')->name('generate-letter');
 Route::post('/letters/store', [LetterController::class, 'store'])->middleware('auth')->name('letters.store');
+Route::get('/letters/{id}/edit', [LetterController::class, 'edit'])->middleware('auth')->name('letters.edit');
+Route::put('/letters/{id}', [LetterController::class, 'update'])->middleware('auth')->name('letters.update');
+Route::delete('/letters/{id}', [LetterController::class, 'destroy'])->middleware('auth')->name('letters.destroy');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

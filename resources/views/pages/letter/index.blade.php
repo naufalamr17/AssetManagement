@@ -124,15 +124,15 @@
                         <!-- The Modal -->
                         <div id="addDataModal" class="modal">
                             <div class="modal-content">
-                                <span class="close"></span>
-                                <h4>Add Data</h4>
-                                <form id="addDataForm" method="POST" action="{{ route('letters.store') }}">
+                                <span class="close">&times;</span>
+                                <h4 id="modalTitle">Add Data</h4>
+                                <form id="addDataForm" method="POST">
                                     @csrf
+                                    <input type="hidden" id="letterId" name="letterId">
                                     <div class="mb-3">
                                         <label for="tanggal" class="form-label">Tanggal</label>
                                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                                     </div>
-                                    
                                     <div class="mb-3">
                                         <label for="jenisBA" class="form-label">Jenis BA</label>
                                         <select class="form-control" id="jenisBA" name="jenisBA" required>
@@ -142,7 +142,6 @@
                                             <option value="ASSET HILANG">ASSET HILANG</option>
                                         </select>
                                     </div>
-
                                     <div class="mb-3">
                                         <label for="perihal" class="form-label">Perihal</label>
                                         <select class="form-control" id="perihal" name="perihal" required>
@@ -151,8 +150,9 @@
                                             <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
                                             <option value="MUTASI ASSET">MUTASI ASSET</option>
                                         </select>
+                                        <input type="hidden" id="hiddenPerihal" name="hiddenPerihal" value="-">
                                     </div>
-                                    <button type="submit" class="btn btn-danger">Submit</button> 
+                                    <button type="submit" class="btn btn-danger">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -202,13 +202,28 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('generate-letter') }}",
-                columns: [
-                    { data: 'tanggal', name: 'tanggal' },
-                    { data: 'kode_surat', name: 'kode_surat' },
-                    { data: 'perihal', name: 'perihal' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                columns: [{
+                        data: 'tanggal',
+                        name: 'tanggal'
+                    },
+                    {
+                        data: 'kode_surat',
+                        name: 'kode_surat'
+                    },
+                    {
+                        data: 'perihal',
+                        name: 'perihal'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
-                order: [[0, 'desc']],
+                order: [
+                    [0, 'desc']
+                ],
                 dom: '<"top">rt<"bottom"ip><"clear">',
                 createdRow: function(row, data, dataIndex) {
                     $(row).addClass('text-center').css('font-size', '14px');
@@ -246,6 +261,12 @@
 
             btn.onclick = function() {
                 modal.style.display = "block";
+                $('#addDataForm').trigger("reset");
+                $('#letterId').val('');
+                $('#modalTitle').text('Add Data');
+                $('#addDataForm').attr('action', "{{ route('letters.store') }}");
+                $('#addDataForm').attr('method', 'POST');
+                $('#tanggal').prop('readonly', false);
             }
 
             span.onclick = function() {
@@ -262,13 +283,59 @@
             $('#jenisBA').on('change', function() {
                 var jenisBA = $(this).val();
                 var perihal = $('#perihal');
+                var hiddenPerihal = $('#hiddenPerihal');
 
                 if (jenisBA === 'PERPINDAHAN ASSET') {
                     perihal.prop('disabled', false);
+                    hiddenPerihal.val('');
                 } else {
                     perihal.val('-').prop('disabled', true);
+                    hiddenPerihal.val('-');
                 }
             }).trigger('change'); // Trigger change event on page load to set initial state
+
+            // Update hidden input value on form submit
+            $('#addDataForm').on('submit', function() {
+                if ($('#perihal').prop('disabled')) {
+                    $('#hiddenPerihal').val($('#perihal').val());
+                }
+            });
+
+            // Edit button functionality
+            $('body').on('click', '.edit', function() {
+                var data = table.row($(this).parents('tr')).data();
+                $('#letterId').val(data.id);
+                $('#tanggal').val(data.tanggal).prop('readonly', true);
+                $('#jenisBA').val(data.jenisBA).trigger('change');
+                $('#perihal').val(data.perihal);
+                $('#modalTitle').text('Edit Data');
+                $('#addDataForm').attr('action', "{{ route('letters.update', '') }}/" + data.id);
+                $('#addDataForm').attr('method', 'POST');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_method',
+                    value: 'PUT'
+                }).appendTo('#addDataForm');
+                modal.style.display = "block";
+            });
+
+            // Delete button functionality
+            $('body').on('click', '.delete', function() {
+                var data = table.row($(this).parents('tr')).data();
+                if (confirm("Are you sure you want to delete this record?")) {
+                    $.ajax({
+                        url: "{{ route('letters.destroy', '') }}/" + data.id,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            table.ajax.reload();
+                            alert(response.success);
+                        }
+                    });
+                }
+            });
         });
     </script>
 </x-layout>

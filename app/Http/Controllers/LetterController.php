@@ -74,4 +74,57 @@ class LetterController extends Controller
 
         return redirect()->route('generate-letter')->with('success', 'Data has been added successfully.');
     }
+
+    public function edit($id)
+    {
+        $letter = Letter::findOrFail($id);
+        return response()->json($letter);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'perihal' => 'nullable|string|max:255',
+            'jenisBA' => 'required|string|max:255',
+        ]);
+
+        $perihal = $request->perihal ?? '-';
+
+        $letter = Letter::findOrFail($id);
+
+        // Update only the last two digits of kode_surat based on jenisBA
+        $kode_surat = $letter->kode_surat;
+        $kode_surat_parts = explode('/', $kode_surat);
+        switch ($request->jenisBA) {
+            case 'ASSET RUSAK':
+                $kode_surat_parts[4] = 'AR';
+                break;
+            case 'ASSET DISPOSE':
+                $kode_surat_parts[4] = 'AD';
+                break;
+            case 'ASSET HILANG':
+                $kode_surat_parts[4] = 'AH';
+                break;
+            default:
+                $kode_surat_parts[4] = 'AST'; // Default case if needed
+                break;
+        }
+        $kode_surat = implode('/', $kode_surat_parts);
+
+        $letter->update([
+            'tanggal' => $request->tanggal,
+            'perihal' => $perihal,
+            'jenisBA' => $request->jenisBA,
+            'kode_surat' => $kode_surat,
+        ]);
+
+        return redirect()->route('generate-letter')->with('success', 'Data has been updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        Letter::findOrFail($id)->delete();
+        return response()->json(['success' => 'Data has been deleted successfully.']);
+    }
 }

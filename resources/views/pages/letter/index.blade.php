@@ -157,6 +157,7 @@
                                 <table id="letterTable" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('No Surat') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Perihal') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
@@ -181,15 +182,32 @@
     <!-- Include DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
 
     <!-- Initialize DataTable -->
     <script>
         $(document).ready(function() {
             var table = $('#letterTable').DataTable({
-                "paging": false,
-                "pageLength": -1,
-                "order": [],
-                "dom": '<"top">rt<"bottom"ip><"clear">',
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('generate-letter') }}",
+                columns: [
+                    { data: 'tanggal', name: 'tanggal' },
+                    { data: 'kode_surat', name: 'kode_surat' },
+                    { data: 'perihal', name: 'perihal' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ],
+                order: [[0, 'desc']],
+                dom: '<"top">rt<"bottom"ip><"clear">',
+                createdRow: function(row, data, dataIndex) {
+                    $(row).addClass('text-center').css('font-size', '14px');
+                }
             });
 
             // Add the search functionality

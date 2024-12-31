@@ -132,22 +132,27 @@
                                         <label for="tanggal" class="form-label">Tanggal</label>
                                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="perihal" class="form-label">Perihal</label>
-                                        <input type="text" class="form-control" id="perihal" name="perihal" required>
-                                    </div>
+                                    
                                     <div class="mb-3">
                                         <label for="jenisBA" class="form-label">Jenis BA</label>
                                         <select class="form-control" id="jenisBA" name="jenisBA" required>
-                                            <option value="PEMINJAMAN ASSET">PEMINJAMAN ASSET</option>
-                                            <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
-                                            <option value="MUTASI ASSET">MUTASI ASSET</option>
+                                            <option value="PERPINDAHAN ASSET">PERPINDAHAN ASSET</option>
                                             <option value="ASSET RUSAK">ASSET RUSAK</option>
                                             <option value="ASSET DISPOSE">ASSET DISPOSE</option>
                                             <option value="ASSET HILANG">ASSET HILANG</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-danger">Submit</button>
+
+                                    <div class="mb-3">
+                                        <label for="perihal" class="form-label">Perihal</label>
+                                        <select class="form-control" id="perihal" name="perihal" required>
+                                            <option value="-" selected>-</option>
+                                            <option value="PEMINJAMAN ASSET">PEMINJAMAN ASSET</option>
+                                            <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
+                                            <option value="MUTASI ASSET">MUTASI ASSET</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Submit</button> 
                                 </form>
                             </div>
                         </div>
@@ -252,6 +257,18 @@
                     modal.style.display = "none";
                 }
             }
+
+            // Enable or disable "Perihal" based on "Jenis BA"
+            $('#jenisBA').on('change', function() {
+                var jenisBA = $(this).val();
+                var perihal = $('#perihal');
+
+                if (jenisBA === 'PERPINDAHAN ASSET') {
+                    perihal.prop('disabled', false);
+                } else {
+                    perihal.val('-').prop('disabled', true);
+                }
+            }).trigger('change'); // Trigger change event on page load to set initial state
         });
     </script>
 </x-layout>

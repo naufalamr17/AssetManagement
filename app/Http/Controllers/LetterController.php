@@ -30,9 +30,11 @@ class LetterController extends Controller
     {
         $request->validate([
             'tanggal' => 'required|date',
-            'perihal' => 'required|string|max:255',
+            'perihal' => 'nullable|string|max:255',
             'jenisBA' => 'required|string|max:255',
         ]);
+
+        $perihal = $request->perihal ?? '-';
 
         // Generate kode_surat based on jenisBA
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
@@ -65,7 +67,7 @@ class LetterController extends Controller
 
         Letter::create([
             'tanggal' => $request->tanggal,
-            'perihal' => $request->perihal,
+            'perihal' => $perihal,
             'jenisBA' => $request->jenisBA,
             'kode_surat' => $kode_surat,
         ]);

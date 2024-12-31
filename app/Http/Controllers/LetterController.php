@@ -22,6 +22,12 @@ class LetterController extends Controller
                     }
                     return $btn;
                 })
+                ->addColumn('creator', function ($row) {
+                    return $row->creator;
+                })
+                ->addColumn('location', function ($row) {
+                    return $row->location;
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -73,6 +79,8 @@ class LetterController extends Controller
             'perihal' => $perihal,
             'jenisBA' => $request->jenisBA,
             'kode_surat' => $kode_surat,
+            'creator' => Auth::user()->name,
+            'location' => Auth::user()->location,
         ]);
 
         return redirect()->route('generate-letter')->with('success', 'Data has been added successfully.');

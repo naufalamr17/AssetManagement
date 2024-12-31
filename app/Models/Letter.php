@@ -14,5 +14,7 @@ class Letter extends Model
         'tanggal',
         'perihal',
         'jenisBA',
+        'creator',
+        'location',
     ];
 }

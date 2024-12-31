@@ -165,6 +165,8 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('No Surat') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Perihal') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Creator') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -202,28 +204,15 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('generate-letter') }}",
-                columns: [{
-                        data: 'tanggal',
-                        name: 'tanggal'
-                    },
-                    {
-                        data: 'kode_surat',
-                        name: 'kode_surat'
-                    },
-                    {
-                        data: 'perihal',
-                        name: 'perihal'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    }
+                columns: [
+                    { data: 'tanggal', name: 'tanggal' },
+                    { data: 'kode_surat', name: 'kode_surat' },
+                    { data: 'perihal', name: 'perihal' },
+                    { data: 'creator', name: 'creator' },
+                    { data: 'location', name: 'location' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
-                order: [
-                    [0, 'desc']
-                ],
+                order: [[0, 'desc']],
                 dom: '<"top">rt<"bottom"ip><"clear">',
                 createdRow: function(row, data, dataIndex) {
                     $(row).addClass('text-center').css('font-size', '14px');

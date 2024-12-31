@@ -136,7 +136,7 @@
                                     <div class="mb-3">
                                         <label for="jenisBA" class="form-label">Jenis BA</label>
                                         <select class="form-control" id="jenisBA" name="jenisBA" required>
-                                            <option value="PERPINDAHAN ASSET">PERPINDAHAN ASSET</option>
+                                            <option value="ASSET SERAH TERIMA">ASSET SERAH TERIMA</option>
                                             <option value="ASSET RUSAK">ASSET RUSAK</option>
                                             <option value="ASSET DISPOSE">ASSET DISPOSE</option>
                                             <option value="ASSET HILANG">ASSET HILANG</option>

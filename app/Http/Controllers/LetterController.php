@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Letter;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class LetterController extends Controller
 {
@@ -16,7 +17,9 @@ class LetterController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '<a href="javascript:void(0)" class="edit btn btn-dark btn-sm mt-3"><i class="fas fa-edit"></i></a>';
-                    $btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm mt-3"><i class="fas fa-trash-alt"></i></a>';
+                    if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin') {
+                        $btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm mt-3"><i class="fas fa-trash-alt"></i></a>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['action'])

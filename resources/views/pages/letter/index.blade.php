@@ -126,7 +126,8 @@
                             <div class="modal-content">
                                 <span class="close"></span>
                                 <h4>Add Data</h4>
-                                <form id="addDataForm">
+                                <form id="addDataForm" method="POST" action="{{ route('letters.store') }}">
+                                    @csrf
                                     <div class="mb-3">
                                         <label for="tanggal" class="form-label">Tanggal</label>
                                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>
@@ -141,6 +142,9 @@
                                             <option value="PEMINJAMAN ASSET">PEMINJAMAN ASSET</option>
                                             <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
                                             <option value="MUTASI ASSET">MUTASI ASSET</option>
+                                            <option value="ASSET RUSAK">ASSET RUSAK</option>
+                                            <option value="ASSET DISPOSE">ASSET DISPOSE</option>
+                                            <option value="ASSET HILANG">ASSET HILANG</option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-danger">Submit</button>
@@ -230,23 +234,6 @@
                     modal.style.display = "none";
                 }
             }
-
-            $('#addDataForm').on('submit', function(e) {
-                e.preventDefault();
-                var tanggal = $('#tanggal').val();
-                var perihal = $('#perihal').val();
-                var jenisBA = $('#jenisBA').val();
-
-                // Add the new data to the table
-                table.row.add([
-                    'New No Surat', // Replace with actual No Surat
-                    perihal,
-                    '<button class="btn btn-sm btn-danger">Delete</button>'
-                ]).draw(false);
-
-                // Close the modal
-                modal.style.display = "none";
-            });
         });
     </script>
 </x-layout>

@@ -50,6 +50,7 @@ Route::get('profile', [ProfileController::class, 'create'])->middleware('auth')-
 Route::post('user-profile', [ProfileController::class, 'update'])->middleware('auth');
 
 Route::get('/generate-letter', [LetterController::class, 'generate'])->middleware('auth')->name('generate-letter');
+Route::post('/letters/store', [LetterController::class, 'store'])->middleware('auth')->name('letters.store');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

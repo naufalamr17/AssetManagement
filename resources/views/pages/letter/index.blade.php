@@ -124,7 +124,7 @@
                         <!-- The Modal -->
                         <div id="addDataModal" class="modal">
                             <div class="modal-content">
-                                <span class="close">&times;</span>
+                                <span class="close"></span>
                                 <h4 id="modalTitle">Add Data</h4>
                                 <form id="addDataForm" method="POST">
                                     @csrf

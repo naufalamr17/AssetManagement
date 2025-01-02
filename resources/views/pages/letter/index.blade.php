@@ -138,8 +138,8 @@
                                         <select class="form-control" id="jenisBA" name="jenisBA" required>
                                             <option value="ASSET SERAH TERIMA">ASSET SERAH TERIMA</option>
                                             <option value="ASSET RUSAK">ASSET RUSAK</option>
-                                            <option value="ASSET DISPOSE">ASSET DISPOSE</option>
                                             <option value="ASSET HILANG">ASSET HILANG</option>
+                                            <option value="FORM PENGHAPUSAN ASSET">FORM PENGHAPUSAN ASSET</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">

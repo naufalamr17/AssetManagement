@@ -50,29 +50,47 @@ class LetterController extends Controller
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
         $tahun = \Carbon\Carbon::parse($request->tanggal)->format('Y');
         $jenisBA = $request->jenisBA;
-        // Get the latest iterasi for the current year
-        $latestLetter = Letter::whereYear('tanggal', $tahun)->orderBy('id', 'desc')->first();
-        if ($latestLetter) {
-            $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
-            $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
-        } else {
-            $iterasi = '001';
-        }
-        $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
+        $kode_surat = '';
 
-        switch ($jenisBA) {
-            case 'ASSET RUSAK':
-                $kode_surat .= 'AR';
-                break;
-            case 'ASSET DISPOSE':
-                $kode_surat .= 'AD';
-                break;
-            case 'ASSET HILANG':
-                $kode_surat .= 'AH';
-                break;
-            default:
-                $kode_surat .= 'AST'; // Default case if needed
-                break;
+        if ($jenisBA == 'FORM PENGHAPUSAN ASSET') {
+            $bulan = \Carbon\Carbon::parse($request->tanggal)->format('m');
+            // Get the latest iterasi for FORM PENGHAPUSAN ASSET for the current year
+            $latestLetter = Letter::whereYear('tanggal', $tahun)
+                ->where('jenisBA', 'FORM PENGHAPUSAN ASSET')
+                ->orderBy('id', 'desc')
+                ->first();
+            if ($latestLetter) {
+                $latestIterasi = intval(explode('_', $latestLetter->kode_surat)[0]);
+                $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+            } else {
+                $iterasi = '001';
+            }
+            $kode_surat = "{$iterasi}_FPPA_GA-MLP/{$bulan}/{$tahun}";
+        } else {
+            // Get the latest iterasi for BA for the current year
+            $latestLetter = Letter::whereYear('tanggal', $tahun)
+                ->where('jenisBA', '!=', 'FORM PENGHAPUSAN ASSET')
+                ->orderBy('id', 'desc')
+                ->first();
+            if ($latestLetter) {
+                $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+            } else {
+                $iterasi = '001';
+            }
+            $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
+
+            switch ($jenisBA) {
+                case 'ASSET RUSAK':
+                    $kode_surat .= 'AR';
+                    break;
+                case 'ASSET HILANG':
+                    $kode_surat .= 'AH';
+                    break;
+                default:
+                    $kode_surat .= 'AST'; // Default case if needed
+                    break;
+            }
         }
 
         Letter::create([

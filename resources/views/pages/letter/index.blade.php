@@ -137,9 +137,8 @@
                                         <label for="jenisBA" class="form-label">Jenis BA</label>
                                         <select class="form-control" id="jenisBA" name="jenisBA" required>
                                             <option value="ASSET SERAH TERIMA">ASSET SERAH TERIMA</option>
-                                            <option value="ASSET RUSAK">ASSET RUSAK</option>
                                             <option value="ASSET HILANG">ASSET HILANG</option>
-                                            <option value="FORM PENGHAPUSAN ASSET">FORM PENGHAPUSAN ASSET</option>
+                                            <option value="FORM KERUSAKAN ASSET">FORM KERUSAKAN ASSET</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
@@ -275,10 +274,26 @@
                 var hiddenPerihal = $('#hiddenPerihal');
 
                 if (jenisBA === 'ASSET SERAH TERIMA') {
+                    perihal.html(`
+                        <option value="-" selected>-</option>
+                        <option value="PEMINJAMAN ASSET">PEMINJAMAN ASSET</option>
+                        <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
+                        <option value="MUTASI ASSET">MUTASI ASSET</option>
+                    `);
+                    perihal.prop('disabled', false);
+                    hiddenPerihal.val('');
+                } else if (jenisBA === 'FORM KERUSAKAN ASSET') {
+                    perihal.html(`
+                        <option value="PENGGANTIAN ASSET">PENGGANTIAN ASSET</option>
+                        <option value="PERBAIKAN ASSET">PERBAIKAN ASSET</option>
+                    `);
                     perihal.prop('disabled', false);
                     hiddenPerihal.val('');
                 } else {
-                    perihal.val('-').prop('disabled', true);
+                    perihal.html(`
+                        <option value="-" selected>-</option>
+                    `);
+                    perihal.prop('disabled', true);
                     hiddenPerihal.val('-');
                 }
             }).trigger('change'); // Trigger change event on page load to set initial state

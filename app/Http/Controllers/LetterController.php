@@ -52,11 +52,11 @@ class LetterController extends Controller
         $jenisBA = $request->jenisBA;
         $kode_surat = '';
 
-        if ($jenisBA == 'FORM PENGHAPUSAN ASSET') {
+        if ($jenisBA == 'FORM KERUSAKAN ASSET') {
             $bulan = \Carbon\Carbon::parse($request->tanggal)->format('m');
             // Get the latest iterasi for FORM PENGHAPUSAN ASSET for the current year
             $latestLetter = Letter::whereYear('tanggal', $tahun)
-                ->where('jenisBA', 'FORM PENGHAPUSAN ASSET')
+                ->where('jenisBA', 'FORM KERUSAKAN ASSET')
                 ->orderBy('id', 'desc')
                 ->first();
             if ($latestLetter) {
@@ -65,11 +65,11 @@ class LetterController extends Controller
             } else {
                 $iterasi = '001';
             }
-            $kode_surat = "{$iterasi}_FPPA_GA-MLP/{$bulan}/{$tahun}";
+            $kode_surat = "{$iterasi}_FKKA_GA-MLP/{$bulan}/{$tahun}";
         } else {
             // Get the latest iterasi for BA for the current year
             $latestLetter = Letter::whereYear('tanggal', $tahun)
-                ->where('jenisBA', '!=', 'FORM PENGHAPUSAN ASSET')
+                ->where('jenisBA', '!=', 'FORM KERUSAKAN ASSET')
                 ->orderBy('id', 'desc')
                 ->first();
             if ($latestLetter) {
@@ -81,9 +81,6 @@ class LetterController extends Controller
             $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
 
             switch ($jenisBA) {
-                case 'ASSET RUSAK':
-                    $kode_surat .= 'AR';
-                    break;
                 case 'ASSET HILANG':
                     $kode_surat .= 'AH';
                     break;

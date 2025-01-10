@@ -21,6 +21,7 @@ class LetterController extends Controller
                         $btn .= '<a href="javascript:void(0)" class="edit btn btn-dark btn-sm mt-3"><i class="fas fa-edit"></i></a>';
                         $btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm mt-3"><i class="fas fa-trash-alt"></i></a>';
                     }
+                    $btn .= ' <a href="' . route('letters.download', $row->id) . '" class="btn btn-info btn-sm mt-3"><i class="fas fa-download"></i></a>';
                     return $btn;
                 })
                 ->addColumn('creator', function ($row) {
@@ -153,5 +154,34 @@ class LetterController extends Controller
     {
         Letter::findOrFail($id)->delete();
         return response()->json(['success' => 'Data has been deleted successfully.']);
+    }
+
+    public function download($id)
+    {
+        $letter = Letter::findOrFail($id);
+
+        $beritaAcara = $letter->beritaAcara()->first();
+
+        $formKerusakan = $letter->formKerusakan()->first();
+
+        // dd($letter, $beritaAcara, $formKerusakan);
+
+        if ($letter->jenisBA == 'ASSET SERAH TERIMA') {
+            if ($letter->perihal == 'PEMINJAMAN ASSET') {
+                dd('PEMINJAMAN ASSET', $letter);
+            } elseif ($letter->perihal == 'PENGEMBALIAN ASSET') {
+                dd('PENGEMBALIAN ASSET', $letter);
+            } elseif ($letter->perihal == 'MUTASI ASSET') {
+                dd('MUTASI ASSET', $letter);
+            }
+        } elseif ($letter->jenisBA == 'ASSET HILANG') {
+            dd('ASSET HILANG', $letter);
+        } elseif ($letter->jenisBA == 'FORM KERUSAKAN ASSET') {
+            if ($letter->perihal == 'PENGGANTIAN ASSET') {
+                dd('PENGGANTIAN ASSET', $letter);
+            } elseif ($letter->perihal == 'PERBAIKAN ASSET') {
+                dd('PERBAIKAN ASSET', $letter);
+            }
+        }
     }
 }

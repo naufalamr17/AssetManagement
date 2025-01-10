@@ -17,4 +17,14 @@ class Letter extends Model
         'creator',
         'location',
     ];
+
+    public function beritaAcara()
+    {
+        return $this->hasMany(BeritaAcara::class);
+    }
+
+    public function formKerusakan()
+    {
+        return $this->hasMany(FormKerusakan::class);
+    }
 }

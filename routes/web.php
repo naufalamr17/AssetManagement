@@ -54,6 +54,7 @@ Route::post('/letters/store', [LetterController::class, 'store'])->middleware('a
 Route::get('/letters/{id}/edit', [LetterController::class, 'edit'])->middleware('auth')->name('letters.edit');
 Route::put('/letters/{id}', [LetterController::class, 'update'])->middleware('auth')->name('letters.update');
 Route::delete('/letters/{id}', [LetterController::class, 'destroy'])->middleware('auth')->name('letters.destroy');
+Route::get('/letters/download/{id}', [LetterController::class, 'download'])->middleware('auth')->name('letters.download');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

@@ -231,7 +231,6 @@ class LetterController extends Controller
                     $templateProcessor->setValue('tanggal_perolehan', $asset->acquisition_date);
                     $templateProcessor->setValue('kerusakan', $formKerusakan->kerusakan);
                     $templateProcessor->setValue('penyebab', $formKerusakan->penyebab);
-                    $templateProcessor->setValue('tindakan', $formKerusakan->tindakan);
                     $templateProcessor->setValue('nama', $formKerusakan->nama);
                     $templateProcessor->setValue('nik', $formKerusakan->nik);
                     $templateProcessor->setValue('jabatan', $formKerusakan->jabatan);

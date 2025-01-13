@@ -200,7 +200,43 @@ class LetterController extends Controller
         } elseif ($letter->jenisBA == 'FORM KERUSAKAN ASSET') {
             if ($letter->perihal == 'PENGGANTIAN ASSET') {
                 if ($formKerusakan) {
-                    dd('PENGGANTIAN ASSET', $letter, $formKerusakan);
+                    Carbon::setLocale('id');
+
+                    $date = Carbon::parse($letter->tanggal);
+                    $day = $date->translatedFormat('l'); // Full day name in Indonesian, e.g., Senin
+                    $dateFormatted = $date->format('d'); // Day of the month, e.g., 01
+                    $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
+                    $year = $date->format('Y'); // Year, e.g., 2023
+
+                    $asset = inventory::where('asset_code', $formKerusakan->kode_asset)->first();
+
+                    $templatePath = storage_path('app/public/templates/PENGGANTIAN.docx');
+                    $templateProcessor = new TemplateProcessor($templatePath);
+                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
+                    $templateProcessor->setValue('day', $day);
+                    $templateProcessor->setValue('date', $dateFormatted);
+                    $templateProcessor->setValue('month', $month);
+                    $templateProcessor->setValue('year', $year);
+                    $templateProcessor->setValue('kode_asset', $formKerusakan->kode_asset);
+                    $templateProcessor->setValue('jenis', $asset->asset_type);
+                    $templateProcessor->setValue('merk', $asset->merk);
+                    $templateProcessor->setValue('deskripsi', $asset->description);
+                    $templateProcessor->setValue('serial', $asset->serial_number);
+                    $templateProcessor->setValue('tanggal_perolehan', $asset->acquisition_date);
+                    $templateProcessor->setValue('kerusakan', $formKerusakan->kerusakan);
+                    $templateProcessor->setValue('penyebab', $formKerusakan->penyebab);
+                    $templateProcessor->setValue('harga_perolehan', 'Rp ' . number_format($asset->acquisition_value, 0, ',', '.'));
+                    $templateProcessor->setValue('nama', $formKerusakan->nama);
+                    $templateProcessor->setValue('nik', $formKerusakan->nik);
+                    $templateProcessor->setValue('jabatan', $formKerusakan->jabatan);
+
+                    // dd($templateProcessor);
+
+                    $tempFilePath = storage_path('app/FormKerusakanAsset_' . $letter->id . '.docx');
+                    $templateProcessor->saveAs($tempFilePath);
+
+                    // Return the document as a download response
+                    return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
                     dd('PENGGANTIAN ASSET SAJA', $letter);
                 }

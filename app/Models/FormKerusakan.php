@@ -15,6 +15,7 @@ class FormKerusakan extends Model
         'nik',
         'jabatan',
         'kode_asset',
+        'kerusakan',
         'penyebab',
         'tindakan',
     ];

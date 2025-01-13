@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nik');
             $table->string('jabatan');
             $table->string('kode_asset');
+            $table->text('kerusakan');
             $table->text('penyebab');
             $table->text('tindakan');
             $table->timestamps();

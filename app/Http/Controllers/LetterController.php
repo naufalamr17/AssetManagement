@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\inventory;
 use Illuminate\Http\Request;
 use App\Models\Letter;
+use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class LetterController extends Controller
 {
@@ -170,8 +173,10 @@ class LetterController extends Controller
             if ($letter->perihal == 'PEMINJAMAN ASSET') {
                 if ($beritaAcara) {
                     dd('PEMINJAMAN ASSET', $letter, $beritaAcara);
+                    // masuk ke logika download word
                 } else {
                     dd('PEMINJAMAN ASSET SAJA', $letter);
+                    // masuk ke logika input form berita acara
                 }
             } elseif ($letter->perihal == 'PENGEMBALIAN ASSET') {
                 if ($beritaAcara) {
@@ -201,7 +206,43 @@ class LetterController extends Controller
                 }
             } elseif ($letter->perihal == 'PERBAIKAN ASSET') {
                 if ($formKerusakan) {
-                    dd('PERBAIKAN ASSET', $letter, $formKerusakan);
+                    Carbon::setLocale('id');
+
+                    $date = Carbon::parse($letter->tanggal);
+                    $day = $date->translatedFormat('l'); // Full day name in Indonesian, e.g., Senin
+                    $dateFormatted = $date->format('d'); // Day of the month, e.g., 01
+                    $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
+                    $year = $date->format('Y'); // Year, e.g., 2023
+
+                    $asset = inventory::where('asset_code', $formKerusakan->kode_asset)->first();
+
+                    $templatePath = storage_path('app/public/templates/SERVICE.docx');
+                    $templateProcessor = new TemplateProcessor($templatePath);
+                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
+                    $templateProcessor->setValue('day', $day);
+                    $templateProcessor->setValue('date', $dateFormatted);
+                    $templateProcessor->setValue('month', $month);
+                    $templateProcessor->setValue('year', $year);
+                    $templateProcessor->setValue('kode_asset', $formKerusakan->kode_asset);
+                    $templateProcessor->setValue('jenis', $asset->asset_type);
+                    $templateProcessor->setValue('merk', $asset->merk);
+                    $templateProcessor->setValue('deskripsi', $asset->description);
+                    $templateProcessor->setValue('serial', $asset->serial_number);
+                    $templateProcessor->setValue('tanggal_perolehan', $asset->acquisition_date);
+                    $templateProcessor->setValue('kerusakan', $formKerusakan->kerusakan);
+                    $templateProcessor->setValue('penyebab', $formKerusakan->penyebab);
+                    $templateProcessor->setValue('tindakan', $formKerusakan->tindakan);
+                    $templateProcessor->setValue('nama', $formKerusakan->nama);
+                    $templateProcessor->setValue('nik', $formKerusakan->nik);
+                    $templateProcessor->setValue('jabatan', $formKerusakan->jabatan);
+
+                    // dd($templateProcessor);
+
+                    $tempFilePath = storage_path('app/FormKerusakanAsset_' . $letter->id . '.docx');
+                    $templateProcessor->saveAs($tempFilePath);
+
+                    // Return the document as a download response
+                    return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
                     dd('PERBAIKAN ASSET SAJA', $letter);
                 }

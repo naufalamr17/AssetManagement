@@ -168,19 +168,43 @@ class LetterController extends Controller
 
         if ($letter->jenisBA == 'ASSET SERAH TERIMA') {
             if ($letter->perihal == 'PEMINJAMAN ASSET') {
-                dd('PEMINJAMAN ASSET', $letter);
+                if ($beritaAcara) {
+                    dd('PEMINJAMAN ASSET', $letter, $beritaAcara);
+                } else {
+                    dd('PEMINJAMAN ASSET SAJA', $letter);
+                }
             } elseif ($letter->perihal == 'PENGEMBALIAN ASSET') {
-                dd('PENGEMBALIAN ASSET', $letter);
+                if ($beritaAcara) {
+                    dd('PENGEMBALIAN ASSET', $letter, $beritaAcara);
+                } else {
+                    dd('PENGEMBALIAN ASSET SAJA', $letter);
+                }
             } elseif ($letter->perihal == 'MUTASI ASSET') {
-                dd('MUTASI ASSET', $letter);
+                if ($beritaAcara) {
+                    dd('MUTASI ASSET', $letter, $beritaAcara);
+                } else {
+                    dd('MUTASI ASSET SAJA', $letter);
+                }
             }
         } elseif ($letter->jenisBA == 'ASSET HILANG') {
-            dd('ASSET HILANG', $letter);
+            if ($beritaAcara) {
+                dd('ASSET HILANG', $letter, $beritaAcara);
+            } else {
+                dd('ASSET HILANG SAJA', $letter);
+            }
         } elseif ($letter->jenisBA == 'FORM KERUSAKAN ASSET') {
             if ($letter->perihal == 'PENGGANTIAN ASSET') {
-                dd('PENGGANTIAN ASSET', $letter);
+                if ($formKerusakan) {
+                    dd('PENGGANTIAN ASSET', $letter, $formKerusakan);
+                } else {
+                    dd('PENGGANTIAN ASSET SAJA', $letter);
+                }
             } elseif ($letter->perihal == 'PERBAIKAN ASSET') {
-                dd('PERBAIKAN ASSET', $letter);
+                if ($formKerusakan) {
+                    dd('PERBAIKAN ASSET', $letter, $formKerusakan);
+                } else {
+                    dd('PERBAIKAN ASSET SAJA', $letter);
+                }
             }
         }
     }

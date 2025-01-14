@@ -21,6 +21,7 @@ class BeritaAcara extends Model
         'kronologi',
         'nama_2',
         'nik_2',
+        'dept_2',
         'jabatan_2',
         'tujuan',
     ];

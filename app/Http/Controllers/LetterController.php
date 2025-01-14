@@ -172,8 +172,56 @@ class LetterController extends Controller
         if ($letter->jenisBA == 'ASSET SERAH TERIMA') {
             if ($letter->perihal == 'PEMINJAMAN ASSET') {
                 if ($beritaAcara->isNotEmpty()) {
-                    dd('PEMINJAMAN ASSET', $letter, $beritaAcara);
-                    // masuk ke logika download word
+                    Carbon::setLocale('id');
+
+                    $date = Carbon::parse($letter->tanggal);
+                    $day = $date->translatedFormat('l'); // Full day name in Indonesian, e.g., Senin
+                    $dateFormatted = $date->format('d'); // Day of the month, e.g., 01
+                    $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
+                    $year = $date->format('Y'); // Year, e.g., 2023
+
+                    $templatePath = storage_path('app/public/templates/PEMINJAMAN.docx');
+                    $templateProcessor = new TemplateProcessor($templatePath);
+                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
+                    $templateProcessor->setValue('day', $day);
+                    $templateProcessor->setValue('date', $dateFormatted);
+                    $templateProcessor->setValue('month', $month);
+                    $templateProcessor->setValue('year', $year);
+
+                    $firstBeritaAcara = $beritaAcara->first();
+                    $templateProcessor->setValue('nama', $firstBeritaAcara->nama);
+                    $templateProcessor->setValue('nik', $firstBeritaAcara->nik);
+                    $templateProcessor->setValue('dept', $firstBeritaAcara->dept);
+                    $templateProcessor->setValue('jabatan', $firstBeritaAcara->jabatan);
+                    $templateProcessor->setValue('alamat', $firstBeritaAcara->alamat);
+
+                    // Pastikan berita acara ada
+                    if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {
+                        $rowCount = $beritaAcara->count(); // Hitung jumlah data
+                        $templateProcessor->cloneRow('kode_asset', $rowCount); // Gandakan baris sesuai jumlah data
+
+                        foreach ($beritaAcara as $index => $item) {
+                            $asset = inventory::where('asset_code', $item->no_asset)->first();
+
+                            // Indeks Word mulai dari 1, bukan 0
+                            $rowNumber = $index + 1;
+
+                            // Mengisi placeholder dengan data sesuai baris
+                            $templateProcessor->setValue("kode_asset#{$rowNumber}", $asset->asset_code ?? '');
+                            $templateProcessor->setValue("description#{$rowNumber}", $asset->description ?? '');
+                            $templateProcessor->setValue("serial_number#{$rowNumber}", $asset->serial_number ?? '');
+                            $templateProcessor->setValue("tanggal#{$rowNumber}", Carbon::parse($item->tanggal)->format('d-m-Y') ?? '');
+                            $templateProcessor->setValue("alasan#{$rowNumber}", $item->alasan ?? '');
+                        }
+                    }
+
+                    $templateProcessor->setValue('kronologi', $firstBeritaAcara->kronologi);
+
+                    $tempFilePath = storage_path('app/BeritaAcara_' . $letter->id . '.docx');
+                    $templateProcessor->saveAs($tempFilePath);
+
+                    // Return the document as a download response
+                    return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
                     dd('PEMINJAMAN ASSET SAJA', $letter);
                     // masuk ke logika input form berita acara

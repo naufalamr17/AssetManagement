@@ -171,7 +171,7 @@ class LetterController extends Controller
 
         if ($letter->jenisBA == 'ASSET SERAH TERIMA') {
             if ($letter->perihal == 'PEMINJAMAN ASSET') {
-                if ($beritaAcara) {
+                if ($beritaAcara->isNotEmpty()) {
                     dd('PEMINJAMAN ASSET', $letter, $beritaAcara);
                     // masuk ke logika download word
                 } else {
@@ -179,20 +179,20 @@ class LetterController extends Controller
                     // masuk ke logika input form berita acara
                 }
             } elseif ($letter->perihal == 'PENGEMBALIAN ASSET') {
-                if ($beritaAcara) {
+                if ($beritaAcara->isNotEmpty()) {
                     dd('PENGEMBALIAN ASSET', $letter, $beritaAcara);
                 } else {
                     dd('PENGEMBALIAN ASSET SAJA', $letter);
                 }
             } elseif ($letter->perihal == 'MUTASI ASSET') {
-                if ($beritaAcara) {
+                if ($beritaAcara->isNotEmpty()) {
                     dd('MUTASI ASSET', $letter, $beritaAcara);
                 } else {
                     dd('MUTASI ASSET SAJA', $letter);
                 }
             }
         } elseif ($letter->jenisBA == 'ASSET HILANG') {
-            if ($beritaAcara) {
+            if ($beritaAcara->isNotEmpty()) {
                 Carbon::setLocale('id');
 
                 $date = Carbon::parse($letter->tanggal);

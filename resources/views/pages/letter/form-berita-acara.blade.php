@@ -48,7 +48,7 @@
                                             <label for="alamat">Alamat</label>
                                             <input type="text" class="form-control border p-2" id="alamat" name="alamat" required>
                                         </div>
-                                        @endif  
+                                        @endif
 
                                         @if($letter->perihal == 'MUTASI ASSET')
                                         <div class="form-group">
@@ -81,26 +81,35 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="no_asset">No Asset</label>
-                                            <input list="assetList" class="form-control border p-2" name="no_asset" required>
-                                            <datalist id="assetList">
-                                                @foreach(App\Models\inventory::all() as $inventory)
-                                                <option value="{{ $inventory->asset_code }}">
-                                                    {{ $inventory->asset_code }} ({{ $inventory->description }})
-                                                </option>
-                                                @endforeach
-                                            </datalist>
-                                        </div>
+                                        <div id="dynamic-fields">
+                                            <div class="dynamic-field">
+                                                <div class="form-group">
+                                                    <label for="no_asset">No Asset</label>
+                                                    <input list="assetList" class="form-control border p-2" name="no_asset[]" required>
+                                                    <datalist id="assetList">
+                                                        @foreach(App\Models\inventory::all() as $inventory)
+                                                        <option value="{{ $inventory->asset_code }}">
+                                                            {{ $inventory->asset_code }} ({{ $inventory->description }})
+                                                        </option>
+                                                        @endforeach
+                                                    </datalist>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label for="tanggal">Tanggal</label>
-                                            <input type="date" class="form-control border p-2" name="tanggal" required>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="tanggal">Tanggal</label>
+                                                    <input type="date" class="form-control border p-2" name="tanggal[]" required>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label for="alasan">Alasan</label>
-                                            <textarea class="form-control border p-2" name="alasan" required></textarea>
+                                                <div class="form-group">
+                                                    <label for="alasan">Alasan</label>
+                                                    <textarea class="form-control border p-2" name="alasan[]" required></textarea>
+                                                </div>
+
+                                                <div class="d-flex justify-content-end gap-2 mt-2">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-field">Remove</button>
+                                                    <button type="button" class="btn btn-dark btn-sm add-field">Add More</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -112,6 +121,35 @@
                         </div>
 
                         <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                function attachRemoveEvent(button) {
+                                    button.addEventListener('click', function() {
+                                        button.closest('.dynamic-field').remove();
+                                    });
+                                }
+
+                                document.addEventListener('click', function(event) {
+                                    if (event.target.classList.contains('add-field')) {
+                                        var newField = document.querySelector('.dynamic-field').cloneNode(true);
+                                        newField.querySelectorAll('input, textarea').forEach(function(input) {
+                                            input.value = '';
+                                        });
+                                        var removeButton = newField.querySelector('.remove-field');
+                                        attachRemoveEvent(removeButton);
+                                        document.getElementById('dynamic-fields').appendChild(newField);
+                                    }
+
+                                    if (event.target.classList.contains('remove-field')) {
+                                        event.target.closest('.dynamic-field').remove();
+                                    }
+                                });
+
+                                // Attach event listeners to existing remove buttons
+                                document.querySelectorAll('.remove-field').forEach(function(button) {
+                                    attachRemoveEvent(button);
+                                });
+                            });
+
                             document.getElementById('nama').addEventListener('input', function() {
                                 var selectedOption = document.querySelector('#employeeList option[value="' + this.value + '"]');
                                 if (selectedOption) {

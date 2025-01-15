@@ -484,9 +484,9 @@ class LetterController extends Controller
     public function showBeritaAcaraForm($id)
     {
         $letter = Letter::findOrFail($id);
+        $results = DB::connection('travel')->select('SELECT * FROM employees');
 
-        dd($letter);
-        return view('form-berita-acara', compact('letter'));
+        return view('pages.letter.form-berita-acara', compact('letter', 'results'));
     }
 
     public function showKerusakanForm($id)

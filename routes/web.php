@@ -58,6 +58,7 @@ Route::get('/letters/download/{id}', [LetterController::class, 'download'])->mid
 Route::get('/form-berita-acara/{id}', [LetterController::class, 'showBeritaAcaraForm'])->name('form-berita-acara');
 Route::get('/form-kerusakan/{id}', [LetterController::class, 'showKerusakanForm'])->name('form-kerusakan');
 Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->name('kerusakan.store');
+Route::post('/berita-acara/store', [LetterController::class, 'storeBeritaAcara'])->name('berita-acara.store');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

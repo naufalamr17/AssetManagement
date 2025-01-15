@@ -144,7 +144,6 @@
                                     <div class="mb-3">
                                         <label for="perihal" class="form-label">Perihal</label>
                                         <select class="form-control" id="perihal" name="perihal" required>
-                                            <option value="-" selected>-</option>
                                             <option value="PEMINJAMAN ASSET">PEMINJAMAN ASSET</option>
                                             <option value="PENGEMBALIAN ASSET">PENGEMBALIAN ASSET</option>
                                             <option value="MUTASI ASSET">MUTASI ASSET</option>

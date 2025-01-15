@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BeritaAcara;
 use App\Models\FormKerusakan;
 use App\Models\inventory;
 use Illuminate\Http\Request;
@@ -511,6 +512,50 @@ class LetterController extends Controller
         ]);
 
         FormKerusakan::create($request->all());
+
+        return redirect()->route('letters.download', $request->letter_id);
+    }
+
+    public function storeBeritaAcara(Request $request)
+    {
+        $request->validate([
+            'letter_id' => 'required|exists:letters,id',
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|string|max:255',
+            'dept' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'alamat' => 'nullable|string|max:255',
+            'no_asset' => 'required|array',
+            'no_asset.*' => 'required|string|max:255',
+            'tanggal' => 'required|array',
+            'tanggal.*' => 'required|date',
+            'alasan' => 'required|array',
+            'alasan.*' => 'required|string',
+            'kronologi' => 'nullable|string',
+            'nama_2' => 'nullable|string|max:255',
+            'nik_2' => 'nullable|string|max:255',
+            'dept_2' => 'nullable|string|max:255',
+            'jabatan_2' => 'nullable|string|max:255',
+        ]);
+
+        foreach ($request->no_asset as $index => $no_asset) {
+            BeritaAcara::create([
+                'letter_id' => $request->letter_id,
+                'nama' => $request->nama,
+                'nik' => $request->nik,
+                'dept' => $request->dept,
+                'jabatan' => $request->jabatan,
+                'alamat' => $request->alamat,
+                'no_asset' => $no_asset,
+                'tanggal' => $request->tanggal[$index],
+                'alasan' => $request->alasan[$index],
+                'kronologi' => $request->kronologi,
+                'nama_2' => $request->nama_2,
+                'nik_2' => $request->nik_2,
+                'dept_2' => $request->dept_2,
+                'jabatan_2' => $request->jabatan_2,
+            ]);
+        }
 
         return redirect()->route('letters.download', $request->letter_id);
     }

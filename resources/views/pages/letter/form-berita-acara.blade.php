@@ -122,9 +122,19 @@
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
+                                function updateRemoveButtons() {
+                                    const removeButtons = document.querySelectorAll('.remove-field');
+                                    if (removeButtons.length === 1) {
+                                        removeButtons[0].disabled = true;
+                                    } else {
+                                        removeButtons.forEach(button => button.disabled = false);
+                                    }
+                                }
+
                                 function attachRemoveEvent(button) {
                                     button.addEventListener('click', function() {
                                         button.closest('.dynamic-field').remove();
+                                        updateRemoveButtons();
                                     });
                                 }
 
@@ -137,10 +147,12 @@
                                         var removeButton = newField.querySelector('.remove-field');
                                         attachRemoveEvent(removeButton);
                                         document.getElementById('dynamic-fields').appendChild(newField);
+                                        updateRemoveButtons();
                                     }
 
                                     if (event.target.classList.contains('remove-field')) {
                                         event.target.closest('.dynamic-field').remove();
+                                        updateRemoveButtons();
                                     }
                                 });
 
@@ -148,6 +160,8 @@
                                 document.querySelectorAll('.remove-field').forEach(function(button) {
                                     attachRemoveEvent(button);
                                 });
+
+                                updateRemoveButtons();
                             });
 
                             document.getElementById('nama').addEventListener('input', function() {

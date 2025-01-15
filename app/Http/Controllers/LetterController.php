@@ -185,18 +185,18 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/PEMINJAMAN.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
-                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                    $templateProcessor->setValue('day', $day);
-                    $templateProcessor->setValue('date', $dateFormatted);
-                    $templateProcessor->setValue('month', $month);
-                    $templateProcessor->setValue('year', $year);
+                    $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                    $templateProcessor->setValue('month', htmlspecialchars($month));
+                    $templateProcessor->setValue('year', htmlspecialchars($year));
 
                     $firstBeritaAcara = $beritaAcara->first();
-                    $templateProcessor->setValue('nama', $firstBeritaAcara->nama);
-                    $templateProcessor->setValue('nik', $firstBeritaAcara->nik);
-                    $templateProcessor->setValue('dept', $firstBeritaAcara->dept);
-                    $templateProcessor->setValue('jabatan', $firstBeritaAcara->jabatan);
-                    $templateProcessor->setValue('alamat', $firstBeritaAcara->alamat);
+                    $templateProcessor->setValue('nama', htmlspecialchars($firstBeritaAcara->nama));
+                    $templateProcessor->setValue('nik', htmlspecialchars($firstBeritaAcara->nik));
+                    $templateProcessor->setValue('dept', htmlspecialchars($firstBeritaAcara->dept));
+                    $templateProcessor->setValue('jabatan', htmlspecialchars($firstBeritaAcara->jabatan));
+                    $templateProcessor->setValue('alamat', htmlspecialchars($firstBeritaAcara->alamat));
 
                     // Pastikan berita acara ada
                     if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {
@@ -210,15 +210,15 @@ class LetterController extends Controller
                             $rowNumber = $index + 1;
 
                             // Mengisi placeholder dengan data sesuai baris
-                            $templateProcessor->setValue("kode_asset#{$rowNumber}", $asset->asset_code ?? '');
-                            $templateProcessor->setValue("description#{$rowNumber}", $asset->description ?? '');
-                            $templateProcessor->setValue("serial_number#{$rowNumber}", $asset->serial_number ?? '');
-                            $templateProcessor->setValue("tanggal#{$rowNumber}", Carbon::parse($item->tanggal)->format('d-m-Y') ?? '');
-                            $templateProcessor->setValue("alasan#{$rowNumber}", $item->alasan ?? '');
+                            $templateProcessor->setValue("kode_asset#{$rowNumber}", htmlspecialchars($asset->asset_code ?? ''));
+                            $templateProcessor->setValue("description#{$rowNumber}", htmlspecialchars($asset->description ?? ''));
+                            $templateProcessor->setValue("serial_number#{$rowNumber}", htmlspecialchars($asset->serial_number ?? ''));
+                            $templateProcessor->setValue("tanggal#{$rowNumber}", htmlspecialchars(Carbon::parse($item->tanggal)->format('d-m-Y') ?? ''));
+                            $templateProcessor->setValue("alasan#{$rowNumber}", htmlspecialchars($item->alasan ?? ''));
                         }
                     }
 
-                    $templateProcessor->setValue('kronologi', $firstBeritaAcara->kronologi);
+                    $templateProcessor->setValue('kronologi', htmlspecialchars($firstBeritaAcara->kronologi));
 
                     $tempFilePath = storage_path('app/BeritaAcara_' . $letter->id . '.docx');
                     $templateProcessor->saveAs($tempFilePath);
@@ -240,18 +240,18 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/PENGEMBALIAN.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
-                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                    $templateProcessor->setValue('day', $day);
-                    $templateProcessor->setValue('date', $dateFormatted);
-                    $templateProcessor->setValue('month', $month);
-                    $templateProcessor->setValue('year', $year);
+                    $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                    $templateProcessor->setValue('month', htmlspecialchars($month));
+                    $templateProcessor->setValue('year', htmlspecialchars($year));
 
                     $firstBeritaAcara = $beritaAcara->first();
-                    $templateProcessor->setValue('nama', $firstBeritaAcara->nama);
-                    $templateProcessor->setValue('nik', $firstBeritaAcara->nik);
-                    $templateProcessor->setValue('dept', $firstBeritaAcara->dept);
-                    $templateProcessor->setValue('jabatan', $firstBeritaAcara->jabatan);
-                    $templateProcessor->setValue('alamat', $firstBeritaAcara->alamat);
+                    $templateProcessor->setValue('nama', htmlspecialchars($firstBeritaAcara->nama));
+                    $templateProcessor->setValue('nik', htmlspecialchars($firstBeritaAcara->nik));
+                    $templateProcessor->setValue('dept', htmlspecialchars($firstBeritaAcara->dept));
+                    $templateProcessor->setValue('jabatan', htmlspecialchars($firstBeritaAcara->jabatan));
+                    $templateProcessor->setValue('alamat', htmlspecialchars($firstBeritaAcara->alamat));
 
                     // Pastikan berita acara ada
                     if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {
@@ -265,15 +265,15 @@ class LetterController extends Controller
                             $rowNumber = $index + 1;
 
                             // Mengisi placeholder dengan data sesuai baris
-                            $templateProcessor->setValue("kode_asset#{$rowNumber}", $asset->asset_code ?? '');
-                            $templateProcessor->setValue("description#{$rowNumber}", $asset->description ?? '');
-                            $templateProcessor->setValue("serial_number#{$rowNumber}", $asset->serial_number ?? '');
-                            $templateProcessor->setValue("tanggal#{$rowNumber}", Carbon::parse($item->tanggal)->format('d-m-Y') ?? '');
-                            $templateProcessor->setValue("alasan#{$rowNumber}", $item->alasan ?? '');
+                            $templateProcessor->setValue("kode_asset#{$rowNumber}", htmlspecialchars($asset->asset_code ?? ''));
+                            $templateProcessor->setValue("description#{$rowNumber}", htmlspecialchars($asset->description ?? ''));
+                            $templateProcessor->setValue("serial_number#{$rowNumber}", htmlspecialchars($asset->serial_number ?? ''));
+                            $templateProcessor->setValue("tanggal#{$rowNumber}", htmlspecialchars(Carbon::parse($item->tanggal)->format('d-m-Y') ?? ''));
+                            $templateProcessor->setValue("alasan#{$rowNumber}", htmlspecialchars($item->alasan ?? ''));
                         }
                     }
 
-                    $templateProcessor->setValue('kronologi', $firstBeritaAcara->kronologi);
+                    $templateProcessor->setValue('kronologi', htmlspecialchars($firstBeritaAcara->kronologi));
 
                     $tempFilePath = storage_path('app/BeritaAcara_' . $letter->id . '.docx');
                     $templateProcessor->saveAs($tempFilePath);
@@ -295,20 +295,20 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/MUTASI.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
-                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                    $templateProcessor->setValue('day', $day);
-                    $templateProcessor->setValue('date', $dateFormatted);
-                    $templateProcessor->setValue('month', $month);
-                    $templateProcessor->setValue('year', $year);
+                    $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                    $templateProcessor->setValue('month', htmlspecialchars($month));
+                    $templateProcessor->setValue('year', htmlspecialchars($year));
 
                     $firstBeritaAcara = $beritaAcara->first();
-                    $templateProcessor->setValue('nama', $firstBeritaAcara->nama);
-                    $templateProcessor->setValue('dept', $firstBeritaAcara->dept);
-                    $templateProcessor->setValue('jabatan', $firstBeritaAcara->jabatan);
+                    $templateProcessor->setValue('nama', htmlspecialchars($firstBeritaAcara->nama));
+                    $templateProcessor->setValue('dept', htmlspecialchars($firstBeritaAcara->dept));
+                    $templateProcessor->setValue('jabatan', htmlspecialchars($firstBeritaAcara->jabatan));
 
-                    $templateProcessor->setValue('nama2', $firstBeritaAcara->nama_2);
-                    $templateProcessor->setValue('dept2', $firstBeritaAcara->dept_2);
-                    $templateProcessor->setValue('jabatan2', $firstBeritaAcara->jabatan_2);
+                    $templateProcessor->setValue('nama2', htmlspecialchars($firstBeritaAcara->nama_2));
+                    $templateProcessor->setValue('dept2', htmlspecialchars($firstBeritaAcara->dept_2));
+                    $templateProcessor->setValue('jabatan2', htmlspecialchars($firstBeritaAcara->jabatan_2));
 
                     // Pastikan berita acara ada
                     if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {
@@ -322,11 +322,11 @@ class LetterController extends Controller
                             $rowNumber = $index + 1;
 
                             // Mengisi placeholder dengan data sesuai baris
-                            $templateProcessor->setValue("kode_asset#{$rowNumber}", $asset->asset_code ?? '');
-                            $templateProcessor->setValue("description#{$rowNumber}", $asset->description ?? '');
-                            $templateProcessor->setValue("serial_number#{$rowNumber}", $asset->serial_number ?? '');
-                            $templateProcessor->setValue("tanggal#{$rowNumber}", Carbon::parse($item->tanggal)->format('d-m-Y') ?? '');
-                            $templateProcessor->setValue("alasan#{$rowNumber}", $item->alasan ?? '');
+                            $templateProcessor->setValue("kode_asset#{$rowNumber}", htmlspecialchars($asset->asset_code ?? ''));
+                            $templateProcessor->setValue("description#{$rowNumber}", htmlspecialchars($asset->description ?? ''));
+                            $templateProcessor->setValue("serial_number#{$rowNumber}", htmlspecialchars($asset->serial_number ?? ''));
+                            $templateProcessor->setValue("tanggal#{$rowNumber}", htmlspecialchars(Carbon::parse($item->tanggal)->format('d-m-Y') ?? ''));
+                            $templateProcessor->setValue("alasan#{$rowNumber}", htmlspecialchars($item->alasan ?? ''));
                         }
                     }
 
@@ -351,18 +351,18 @@ class LetterController extends Controller
 
                 $templatePath = storage_path('app/public/templates/HILANG.docx');
                 $templateProcessor = new TemplateProcessor($templatePath);
-                $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                $templateProcessor->setValue('day', $day);
-                $templateProcessor->setValue('date', $dateFormatted);
-                $templateProcessor->setValue('month', $month);
-                $templateProcessor->setValue('year', $year);
+                $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                $templateProcessor->setValue('day', htmlspecialchars($day));
+                $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                $templateProcessor->setValue('month', htmlspecialchars($month));
+                $templateProcessor->setValue('year', htmlspecialchars($year));
 
                 $firstBeritaAcara = $beritaAcara->first();
-                $templateProcessor->setValue('nama', $firstBeritaAcara->nama);
-                $templateProcessor->setValue('nik', $firstBeritaAcara->nik);
-                $templateProcessor->setValue('dept', $firstBeritaAcara->dept);
-                $templateProcessor->setValue('jabatan', $firstBeritaAcara->jabatan);
-                $templateProcessor->setValue('alamat', $firstBeritaAcara->alamat);
+                $templateProcessor->setValue('nama', htmlspecialchars($firstBeritaAcara->nama));
+                $templateProcessor->setValue('nik', htmlspecialchars($firstBeritaAcara->nik));
+                $templateProcessor->setValue('dept', htmlspecialchars($firstBeritaAcara->dept));
+                $templateProcessor->setValue('jabatan', htmlspecialchars($firstBeritaAcara->jabatan));
+                $templateProcessor->setValue('alamat', htmlspecialchars($firstBeritaAcara->alamat));
 
                 // Pastikan berita acara ada
                 if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {
@@ -376,15 +376,15 @@ class LetterController extends Controller
                         $rowNumber = $index + 1;
 
                         // Mengisi placeholder dengan data sesuai baris
-                        $templateProcessor->setValue("kode_asset#{$rowNumber}", $asset->asset_code ?? '');
-                        $templateProcessor->setValue("description#{$rowNumber}", $asset->description ?? '');
-                        $templateProcessor->setValue("serial_number#{$rowNumber}", $asset->serial_number ?? '');
-                        $templateProcessor->setValue("tanggal#{$rowNumber}", Carbon::parse($item->tanggal)->format('d-m-Y') ?? '');
-                        $templateProcessor->setValue("alasan#{$rowNumber}", $item->alasan ?? '');
+                        $templateProcessor->setValue("kode_asset#{$rowNumber}", htmlspecialchars($asset->asset_code ?? ''));
+                        $templateProcessor->setValue("description#{$rowNumber}", htmlspecialchars($asset->description ?? ''));
+                        $templateProcessor->setValue("serial_number#{$rowNumber}", htmlspecialchars($asset->serial_number ?? ''));
+                        $templateProcessor->setValue("tanggal#{$rowNumber}", htmlspecialchars(Carbon::parse($item->tanggal)->format('d-m-Y') ?? ''));
+                        $templateProcessor->setValue("alasan#{$rowNumber}", htmlspecialchars($item->alasan ?? ''));
                     }
                 }
 
-                $templateProcessor->setValue('kronologi', $firstBeritaAcara->kronologi);
+                $templateProcessor->setValue('kronologi', htmlspecialchars($firstBeritaAcara->kronologi));
 
                 $tempFilePath = storage_path('app/BeritaAcara_' . $letter->id . '.docx');
                 $templateProcessor->saveAs($tempFilePath);
@@ -409,23 +409,23 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/PENGGANTIAN.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
-                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                    $templateProcessor->setValue('day', $day);
-                    $templateProcessor->setValue('date', $dateFormatted);
-                    $templateProcessor->setValue('month', $month);
-                    $templateProcessor->setValue('year', $year);
-                    $templateProcessor->setValue('kode_asset', $formKerusakan->kode_asset);
-                    $templateProcessor->setValue('jenis', $asset->asset_type);
-                    $templateProcessor->setValue('merk', $asset->merk);
-                    $templateProcessor->setValue('deskripsi', $asset->description);
-                    $templateProcessor->setValue('serial', $asset->serial_number);
-                    $templateProcessor->setValue('tanggal_perolehan', $asset->acquisition_date);
-                    $templateProcessor->setValue('kerusakan', $formKerusakan->kerusakan);
-                    $templateProcessor->setValue('penyebab', $formKerusakan->penyebab);
-                    $templateProcessor->setValue('harga_perolehan', 'Rp ' . number_format($asset->acquisition_value, 0, ',', '.'));
-                    $templateProcessor->setValue('nama', $formKerusakan->nama);
-                    $templateProcessor->setValue('nik', $formKerusakan->nik);
-                    $templateProcessor->setValue('jabatan', $formKerusakan->jabatan);
+                    $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                    $templateProcessor->setValue('month', htmlspecialchars($month));
+                    $templateProcessor->setValue('year', htmlspecialchars($year));
+                    $templateProcessor->setValue('kode_asset', htmlspecialchars($formKerusakan->kode_asset));
+                    $templateProcessor->setValue('jenis', htmlspecialchars($asset->asset_type));
+                    $templateProcessor->setValue('merk', htmlspecialchars($asset->merk));
+                    $templateProcessor->setValue('deskripsi', htmlspecialchars($asset->description));
+                    $templateProcessor->setValue('serial', htmlspecialchars($asset->serial_number));
+                    $templateProcessor->setValue('tanggal_perolehan', htmlspecialchars($asset->acquisition_date));
+                    $templateProcessor->setValue('kerusakan', htmlspecialchars($formKerusakan->kerusakan));
+                    $templateProcessor->setValue('penyebab', htmlspecialchars($formKerusakan->penyebab));
+                    $templateProcessor->setValue('harga_perolehan', htmlspecialchars('Rp ' . number_format($asset->acquisition_value, 0, ',', '.')));
+                    $templateProcessor->setValue('nama', htmlspecialchars($formKerusakan->nama));
+                    $templateProcessor->setValue('nik', htmlspecialchars($formKerusakan->nik));
+                    $templateProcessor->setValue('jabatan', htmlspecialchars($formKerusakan->jabatan));
 
                     // dd($templateProcessor);
 
@@ -451,22 +451,22 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/SERVICE.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
-                    $templateProcessor->setValue('kode_surat', $letter->kode_surat);
-                    $templateProcessor->setValue('day', $day);
-                    $templateProcessor->setValue('date', $dateFormatted);
-                    $templateProcessor->setValue('month', $month);
-                    $templateProcessor->setValue('year', $year);
-                    $templateProcessor->setValue('kode_asset', $formKerusakan->kode_asset);
-                    $templateProcessor->setValue('jenis', $asset->asset_type);
-                    $templateProcessor->setValue('merk', $asset->merk);
-                    $templateProcessor->setValue('deskripsi', $asset->description);
-                    $templateProcessor->setValue('serial', $asset->serial_number);
-                    $templateProcessor->setValue('tanggal_perolehan', $asset->acquisition_date);
-                    $templateProcessor->setValue('kerusakan', $formKerusakan->kerusakan);
-                    $templateProcessor->setValue('penyebab', $formKerusakan->penyebab);
-                    $templateProcessor->setValue('nama', $formKerusakan->nama);
-                    $templateProcessor->setValue('nik', $formKerusakan->nik);
-                    $templateProcessor->setValue('jabatan', $formKerusakan->jabatan);
+                    $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));
+                    $templateProcessor->setValue('month', htmlspecialchars($month));
+                    $templateProcessor->setValue('year', htmlspecialchars($year));
+                    $templateProcessor->setValue('kode_asset', htmlspecialchars($formKerusakan->kode_asset));
+                    $templateProcessor->setValue('jenis', htmlspecialchars($asset->asset_type));
+                    $templateProcessor->setValue('merk', htmlspecialchars($asset->merk));
+                    $templateProcessor->setValue('deskripsi', htmlspecialchars($asset->description));
+                    $templateProcessor->setValue('serial', htmlspecialchars($asset->serial_number));
+                    $templateProcessor->setValue('tanggal_perolehan', htmlspecialchars($asset->acquisition_date));
+                    $templateProcessor->setValue('kerusakan', htmlspecialchars($formKerusakan->kerusakan));
+                    $templateProcessor->setValue('penyebab', htmlspecialchars($formKerusakan->penyebab));
+                    $templateProcessor->setValue('nama', htmlspecialchars($formKerusakan->nama));
+                    $templateProcessor->setValue('nik', htmlspecialchars($formKerusakan->nik));
+                    $templateProcessor->setValue('jabatan', htmlspecialchars($formKerusakan->jabatan));
 
                     // dd($templateProcessor);
 

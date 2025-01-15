@@ -55,6 +55,9 @@ Route::get('/letters/{id}/edit', [LetterController::class, 'edit'])->middleware(
 Route::put('/letters/{id}', [LetterController::class, 'update'])->middleware('auth')->name('letters.update');
 Route::delete('/letters/{id}', [LetterController::class, 'destroy'])->middleware('auth')->name('letters.destroy');
 Route::get('/letters/download/{id}', [LetterController::class, 'download'])->middleware('auth')->name('letters.download');
+Route::get('/form-berita-acara/{id}', [LetterController::class, 'showBeritaAcaraForm'])->name('form-berita-acara');
+Route::get('/form-kerusakan/{id}', [LetterController::class, 'showKerusakanForm'])->name('form-kerusakan');
+Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->name('kerusakan.store');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormKerusakan;
 use App\Models\inventory;
 use Illuminate\Http\Request;
 use App\Models\Letter;
 use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpWord\TemplateProcessor;
 
 class LetterController extends Controller
@@ -223,8 +225,7 @@ class LetterController extends Controller
                     // Return the document as a download response
                     return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
-                    dd('PEMINJAMAN ASSET SAJA', $letter);
-                    // masuk ke logika input form berita acara
+                    return redirect()->route('form-berita-acara', ['id' => $id]);
                 }
             } elseif ($letter->perihal == 'PENGEMBALIAN ASSET') {
                 if ($beritaAcara->isNotEmpty()) {
@@ -279,7 +280,7 @@ class LetterController extends Controller
                     // Return the document as a download response
                     return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
-                    dd('PENGEMBALIAN ASSET SAJA', $letter);
+                    return redirect()->route('form-berita-acara', ['id' => $id]);
                 }
             } elseif ($letter->perihal == 'MUTASI ASSET') {
                 if ($beritaAcara->isNotEmpty()) {
@@ -334,7 +335,7 @@ class LetterController extends Controller
                     // Return the document as a download response
                     return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
-                    dd('MUTASI ASSET SAJA', $letter);
+                    return redirect()->route('form-berita-acara', ['id' => $id]);
                 }
             }
         } elseif ($letter->jenisBA == 'ASSET HILANG') {
@@ -390,7 +391,7 @@ class LetterController extends Controller
                 // Return the document as a download response
                 return response()->download($tempFilePath)->deleteFileAfterSend(true);
             } else {
-                dd('ASSET HILANG SAJA', $letter);
+                return redirect()->route('form-berita-acara', ['id' => $id]);
             }
         } elseif ($letter->jenisBA == 'FORM KERUSAKAN ASSET') {
             if ($letter->perihal == 'PENGGANTIAN ASSET') {
@@ -433,7 +434,7 @@ class LetterController extends Controller
                     // Return the document as a download response
                     return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
-                    dd('PENGGANTIAN ASSET SAJA', $letter);
+                    return redirect()->route('form-kerusakan', ['id' => $id]);
                 }
             } elseif ($letter->perihal == 'PERBAIKAN ASSET') {
                 if ($formKerusakan) {
@@ -474,9 +475,43 @@ class LetterController extends Controller
                     // Return the document as a download response
                     return response()->download($tempFilePath)->deleteFileAfterSend(true);
                 } else {
-                    dd('PERBAIKAN ASSET SAJA', $letter);
+                    return redirect()->route('form-kerusakan', ['id' => $id]);
                 }
             }
         }
+    }
+
+    public function showBeritaAcaraForm($id)
+    {
+        $letter = Letter::findOrFail($id);
+
+        dd($letter);
+        return view('form-berita-acara', compact('letter'));
+    }
+
+    public function showKerusakanForm($id)
+    {
+        $letter = Letter::findOrFail($id);
+        $results = DB::connection('travel')->select('SELECT * FROM employees');
+
+        return view('pages.letter.form-kerusakan', compact('letter', 'results'));
+    }
+
+    public function storeKerusakan(Request $request)
+    {
+        $request->validate([
+            'letter_id' => 'required|exists:letters,id',
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'kode_asset' => 'required|string|max:255',
+            'kerusakan' => 'required|string',
+            'penyebab' => 'required|string',
+            'tindakan' => 'required|string',
+        ]);
+
+        FormKerusakan::create($request->all());
+
+        return redirect()->route('letters.download', $request->letter_id);
     }
 }

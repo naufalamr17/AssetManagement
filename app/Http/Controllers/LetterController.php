@@ -305,10 +305,12 @@ class LetterController extends Controller
                     $templateProcessor->setValue('nama', htmlspecialchars($firstBeritaAcara->nama));
                     $templateProcessor->setValue('dept', htmlspecialchars($firstBeritaAcara->dept));
                     $templateProcessor->setValue('jabatan', htmlspecialchars($firstBeritaAcara->jabatan));
+                    $templateProcessor->setValue('nik', htmlspecialchars($firstBeritaAcara->nik));
 
                     $templateProcessor->setValue('nama2', htmlspecialchars($firstBeritaAcara->nama_2));
                     $templateProcessor->setValue('dept2', htmlspecialchars($firstBeritaAcara->dept_2));
                     $templateProcessor->setValue('jabatan2', htmlspecialchars($firstBeritaAcara->jabatan_2));
+                    $templateProcessor->setValue('nik2', htmlspecialchars($firstBeritaAcara->nik_2));
 
                     // Pastikan berita acara ada
                     if ($beritaAcara && $beritaAcara instanceof \Illuminate\Database\Eloquent\Collection) {

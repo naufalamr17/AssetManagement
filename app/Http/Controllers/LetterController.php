@@ -36,11 +36,41 @@ class LetterController extends Controller
                 ->addColumn('location', function ($row) {
                     return $row->location;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('file', function ($row) {
+                    $btn = '';
+                    if (empty($row->file)) {
+                        $btn .= ' <a href="javascript:void(0)" class="add-document btn btn-primary btn-sm mt-3" data-id="' . $row->id . '"><i class="fas fa-upload"></i> Add Document</a>';
+                    } else {
+                        $btn .= ' <a href="' . asset('storage/' . $row->file) . '" target="_blank" class="view-document btn btn-success btn-sm mt-3"><i class="fas fa-eye"></i> View Document</a>';
+                    }
+                    return $btn;
+                })
+                ->rawColumns(['action', 'file'])
                 ->make(true);
         }
 
         return view('pages.letter.index');
+    }
+
+    public function addDocument(Request $request)
+    {
+        $request->validate([
+            'letter_id' => 'required|exists:letters,id',
+            'file' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $letter = Letter::findOrFail($request->letter_id);
+        try {
+            if ($request->hasFile('file')) {
+                $filePath = $request->file('file')->store('letters', 'public');
+
+                $letter->update(['file' => $filePath]);
+            }
+
+            return redirect()->route('generate-letter')->with('success', 'Data has been added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('generate-letter')->with('error', 'Failed to upload document: ' . $e->getMessage());
+        }
     }
 
     public function store(Request $request)

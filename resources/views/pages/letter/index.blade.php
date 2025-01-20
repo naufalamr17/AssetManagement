@@ -155,6 +155,23 @@
                             </div>
                         </div>
 
+                        <!-- Add Document Modal -->
+                        <div id="addDocumentModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h4 id="modalTitle">Add Document</h4>
+                                <form action="{{ route('letters.addDocument') }}" id="addDocumentForm" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="letter_id" id="letter_id">
+                                    <div class="form-group">
+                                        <label for="file">Upload Document</label>
+                                        <input type="file" class="form-control" id="file" name="file" accept="application/pdf" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+
                         <div class="card-body px-2 pb-2">
                             <div class="table-responsive p-0">
                                 <table id="letterTable" class="table align-items-center mb-0">
@@ -165,6 +182,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Perihal') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Creator') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('File') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
@@ -202,15 +220,40 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('generate-letter') }}",
-                columns: [
-                    { data: 'tanggal', name: 'tanggal' },
-                    { data: 'kode_surat', name: 'kode_surat' },
-                    { data: 'perihal', name: 'perihal' },
-                    { data: 'creator', name: 'creator' },
-                    { data: 'location', name: 'location' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                columns: [{
+                        data: 'tanggal',
+                        name: 'tanggal'
+                    },
+                    {
+                        data: 'kode_surat',
+                        name: 'kode_surat'
+                    },
+                    {
+                        data: 'perihal',
+                        name: 'perihal'
+                    },
+                    {
+                        data: 'creator',
+                        name: 'creator'
+                    },
+                    {
+                        data: 'location',
+                        name: 'location'
+                    },
+                    {
+                        data: 'file',
+                        name: 'file'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
-                order: [[0, 'desc']],
+                order: [
+                    [0, 'desc']
+                ],
                 dom: '<"top">rt<"bottom"ip><"clear">',
                 createdRow: function(row, data, dataIndex) {
                     $(row).addClass('text-center').css('font-size', '14px');
@@ -302,6 +345,18 @@
                 if ($('#perihal').prop('disabled')) {
                     $('#hiddenPerihal').val($('#perihal').val());
                 }
+            });
+
+            // Handle add document button click
+            $(document).on('click', '.add-document', function() {
+                var letterId = $(this).data('id');
+                $('#letter_id').val(letterId);
+                $('#addDocumentModal').show();
+            });
+
+            // Handle modal close
+            $('.close').on('click', function() {
+                $('.modal').hide();
             });
 
             // Edit button functionality

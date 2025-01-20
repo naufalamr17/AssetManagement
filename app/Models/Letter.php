@@ -16,6 +16,7 @@ class Letter extends Model
         'jenisBA',
         'creator',
         'location',
+        'file',
     ];
 
     public function beritaAcara()

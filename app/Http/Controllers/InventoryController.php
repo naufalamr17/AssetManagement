@@ -529,7 +529,8 @@ class InventoryController extends Controller
                     'repairstatuses.status',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
-                    'repairstatuses.note'
+                    'repairstatuses.note',
+                    'repairstatuses.dokumen_breakdown',
                 )->get();
         } else {
             $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
@@ -543,7 +544,8 @@ class InventoryController extends Controller
                     'repairstatuses.status',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
-                    'repairstatuses.note'
+                    'repairstatuses.note',
+                    'repairstatuses.dokumen_breakdown',
                 )
                 ->where('inventories.location', Auth::user()->location)
                 ->get();
@@ -561,12 +563,12 @@ class InventoryController extends Controller
 
     public function storerepair(Request $request)
     {
-        // dd($request);
         // Validate the request data
         $request->validate([
             'tanggal_kerusakan' => 'nullable|date',
             'tanggal_pengembalian' => 'nullable|date',
             'remarks' => 'nullable|string',
+            'dokumen_breakdown' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         // Find the inventory based on the asset code
@@ -576,17 +578,22 @@ class InventoryController extends Controller
         $inventory->status = $request->status;
         $inventory->save();
 
-        // dd($request->status);
-
         if ($request->status == "Breakdown") {
+            // Handle file upload
+            $filePath = null;
+            if ($request->hasFile('dokumen_breakdown')) {
+                $filePath = $request->file('dokumen_breakdown')->store('breakdown_documents', 'public');
+            }
+
             // Create the RepairStatus record
             repairstatus::create([
                 'inv_id' => $inventory->id,
                 'status' => $request->status,
                 'tanggal_kerusakan' => $request->tanggal_kerusakan_breakdown,
                 'note' => $request->remarks_breakdown,
+                'dokumen_breakdown' => $filePath,
             ]);
-        } else  if ($request->status == "Repair") {
+        } else if ($request->status == "Repair") {
             // Create the RepairStatus record
             repairstatus::create([
                 'inv_id' => $inventory->id,

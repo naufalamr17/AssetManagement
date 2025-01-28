@@ -165,6 +165,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dokumen') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -200,6 +201,13 @@
                                             <td>{{ strtoupper($item->tanggal_kerusakan ?? '-') }}</td>
                                             <td>{{ strtoupper($item->tanggal_pengembalian ?? '-') }}</td>
                                             <td>{{ strtoupper($item->note ?? '-') }}</td>
+                                            <td>
+                                                @if($item->dokumen_breakdown)
+                                                <a href="{{ asset('storage/' . $item->dokumen_breakdown) }}" target="_blank" class="mt-3 btn btn-success btn-sm">View Document</a>
+                                                @else
+                                                {{ strtoupper('-') }}
+                                                @endif
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>

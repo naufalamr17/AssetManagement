@@ -25,7 +25,7 @@
                         </div>
                         @endif
                         <div class="p-6">
-                            <form method="POST" action="{{ route('store_repair') }}">
+                            <form method="POST" action="{{ route('store_repair') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
@@ -305,6 +305,14 @@
                                                 <input id="tanggal_kerusakan_breakdown" class="form-control border p-2" type="date" name="tanggal_kerusakan_breakdown" value="{{ old('tanggal_kerusakan_breakdown') }}">
                                                 @if ($errors->has('tanggal_kerusakan_breakdown'))
                                                 <div class="text-danger mt-2">{{ $errors->first('tanggal_kerusakan_breakdown') }}</div>
+                                                @endif
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="dokumen_breakdown">Upload Dokumen Breakdown (PDF)</label>
+                                                <input id="dokumen_breakdown" class="form-control border p-2" type="file" name="dokumen_breakdown" accept="application/pdf">
+                                                @if ($errors->has('dokumen_breakdown'))
+                                                <div class="text-danger mt-2">{{ $errors->first('dokumen_breakdown') }}</div>
                                                 @endif
                                             </div>
 

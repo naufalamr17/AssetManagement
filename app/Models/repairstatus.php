@@ -15,6 +15,7 @@ class repairstatus extends Model
         'tanggal_kerusakan',
         'tanggal_pengembalian',
         'note',
+        'dokumen_breakdown',
     ];
 
     public function inventory()

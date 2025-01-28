@@ -78,6 +78,7 @@ Route::get('/history_inventory', [InventoryController::class, 'history'])->name(
 Route::get('/repair_inventory', [InventoryController::class, 'repair'])->name('repair_inventory')->middleware('auth');
 Route::get('/input_repair', [InventoryController::class, 'inputrepair'])->name('input_repair')->middleware('auth');
 Route::post('/store_repair', [InventoryController::class, 'storerepair'])->name('store_repair')->middleware('auth');
+Route::post('/repairstatus/add-document', [InventoryController::class, 'addDocument'])->name('repairstatus.addDocument');
 Route::get('/get-inventory-data', [InventoryController::class, 'getInventoryData'])->name('get.inventory.data')->middleware('auth');
 Route::get('/dispose_inventory', [InventoryController::class, 'dispose'])->name('dispose_inventory')->middleware('auth');
 Route::get('/input_dispose', [InventoryController::class, 'inputdispose'])->name('input_dispose')->middleware('auth');

@@ -149,6 +149,23 @@
                                     <div id="result"></div>
                                 </div>
                             </div>
+
+                            <!-- Add Document Modal -->
+                            <div id="addDocumentModal" class="modal" style="display: none;">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h4 id="modalTitle">Add Document</h4>
+                                    <form action="{{ route('repairstatus.addDocument') }}" id="addDocumentForm" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" name="repair_status_id" id="repair_status_id">
+                                        <div class="form-group">
+                                            <label for="dokumen_breakdown">Upload Dokumen Breakdown (PDF)</label>
+                                            <input id="dokumen_breakdown" class="form-control border p-2" type="file" name="dokumen_breakdown" accept="application/pdf" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card-body px-2 pb-2">
@@ -202,8 +219,10 @@
                                             <td>{{ strtoupper($item->tanggal_pengembalian ?? '-') }}</td>
                                             <td>{{ strtoupper($item->note ?? '-') }}</td>
                                             <td>
-                                                @if($item->dokumen_breakdown)
-                                                <a href="{{ asset('storage/' . $item->dokumen_breakdown) }}" target="_blank" class="mt-3 btn btn-success btn-sm">View Document</a>
+                                                @if($item->status == 'Breakdown' && !$item->dokumen_breakdown)
+                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm add-document mt-3" data-id="{{ $item->id }}">Add Document</a>
+                                                @elseif($item->dokumen_breakdown)
+                                                <a href="{{ asset('storage/' . $item->dokumen_breakdown) }}" target="_blank" class="btn btn-success btn-sm mt-3">View Document</a>
                                                 @else
                                                 {{ strtoupper('-') }}
                                                 @endif
@@ -227,6 +246,23 @@
     <!-- Include DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <!-- Initialize DataTable -->
+
+    <script>
+        $(document).ready(function() {
+            // Handle add document button click
+            $(document).on('click', '.add-document', function() {
+                var repairStatusId = $(this).data('id');
+                $('#repair_status_id').val(repairStatusId);
+                $('#addDocumentModal').show();
+            });
+
+            // Handle modal close
+            $('.close').on('click', function() {
+                $('#addDocumentModal').hide();
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             var table = $('#inventoryTable').DataTable({

@@ -526,6 +526,7 @@ class InventoryController extends Controller
                     'inventories.useful_life',
                     'inventories.acquisition_date',
                     'inventories.location',
+                    'repairstatuses.id',
                     'repairstatuses.status',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
@@ -541,6 +542,7 @@ class InventoryController extends Controller
                     'inventories.useful_life',
                     'inventories.acquisition_date',
                     'inventories.location',
+                    'repairstatuses.id',
                     'repairstatuses.status',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
@@ -554,6 +556,26 @@ class InventoryController extends Controller
         // dd($inventory);
 
         return view('pages.asset.repair', compact('inventory'));
+    }
+
+    public function addDocument(Request $request)
+    {
+        $request->validate([
+            'repair_status_id' => 'required|exists:repairstatuses,id',
+            'dokumen_breakdown' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $repairStatus = repairstatus::findOrFail($request->repair_status_id);
+
+        try {
+            if ($request->hasFile('dokumen_breakdown')) {
+                $filePath = $request->file('dokumen_breakdown')->store('breakdown_documents', 'public');
+                $repairStatus->update(['dokumen_breakdown' => $filePath]);
+            }
+            return redirect()->route('repair_inventory')->with('success', 'Document has been added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('repair_inventory');
+        }
     }
 
     public function inputrepair()

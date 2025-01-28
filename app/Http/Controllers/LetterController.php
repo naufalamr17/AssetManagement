@@ -381,7 +381,13 @@ class LetterController extends Controller
                 $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
                 $year = $date->format('Y'); // Year, e.g., 2023
 
-                $templatePath = storage_path('app/public/templates/HILANG.docx');
+                if ($letter->location == 'Head Office') {
+                    $templatePath = storage_path('app/public/templates/HILANG.docx');
+                } elseif ($letter->location == 'Office Kendari') {
+                    $templatePath = storage_path('app/public/templates/HILANG_KDI.docx');
+                } elseif ($letter->location == 'Site Molore') {
+                    $templatePath = storage_path('app/public/templates/HILANG_SITE.docx');
+                }
                 $templateProcessor = new TemplateProcessor($templatePath);
                 $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
                 $templateProcessor->setValue('day', htmlspecialchars($day));

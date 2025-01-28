@@ -439,7 +439,13 @@ class LetterController extends Controller
 
                     $asset = inventory::where('asset_code', $formKerusakan->kode_asset)->first();
 
-                    $templatePath = storage_path('app/public/templates/PENGGANTIAN.docx');
+                    if ($letter->location == 'Head Office') {
+                        $templatePath = storage_path('app/public/templates/PENGGANTIAN.docx');
+                    } elseif ($letter->location == 'Office Kendari') {
+                        $templatePath = storage_path('app/public/templates/PENGGANTIAN_KDI.docx');
+                    } elseif ($letter->location == 'Site Molore') {
+                        $templatePath = storage_path('app/public/templates/PENGGANTIAN_SITE.docx');
+                    }
                     $templateProcessor = new TemplateProcessor($templatePath);
                     $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
                     $templateProcessor->setValue('day', htmlspecialchars($day));

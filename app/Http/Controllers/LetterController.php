@@ -325,6 +325,13 @@ class LetterController extends Controller
 
                     $templatePath = storage_path('app/public/templates/MUTASI.docx');
                     $templateProcessor = new TemplateProcessor($templatePath);
+                    if ($letter->location == 'Head Office') {
+                        $templateProcessor->setValue('location', 'Jakarta');
+                    } elseif ($letter->location == 'Office Kendari') {
+                        $templateProcessor->setValue('location', 'Kendari');
+                    } elseif ($letter->location == 'Site Molore') {
+                        $templateProcessor->setValue('location', 'Molore');
+                    }
                     $templateProcessor->setValue('kode_surat', htmlspecialchars($letter->kode_surat));
                     $templateProcessor->setValue('day', htmlspecialchars($day));
                     $templateProcessor->setValue('date', htmlspecialchars($dateFormatted));

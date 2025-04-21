@@ -206,8 +206,8 @@ class LetterController extends Controller
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
         $tahun = \Carbon\Carbon::parse($request->tanggal)->format('Y');
 
-        // Periksa apakah jenisBA adalah FORM KERUSAKAN ASSET dan hanya perihal yang berubah
-        if ($request->jenisBA == 'FORM KERUSAKAN ASSET' && $letter->jenisBA == 'FORM KERUSAKAN ASSET') {
+        // Periksa apakah jenisBA adalah ASSET SERAH TERIMA dan hanya perihal yang berubah
+        if ($request->jenisBA == 'ASSET SERAH TERIMA' && $letter->jenisBA == 'ASSET SERAH TERIMA') {
             // Jika hanya perihal yang berubah, kode surat tidak diubah
             $kode_surat = $letter->kode_surat;
         } else {

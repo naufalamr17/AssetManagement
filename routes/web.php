@@ -61,7 +61,7 @@ Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->na
 Route::post('/berita-acara/store', [LetterController::class, 'storeBeritaAcara'])->name('berita-acara.store');
 Route::post('/letters/add-document', [LetterController::class, 'addDocument'])->name('letters.addDocument');
 
-Route::get('/view-bast-it-asset', [LetterController::class, 'viewBastItAsset'])->name('view-bast-it-asset');
+Route::get('/view-bast-it-asset', [LetterController::class, 'viewBastItAsset'])->name('view-bast-it-asset')->middleware('auth');
 
 Route::get('/user-management', [AccessController::class, 'index'])->name('user-management')->middleware('auth');
 Route::get('/add_user', [AccessController::class, 'adduser'])->name('add_user')->middleware('auth');

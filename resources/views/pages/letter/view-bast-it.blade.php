@@ -129,7 +129,7 @@
                             </div>
                             <div class="mb-2 me-2">
                                 <input type="number" class="form-control border p-2" name="yearFilter" id="yearFilter" placeholder="Filter by Year">
-                            </div>  
+                            </div>
                         </div>
 
                         <div class="card-body px-2 pb-2">
@@ -242,11 +242,11 @@
                         name: 'scan',
                         render: function(data, type, row) {
                             if (data) {
-                                // Assuming 'data' contains the file name or relative path under 'storage/app/public/scans/'
-                                let filePath = `/storage/${data}`; // Construct the URL path
+                                // Construct the full URL for the file
+                                let filePath = `https://itam.mlpmining.com/public/storage/${data}`;
                                 return `<a href="${filePath}" target="_blank">View File</a>`;
                             } else {
-                                // If no scan file, return a dash
+                                // If no file is available, return a dash
                                 return '-';
                             }
                         }

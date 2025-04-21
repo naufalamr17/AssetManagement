@@ -628,4 +628,32 @@ class LetterController extends Controller
 
         return redirect()->route('letters.download', $request->letter_id);
     }
+
+    public function viewBastItAsset(Request $request)
+    {
+        if ($request->ajax()) {
+            $basts = DB::connection('itam')->table('basts')->get();
+
+            // Tambahkan data karyawan dari koneksi 'travel'
+            $basts = $basts->map(function ($bast) {
+                $employee = DB::connection('travel')->table('employees')
+                    ->select('nama', 'job_position')
+                    ->where('nik', $bast->nik_user)
+                    ->first();
+
+                $bast->nama = $employee ? $employee->nama : '-';
+                $bast->job_position = $employee ? $employee->job_position : '-';
+
+                return $bast;
+            });
+
+            // Kembalikan data tanpa kolom 'action'
+            return DataTables::of($basts)
+                ->addIndexColumn()
+                ->make(true);
+        }
+
+        // Tampilkan view untuk halaman "View BAST IT Asset"
+        return view('pages.letter.view-bast-it');
+    }
 }

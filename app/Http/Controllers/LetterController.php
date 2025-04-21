@@ -190,7 +190,6 @@ class LetterController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
             'tanggal' => 'required|date',
             'perihal' => 'nullable|string|max:255',
@@ -206,8 +205,8 @@ class LetterController extends Controller
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
         $tahun = \Carbon\Carbon::parse($request->tanggal)->format('Y');
 
-        // Periksa apakah jenisBA adalah ASSET SERAH TERIMA dan hanya perihal yang berubah
-        if ($request->jenisBA == 'ASSET SERAH TERIMA' && $letter->jenisBA == 'ASSET SERAH TERIMA') {
+        // Periksa apakah jenisBA adalah FORM KERUSAKAN ASSET, ASSET SERAH TERIMA, atau ASSET HILANG
+        if (in_array($request->jenisBA, ['FORM KERUSAKAN ASSET', 'ASSET SERAH TERIMA', 'ASSET HILANG']) && $letter->jenisBA == $request->jenisBA) {
             // Jika hanya perihal yang berubah, kode surat tidak diubah
             $kode_surat = $letter->kode_surat;
         } else {
@@ -266,18 +265,18 @@ class LetterController extends Controller
                 }
 
                 $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
-            } elseif ($request->jenisBA == 'ASSET SERAH TERIMA' || $request->jenisBA == 'ASSET HILANG') {
+            } elseif (in_array($request->jenisBA, ['ASSET SERAH TERIMA', 'ASSET HILANG'])) {
                 // Ambil iterasi terakhir untuk jenisBA ASSET SERAH TERIMA atau ASSET HILANG
                 $latestLetter = Letter::whereYear('tanggal', $tahun)
                     ->where('jenisBA', $request->jenisBA)
                     ->orderBy('id', 'desc')
                     ->first();
 
-                if ($latestLetter) {
+                if ($latestLetter && $latestLetter->id != $id) {
                     $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
                     $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
                 } else {
-                    $iterasi = '001';
+                    $iterasi = explode('/', $letter->kode_surat)[0] ?? '001';
                 }
 
                 $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";

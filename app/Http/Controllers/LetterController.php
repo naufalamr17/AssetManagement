@@ -209,6 +209,9 @@ class LetterController extends Controller
         if (in_array($request->jenisBA, ['FORM KERUSAKAN ASSET', 'ASSET SERAH TERIMA', 'ASSET HILANG']) && $letter->jenisBA == $request->jenisBA) {
             // Jika hanya perihal yang berubah, kode surat tidak diubah
             $kode_surat = $letter->kode_surat;
+        } elseif (in_array($request->jenisBA, ['ASSET SERAH TERIMA', 'ASSET HILANG']) && in_array($letter->jenisBA, ['ASSET SERAH TERIMA', 'ASSET HILANG'])) {
+            // Jika jenisBA berubah antara ASSET SERAH TERIMA dan ASSET HILANG, ubah hanya bagian akhir kode surat
+            $kode_surat = preg_replace('/(AST|AH)$/', $request->jenisBA == 'ASSET SERAH TERIMA' ? 'AST' : 'AH', $letter->kode_surat);
         } else {
             // Perbarui kode surat berdasarkan jenisBA
             $kode_surat = '';
@@ -265,33 +268,32 @@ class LetterController extends Controller
                 }
 
                 $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
-            } elseif (in_array($request->jenisBA, ['ASSET SERAH TERIMA', 'ASSET HILANG'])) {
-                // Ambil iterasi terakhir untuk jenisBA ASSET SERAH TERIMA atau ASSET HILANG
+            } elseif ($request->jenisBA == 'ASSET HILANG') {
                 $latestLetter = Letter::whereYear('tanggal', $tahun)
-                    ->where('jenisBA', $request->jenisBA)
                     ->orderBy('id', 'desc')
                     ->first();
 
-                if ($latestLetter && $latestLetter->id != $id) {
+                if ($latestLetter) {
                     $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
                     $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
                 } else {
-                    $iterasi = explode('/', $letter->kode_surat)[0] ?? '001';
+                    $iterasi = '001';
                 }
 
-                $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
+                $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/AH";
+            } elseif ($request->jenisBA == 'ASSET SERAH TERIMA') {
+                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                    ->orderBy('id', 'desc')
+                    ->first();
 
-                switch ($request->jenisBA) {
-                    case 'ASSET SERAH TERIMA':
-                        $kode_surat .= 'AST';
-                        break;
-                    case 'ASSET HILANG':
-                        $kode_surat .= 'AH';
-                        break;
-                    default:
-                        $kode_surat .= 'OT'; // Default case
-                        break;
+                if ($latestLetter) {
+                    $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                    $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $iterasi = '001';
                 }
+
+                $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/AST";
             } else {
                 // Default untuk jenisBA lainnya
                 $latestLetter = Letter::whereYear('tanggal', $tahun)

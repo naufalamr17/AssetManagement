@@ -103,6 +103,49 @@ class LetterController extends Controller
                 $iterasi = '001';
             }
             $kode_surat = "{$iterasi}_FKKA_GA-MLP/{$bulan}/{$tahun}";
+        } elseif ($jenisBA == 'BAST') {
+            // Ambil bulan dalam format Romawi
+            $bulanRomawi = [
+                1 => 'I',
+                2 => 'II',
+                3 => 'III',
+                4 => 'IV',
+                5 => 'V',
+                6 => 'VI',
+                7 => 'VII',
+                8 => 'VIII',
+                9 => 'IX',
+                10 => 'X',
+                11 => 'XI',
+                12 => 'XII'
+            ];
+            $bulan = $bulanRomawi[\Carbon\Carbon::parse($request->tanggal)->month];
+            $tahun = \Carbon\Carbon::parse($request->tanggal)->year;
+
+            // Tentukan kode berdasarkan perihal
+            $kodePerihal = '';
+            if ($perihal == 'General') {
+                $kodePerihal = 'GR';
+            } elseif ($perihal == 'Radio') {
+                $kodePerihal = 'RD';
+            }
+
+            // Ambil iterasi terakhir untuk jenisBA BAST dan perihal tertentu
+            $latestLetter = Letter::whereYear('tanggal', $tahun)
+                ->where('jenisBA', 'BAST')
+                ->where('perihal', $perihal)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($latestLetter) {
+                $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+            } else {
+                $iterasi = '001';
+            }
+
+            // Format kode surat
+            $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
         } else {
             // Get the latest iterasi for BA for the current year
             $latestLetter = Letter::whereYear('tanggal', $tahun)

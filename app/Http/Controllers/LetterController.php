@@ -266,6 +266,33 @@ class LetterController extends Controller
                 }
 
                 $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
+            } elseif ($request->jenisBA == 'ASSET SERAH TERIMA' || $request->jenisBA == 'ASSET HILANG') {
+                // Ambil iterasi terakhir untuk jenisBA ASSET SERAH TERIMA atau ASSET HILANG
+                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                    ->where('jenisBA', $request->jenisBA)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($latestLetter) {
+                    $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                    $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $iterasi = '001';
+                }
+
+                $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
+
+                switch ($request->jenisBA) {
+                    case 'ASSET SERAH TERIMA':
+                        $kode_surat .= 'AST';
+                        break;
+                    case 'ASSET HILANG':
+                        $kode_surat .= 'AH';
+                        break;
+                    default:
+                        $kode_surat .= 'OT'; // Default case
+                        break;
+                }
             } else {
                 // Default untuk jenisBA lainnya
                 $latestLetter = Letter::whereYear('tanggal', $tahun)
@@ -283,9 +310,6 @@ class LetterController extends Controller
                 $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
 
                 switch ($request->jenisBA) {
-                    case 'ASSET HILANG':
-                        $kode_surat .= 'AH';
-                        break;
                     case 'ASSET RUSAK':
                         $kode_surat .= 'AR';
                         break;
@@ -293,7 +317,7 @@ class LetterController extends Controller
                         $kode_surat .= 'AD';
                         break;
                     default:
-                        $kode_surat .= 'AST'; // Default case
+                        $kode_surat .= 'OT'; // Default case
                         break;
                 }
             }

@@ -190,6 +190,7 @@ class LetterController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validasi input
         $request->validate([
             'tanggal' => 'required|date',
             'perihal' => 'nullable|string|max:255',
@@ -198,27 +199,107 @@ class LetterController extends Controller
 
         $perihal = $request->perihal ?? '-';
 
+        // Temukan surat berdasarkan ID
         $letter = Letter::findOrFail($id);
 
-        // Update only the last two digits of kode_surat based on jenisBA
-        $kode_surat = $letter->kode_surat;
-        $kode_surat_parts = explode('/', $kode_surat);
-        switch ($request->jenisBA) {
-            case 'ASSET RUSAK':
-                $kode_surat_parts[4] = 'AR';
-                break;
-            case 'ASSET DISPOSE':
-                $kode_surat_parts[4] = 'AD';
-                break;
-            case 'ASSET HILANG':
-                $kode_surat_parts[4] = 'AH';
-                break;
-            default:
-                $kode_surat_parts[4] = 'AST'; // Default case if needed
-                break;
-        }
-        $kode_surat = implode('/', $kode_surat_parts);
+        // Ambil data tanggal dan tahun
+        $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
+        $tahun = \Carbon\Carbon::parse($request->tanggal)->format('Y');
 
+        // Periksa apakah jenisBA adalah FORM KERUSAKAN ASSET dan hanya perihal yang berubah
+        if ($request->jenisBA == 'FORM KERUSAKAN ASSET' && $letter->jenisBA == 'FORM KERUSAKAN ASSET') {
+            // Jika hanya perihal yang berubah, kode surat tidak diubah
+            $kode_surat = $letter->kode_surat;
+        } else {
+            // Perbarui kode surat berdasarkan jenisBA
+            $kode_surat = '';
+            if ($request->jenisBA == 'FORM KERUSAKAN ASSET') {
+                $bulan = \Carbon\Carbon::parse($request->tanggal)->format('m');
+
+                // Ambil iterasi terakhir untuk FORM KERUSAKAN ASSET
+                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                    ->where('jenisBA', 'FORM KERUSAKAN ASSET')
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($latestLetter) {
+                    $latestIterasi = intval(explode('_', $latestLetter->kode_surat)[0]);
+                    $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $iterasi = '001';
+                }
+
+                $kode_surat = "{$iterasi}_FKKA_GA-MLP/{$bulan}/{$tahun}";
+            } elseif ($request->jenisBA == 'BAST') {
+                // Ambil bulan dalam format Romawi
+                $bulanRomawi = [
+                    1 => 'I',
+                    2 => 'II',
+                    3 => 'III',
+                    4 => 'IV',
+                    5 => 'V',
+                    6 => 'VI',
+                    7 => 'VII',
+                    8 => 'VIII',
+                    9 => 'IX',
+                    10 => 'X',
+                    11 => 'XI',
+                    12 => 'XII'
+                ];
+                $bulan = $bulanRomawi[\Carbon\Carbon::parse($request->tanggal)->month];
+
+                // Tentukan kode berdasarkan perihal
+                $kodePerihal = $perihal == 'General' ? 'GR' : ($perihal == 'Radio' ? 'RD' : 'OT');
+
+                // Ambil iterasi terakhir untuk jenisBA BAST dan perihal tertentu
+                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                    ->where('jenisBA', 'BAST')
+                    ->where('perihal', $perihal)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($latestLetter) {
+                    $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                    $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $iterasi = '001';
+                }
+
+                $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
+            } else {
+                // Default untuk jenisBA lainnya
+                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                    ->where('jenisBA', '!=', 'FORM KERUSAKAN ASSET')
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($latestLetter) {
+                    $latestIterasi = intval(explode('/', $latestLetter->kode_surat)[0]);
+                    $iterasi = str_pad($latestIterasi + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $iterasi = '001';
+                }
+
+                $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/";
+
+                switch ($request->jenisBA) {
+                    case 'ASSET HILANG':
+                        $kode_surat .= 'AH';
+                        break;
+                    case 'ASSET RUSAK':
+                        $kode_surat .= 'AR';
+                        break;
+                    case 'ASSET DISPOSE':
+                        $kode_surat .= 'AD';
+                        break;
+                    default:
+                        $kode_surat .= 'AST'; // Default case
+                        break;
+                }
+            }
+        }
+
+        // Perbarui data surat
         $letter->update([
             'tanggal' => $request->tanggal,
             'perihal' => $perihal,

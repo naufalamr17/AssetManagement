@@ -57,8 +57,11 @@ Route::delete('/letters/{id}', [LetterController::class, 'destroy'])->middleware
 Route::get('/letters/download/{id}', [LetterController::class, 'download'])->middleware('auth')->name('letters.download');
 Route::get('/form-berita-acara/{id}', [LetterController::class, 'showBeritaAcaraForm'])->name('form-berita-acara');
 Route::get('/form-kerusakan/{id}', [LetterController::class, 'showKerusakanForm'])->name('form-kerusakan');
+Route::get('/form-bast-general/{id}', [LetterController::class, 'showBastGeneral'])->name('form-bast-general');
+Route::get('/form-bast-radio/{id}', [LetterController::class, 'showBastRadio'])->name('form-bast-radio');
 Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->name('kerusakan.store');
 Route::post('/berita-acara/store', [LetterController::class, 'storeBeritaAcara'])->name('berita-acara.store');
+Route::post('/bast/store', [LetterController::class, 'storeBast'])->name('bast.store');
 Route::post('/letters/add-document', [LetterController::class, 'addDocument'])->name('letters.addDocument');
 
 Route::get('/view-bast-it-asset', [LetterController::class, 'viewBastItAsset'])->name('view-bast-it-asset')->middleware('auth');

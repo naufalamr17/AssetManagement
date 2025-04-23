@@ -349,7 +349,7 @@ class LetterController extends Controller
 
         $formKerusakan = $letter->formKerusakan()->first();
 
-        // dd($letter, $beritaAcara, $formKerusakan);
+        $bast = $letter->bast()->first();
 
         if ($letter->jenisBA == 'ASSET SERAH TERIMA') {
             if ($letter->perihal == 'PEMINJAMAN ASSET') {
@@ -697,6 +697,75 @@ class LetterController extends Controller
                     return redirect()->route('form-kerusakan', ['id' => $id]);
                 }
             }
+        } elseif ($letter->jenisBA == 'BAST') {
+            if ($letter->perihal == 'General') {
+                if ($bast) {
+                    Carbon::setLocale('id');
+
+                    $date = Carbon::parse($letter->tanggal)->translatedFormat('j F Y'); // Format: 1 Maret 2025
+                    $day = Carbon::parse($letter->tanggal)->translatedFormat('l'); // Format: Senin
+
+                    $templatePath = storage_path('app/public/templates/BAST_GENERAL.docx');
+
+                    $templateProcessor = new TemplateProcessor($templatePath);
+                    $templateProcessor->setValue('No', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('day', htmlspecialchars($day));
+                    $templateProcessor->setValue('date', htmlspecialchars($date));
+                    $templateProcessor->setValue('nama1', htmlspecialchars($bast->nama));
+                    $templateProcessor->setValue('nik1', htmlspecialchars($bast->nik));
+                    $templateProcessor->setValue('jabatan1', htmlspecialchars($bast->jabatan));
+                    $templateProcessor->setValue('nama2', htmlspecialchars($bast->nama_2));
+                    $templateProcessor->setValue('nik2', htmlspecialchars($bast->nik_2));
+                    $templateProcessor->setValue('jabatan2', htmlspecialchars($bast->jabatan_2));
+                    $templateProcessor->setValue('barang', htmlspecialchars($bast->barang));
+                    $templateProcessor->setValue('kodeprod', htmlspecialchars($bast->kodeprod));
+                    $templateProcessor->setValue('qty', htmlspecialchars($bast->qty));
+                    $templateProcessor->setValue('satuan', htmlspecialchars($bast->satuan));
+                    $templateProcessor->setValue('place', htmlspecialchars($bast->place));
+
+                    // dd($templateProcessor);
+
+                    $tempFilePath = storage_path('app/BAST_' . $letter->id . '.docx');
+                    $templateProcessor->saveAs($tempFilePath);
+
+                    // Return the document as a download response
+                    return response()->download($tempFilePath)->deleteFileAfterSend(true);
+                } else {
+                    return redirect()->route('form-bast-general', ['id' => $id]);
+                }
+            } elseif ($letter->perihal == 'Radio') {
+                if ($bast) {
+                    Carbon::setLocale('id');
+
+                    $date = Carbon::parse($letter->tanggal)->translatedFormat('j F Y'); // Format: 1 Maret 2025
+                    $day = Carbon::parse($letter->tanggal)->translatedFormat('l'); // Format: Senin
+
+                    $templatePath = storage_path('app/public/templates/BAST_RADIO.docx');
+
+                    $templateProcessor = new TemplateProcessor($templatePath);
+                    $templateProcessor->setValue('No', htmlspecialchars($letter->kode_surat));
+                    $templateProcessor->setValue('date', htmlspecialchars($date));
+                    $templateProcessor->setValue('nama1', htmlspecialchars($bast->nama));
+                    $templateProcessor->setValue('nik1', htmlspecialchars($bast->nik));
+                    $templateProcessor->setValue('jabatan1', htmlspecialchars($bast->jabatan));
+                    $templateProcessor->setValue('nama2', htmlspecialchars($bast->nama_2));
+                    $templateProcessor->setValue('nik2', htmlspecialchars($bast->nik_2));
+                    $templateProcessor->setValue('jabatan2', htmlspecialchars($bast->jabatan_2));
+                    $templateProcessor->setValue('barang', htmlspecialchars($bast->barang));
+                    $templateProcessor->setValue('deskripsi', htmlspecialchars($bast->deskripsi));
+                    $templateProcessor->setValue('alasan', htmlspecialchars($bast->alasan));
+
+                    // dd($templateProcessor);
+
+                    $tempFilePath = storage_path('app/BAST_' . $letter->id . '.docx');
+                    $templateProcessor->saveAs($tempFilePath);
+
+                    // Return the document as a download response
+                    return response()->download($tempFilePath)->deleteFileAfterSend(true);
+                } else {
+                    return redirect()->route('form-bast-radio', ['id' => $id]);
+                }
+            }
         }
     }
 
@@ -714,6 +783,22 @@ class LetterController extends Controller
         $results = DB::connection('travel')->select('SELECT * FROM employees');
 
         return view('pages.letter.form-kerusakan', compact('letter', 'results'));
+    }
+
+    public function showBastGeneral($id)
+    {
+        $letter = Letter::findOrFail($id);
+        $results = DB::connection('travel')->select('SELECT * FROM employees');
+
+        return view('pages.letter.bast', compact('letter', 'results'));
+    }
+
+    public function showBastRadio($id)
+    {
+        $letter = Letter::findOrFail($id);
+        $results = DB::connection('travel')->select('SELECT * FROM employees');
+
+        return view('pages.letter.bast', compact('letter', 'results'));
     }
 
     public function storeKerusakan(Request $request)
@@ -774,6 +859,52 @@ class LetterController extends Controller
                 'jabatan_2' => $request->jabatan_2,
             ]);
         }
+
+        return redirect()->route('letters.download', $request->letter_id);
+    }
+
+    public function storeBast(Request $request)
+    {
+        $request->validate([
+            'letter_id' => 'required|exists:letters,id',
+            'nama' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|max:255',
+            'jabatan' => 'nullable|string|max:255',
+            'nama_2' => 'nullable|string|max:255',
+            'nik_2' => 'nullable|string|max:255',
+            'jabatan_2' => 'nullable|string|max:255',
+            'place' => 'nullable|string|max:255',
+            'barang' => 'nullable|string|max:255',
+            'kodeprod' => 'nullable|string|max:255',
+            'qty' => 'nullable|integer',
+            'satuan' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'alasan' => 'nullable|string',
+        ]);
+
+        // Replace empty fields with '-'
+        $data = $request->all();
+
+        // Store the data
+        DB::table('bast')->insert([
+            'letter_id' => $data['letter_id'],
+            'nama' => $data['nama'] ?? '-',
+            'nik' => $data['nik'] ?? '-',
+            'jabatan' => $data['jabatan'] ?? '-',
+            'nama_2' => $data['nama_2'] ?? '-',
+            'nik_2' => $data['nik_2'] ?? '-',
+            'jabatan_2' => $data['jabatan_2'] ?? '-',
+            'place' => $data['place'] ?? '-',
+            'tanggal' => $data['tanggal'] ?? '-',
+            'barang' => $data['barang'] ?? '-',
+            'kodeprod' => $data['kodeprod'] ?? '-',
+            'qty' => $data['qty'] ?? '0',
+            'satuan' => $data['satuan'] ?? '-',
+            'deskripsi' => $data['deskripsi'] ?? '-',
+            'alasan' => $data['alasan'] ?? '-',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('letters.download', $request->letter_id);
     }

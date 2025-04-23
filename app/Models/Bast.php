@@ -9,6 +9,8 @@ class Bast extends Model
 {
     use HasFactory;
 
+    protected $table = 'bast';
+
     protected $fillable = [
         'letter_id',
         'nama',

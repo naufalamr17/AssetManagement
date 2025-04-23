@@ -28,4 +28,9 @@ class Letter extends Model
     {
         return $this->hasMany(FormKerusakan::class);
     }
+
+    public function bast()
+    {
+        return $this->hasMany(Bast::class);
+    }
 }

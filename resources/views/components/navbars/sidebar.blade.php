@@ -79,9 +79,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activePage == 'view-bast-it-asset' ? ' active bg-gradient-danger' : '' }}" href="{{ route('view-bast-it-asset') }}" style="color: {{ $activePage == 'view-bast-it-asset' ? 'white' : 'black' }};">
+                <a class="nav-link {{ $activePage == 'bast' ? ' active bg-gradient-danger' : '' }}" href="{{ route('view-bast-it-asset') }}" style="color: {{ $activePage == 'bast' ? 'white' : 'black' }};">
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-desktop" style="color: {{ $activePage == 'view-bast-it-asset' ? 'white' : 'black' }};"></i>
+                        <i class="fas fa-desktop" style="color: {{ $activePage == 'bast' ? 'white' : 'black' }};"></i>
                     </div>
                     <span class="nav-link-text ms-1">View BAST IT Asset</span>
                 </a>

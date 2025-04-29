@@ -174,6 +174,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Created at') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Barcode Availability') }}</th>
                                             @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified' || Auth::user()->status == 'Super Admin'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
                                             @endif
@@ -333,6 +334,13 @@
                             const formattedDate = date.toISOString().split('T')[0];
 
                             return formattedDate;
+                        }
+                    },
+                    {
+                        data: 'barcode_availability',
+                        name: 'barcode_availability',
+                        render: function(data) {
+                            return data ? data.toUpperCase() : '-';
                         }
                     },
                     @if(Auth::check() && (Auth::user() -> status == 'Administrator' || Auth::user() -> status == 'Super Admin' || Auth::user() -> status == 'Modified')) {

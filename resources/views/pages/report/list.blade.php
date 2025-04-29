@@ -191,6 +191,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Barcode Availability') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Penghapusan') }}</th>
@@ -236,6 +237,7 @@
                                             <td>{{ strtoupper($inventory->user ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->dept ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->status ?? '-') }}</td>
+                                            <td>{{ strtoupper(!empty($inventory->barcode_availability) ? $inventory->barcode_availability : '-') }}</td>
                                             <td>{{ strtoupper($inventory->tanggal_kerusakan ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->tanggal_pengembalian ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->tanggal_penghapusan ?? '-') }}</td>

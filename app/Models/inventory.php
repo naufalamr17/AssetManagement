@@ -28,6 +28,7 @@ class inventory extends Model
         'hand_over_date',
         'user',
         'dept',
+        'barcode_availability',
     ];
 
     public function userhist()

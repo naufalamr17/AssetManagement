@@ -209,6 +209,29 @@ class InventoryController extends Controller
         return view('pages.asset.inputasset', compact('userLocation'));
     }
 
+    public function processQrCode(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'barcode_exists' => 'required|string',
+            'note' => 'nullable|string',
+        ]);
+
+        // Ambil data inventaris berdasarkan ID
+        $inventory = Inventory::findOrFail($id);
+
+        // Format data untuk kolom barcode_availability
+        $barcodeAvailability = $request->barcode_exists . ' - ' . ($request->note ?? '');
+
+        // Update kolom barcode_availability
+        $inventory->update([
+            'barcode_availability' => $barcodeAvailability,
+        ]);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('inventory')->with('success', 'Barcode availability updated successfully.');
+    }
+
     public function store(Request $request)
     {
         // dd($request);
@@ -879,6 +902,7 @@ class InventoryController extends Controller
                     'inventories.user',
                     'inventories.dept',
                     'inventories.status',
+                    'inventories.barcode_availability',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
                     'disposes.tanggal_penghapusan',
@@ -906,6 +930,7 @@ class InventoryController extends Controller
                     'inventories.user',
                     'inventories.dept',
                     'inventories.status',
+                    'inventories.barcode_availability',
                     'repairstatuses.tanggal_kerusakan',
                     'repairstatuses.tanggal_pengembalian',
                     'disposes.tanggal_penghapusan',

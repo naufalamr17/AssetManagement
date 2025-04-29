@@ -84,28 +84,96 @@ class InventoryController extends Controller
                 if (Auth::check()) {
                     if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor') {
                         $inv->action = '<div class="d-flex align-items-center justify-content-center">
-                        <div class="p-1">
-                            <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                            </a>
-                        </div>
-                        <div class="mx-1"></div>
-                        <form action="' . route('destroy_inventory', ['id' => $inv->id]) . '" method="POST" onsubmit="return confirm(\'Are you sure you want to delete this asset?\');">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                <i class="material-icons" style="font-size: 16px;">close</i>
+                            <div>
+                                <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
+                                    <i class="material-icons" style="font-size: 16px;">edit</i>
+                                </a>
+                            </div>
+                            <div class="mx-1"></div>
+                            <form action="' . route('destroy_inventory', ['id' => $inv->id]) . '" method="POST" onsubmit="return confirm(\'Are you sure you want to delete this asset?\');">
+                                ' . csrf_field() . '
+                                ' . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
+                                    <i class="material-icons" style="font-size: 16px;">close</i>
+                                </button>
+                            </form>
+                            <div class="mx-1"></div>
+                            <button type="button" class="btn btn-info btn-sm p-0 mt-3" style="width: 24px; height: 24px;" data-bs-toggle="modal" data-bs-target="#qrcodeModal-' . $inv->id . '">
+                                <i class="material-icons" style="font-size: 16px;">qr_code</i>
                             </button>
-                        </form>
-                    </div>';
+                        </div>
+                        <div class="modal fade" id="qrcodeModal-' . $inv->id . '" tabindex="-1" aria-labelledby="qrcodeModalLabel-' . $inv->id . '" aria-hidden="true" style="z-index: 1055;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="qrcodeModalLabel-' . $inv->id . '">QR Code for Asset</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="' . route('process_qrcode', ['id' => $inv->id]) . '" method="POST">
+                                            ' . csrf_field() . '
+                                            <div class="mb-3">
+                                                <label for="barcodeExists-' . $inv->id . '" class="form-label">Does the asset have a barcode?</label>
+                                                <select class="form-select" id="barcodeExists-' . $inv->id . '" name="barcode_exists" required style="padding: 8px;">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="yes">Yes</option>
+                                                    <option value="no">No</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="note-' . $inv->id . '" class="form-label">Note</label>
+                                                <textarea class="form-control" id="note-' . $inv->id . '" name="note" rows="3" placeholder="Enter your note here" style="border: 1px solid #ced4da; padding: 8px;"></textarea>
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
                     } elseif (Auth::user()->status == 'Modified') {
                         $inv->action = '<div class="d-flex align-items-center justify-content-center">
-                        <div class="p-1">
-                            <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
-                                <i class="material-icons" style="font-size: 16px;">edit</i>
-                            </a>
+                            <div>
+                                <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
+                                    <i class="material-icons" style="font-size: 16px;">edit</i>
+                                </a>
+                            </div>
+                            <div class="mx-1"></div>
+                            <button type="button" class="btn btn-info btn-sm p-0 mt-3" style="width: 24px; height: 24px;" data-bs-toggle="modal" data-bs-target="#qrcodeModal-' . $inv->id . '">
+                                <i class="material-icons" style="font-size: 16px;">qr_code</i>
+                            </button>
                         </div>
-                    </div>';
+                        <div class="modal fade" id="qrcodeModal-' . $inv->id . '" tabindex="-1" aria-labelledby="qrcodeModalLabel-' . $inv->id . '" aria-hidden="true" style="z-index: 1055;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="qrcodeModalLabel-' . $inv->id . '">QR Code for Asset</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="' . route('process_qrcode', ['id' => $inv->id]) . '" method="POST">
+                                            ' . csrf_field() . '
+                                            <div class="mb-3">
+                                                <label for="barcodeExists-' . $inv->id . '" class="form-label">Does the asset have a barcode?</label>
+                                                <select class="form-select" id="barcodeExists-' . $inv->id . '" name="barcode_exists" required style="padding: 8px;">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="yes">Yes</option>
+                                                    <option value="no">No</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="note-' . $inv->id . '" class="form-label">Note</label>
+                                                <textarea class="form-control" id="note-' . $inv->id . '" name="note" rows="3" placeholder="Enter your note here" style="border: 1px solid #ced4da; padding: 8px;"></textarea>
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
                     }
                 }
 

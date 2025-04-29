@@ -147,6 +147,8 @@ Route::post('/approval', function (Request $request) {
 	return redirect()->route('dispose_inventory')->with('success', 'Approval processed successfully!');
 })->name('approval')->middleware('auth');
 
+Route::post('/process-qrcode/{id}', [InventoryController::class, 'processQrCode'])->name('process_qrcode')->middleware('auth');
+
 // Route::group(['middleware' => 'auth'], function () {
 // 	Route::get('billing', function () {
 // 		return view('pages.billing');

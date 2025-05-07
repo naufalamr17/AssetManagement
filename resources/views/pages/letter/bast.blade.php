@@ -67,15 +67,29 @@
                                             <input type="date" class="form-control border p-2" id="tanggal" name="tanggal" value="{{ $letter->tanggal }}" readonly>
                                         </div>
 
+                                        @if(Route::currentRouteName() == 'form-bast-radio')
                                         <div class="form-group">
                                             <label for="barang">Barang</label>
                                             <input type="text" class="form-control border p-2" id="barang" name="barang" required>
                                         </div>
+                                        @endif
 
                                         @if(Route::currentRouteName() !== 'form-bast-radio')
                                         <div class="form-group">
                                             <label for="kodeprod">Kode Produk</label>
-                                            <input type="text" class="form-control border p-2" id="kodeprod" name="kodeprod" required>
+                                            <input list="assetList" class="form-control border p-2" id="kodeprod" name="kodeprod" required>
+                                            <datalist id="assetList">
+                                                @foreach($item as $inventory)
+                                                <option value="{{ $inventory->asset_code }}" data-description="{{ $inventory->description }}">
+                                                    {{ $inventory->asset_code }} - {{ $inventory->description }}
+                                                </option>
+                                                @endforeach
+                                            </datalist>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="barang">Barang</label>
+                                            <input type="text" class="form-control border p-2" id="barang" name="barang" readonly>
                                         </div>
 
                                         <div class="form-group">
@@ -133,6 +147,15 @@
                                     document.getElementById('nik_2').value = '';
                                     document.getElementById('jabatan_2').value = '';
                                     document.getElementById('dept_2').value = '';
+                                }
+                            });
+
+                            document.getElementById('kodeprod').addEventListener('input', function() {
+                                var selectedOption = document.querySelector('#assetList option[value="' + this.value + '"]');
+                                if (selectedOption) {
+                                    document.getElementById('barang').value = selectedOption.getAttribute('data-description');
+                                } else {
+                                    document.getElementById('barang').value = '';
                                 }
                             });
                         </script>

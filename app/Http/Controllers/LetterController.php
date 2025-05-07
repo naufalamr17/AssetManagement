@@ -789,8 +789,9 @@ class LetterController extends Controller
     {
         $letter = Letter::findOrFail($id);
         $results = DB::connection('travel')->select('SELECT * FROM employees');
+        $item = inventory::select('asset_code', 'description')->get();
 
-        return view('pages.letter.bast', compact('letter', 'results'));
+        return view('pages.letter.bast', compact('letter', 'results', 'item'));
     }
 
     public function showBastRadio($id)

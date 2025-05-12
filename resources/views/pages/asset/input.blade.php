@@ -164,10 +164,8 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Description') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
-                                            @if (Auth::check() && (Auth::user()->location != 'Site Molore' && Auth::user()->location != 'Office Kendari'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Saat Ini') }}</th>
-                                            @endif
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
@@ -175,9 +173,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Dept') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Created at') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Barcode Availability') }}</th>
-                                            @if (Auth::check() && (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Modified' || Auth::user()->status == 'Super Admin'))
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Action') }}</th>
-                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody class="text-center text-lg">
@@ -277,7 +273,7 @@
                         data: 'acquisition_date',
                         name: 'acquisition_date'
                     },
-                    @if(Auth::check() && (Auth::user() -> location != 'Site Molore' && Auth::user() -> location != 'Office Kendari')) {
+                    {
                         data: 'acquisition_value',
                         name: 'acquisition_value',
                         render: function(data) {
@@ -288,7 +284,7 @@
                         data: 'depreciated_value',
                         name: 'depreciated_value'
                     },
-                    @endif {
+                    {
                         data: 'message',
                         name: 'message',
                         render: function(data) {
@@ -343,13 +339,12 @@
                             return data ? data.toUpperCase() : '-';
                         }
                     },
-                    @if(Auth::check() && (Auth::user() -> status == 'Administrator' || Auth::user() -> status == 'Super Admin' || Auth::user() -> status == 'Modified')) {
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
                         searchable: false
                     }
-                    @endif
                 ],
                 pageLength: 50,
                 order: [

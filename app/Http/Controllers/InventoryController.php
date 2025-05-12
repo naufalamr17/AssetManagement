@@ -33,52 +33,80 @@ class InventoryController extends Controller
 
             // Menghitung nilai terdepresiasi dan pesan sisa umur
             $inventory = $inventory->map(function ($inv) {
-                if ($inv->acquisition_date === '-') {
-                    $message = "Tanggal tidak terdefinisi";
-                    $depreciatedValue = "-";
-                } else {
-                    $acquisitionDate = new DateTime($inv->acquisition_date);
-                    $usefulLifeYears = $inv->useful_life;
-                    $currentDate = new DateTime();
-
-                    $endOfUsefulLife = clone $acquisitionDate;
-                    $endOfUsefulLife->modify("+{$usefulLifeYears} years");
-
-                    $interval = $currentDate->diff($endOfUsefulLife);
-
-                    if ($currentDate > $endOfUsefulLife) {
-                        $remainingDays = -$interval->days;
+                if (Auth::user()->location == 'Site Molore' || Auth::user()->location == 'Office Kendari') {
+                    $inv->acquisition_value = 0;
+                    $inv->depreciated_value = 0;
+                    if ($inv->acquisition_date === '-') {
+                        $message = "Tanggal tidak terdefinisi";
+                        $depreciatedValue = "-";
                     } else {
-                        $remainingDays = $interval->days;
+                        $acquisitionDate = new DateTime($inv->acquisition_date);
+                        $usefulLifeYears = $inv->useful_life;
+                        $currentDate = new DateTime();
+
+                        $endOfUsefulLife = clone $acquisitionDate;
+                        $endOfUsefulLife->modify("+{$usefulLifeYears} years");
+
+                        $interval = $currentDate->diff($endOfUsefulLife);
+
+                        if ($currentDate > $endOfUsefulLife) {
+                            $remainingDays = -$interval->days;
+                        } else {
+                            $remainingDays = $interval->days;
+                        }
+
+                        $message = "{$remainingDays} hari";
+
+                        $inv->message = $message;
                     }
+                } else {
+                    if ($inv->acquisition_date === '-') {
+                        $message = "Tanggal tidak terdefinisi";
+                        $depreciatedValue = "-";
+                    } else {
+                        $acquisitionDate = new DateTime($inv->acquisition_date);
+                        $usefulLifeYears = $inv->useful_life;
+                        $currentDate = new DateTime();
 
-                    $message = "{$remainingDays} hari";
+                        $endOfUsefulLife = clone $acquisitionDate;
+                        $endOfUsefulLife->modify("+{$usefulLifeYears} years");
 
-                    $depreciationRate = 1 / $usefulLifeYears;
+                        $interval = $currentDate->diff($endOfUsefulLife);
 
-                    $acquisitionValue = $inv->acquisition_value;
-                    $yearsUsed = $acquisitionDate->diff($currentDate)->y;
-                    $depreciatedValue = $acquisitionValue;
-                    $accumulatedDepreciation = 0;
+                        if ($currentDate > $endOfUsefulLife) {
+                            $remainingDays = -$interval->days;
+                        } else {
+                            $remainingDays = $interval->days;
+                        }
 
-                    for ($year = 1; $year <= $yearsUsed; $year++) {
-                        $annualDepreciation = $depreciatedValue * $depreciationRate;
-                        $accumulatedDepreciation += $annualDepreciation;
-                        $depreciatedValue -= $annualDepreciation;
+                        $message = "{$remainingDays} hari";
 
-                        if ($depreciatedValue < 0) {
-                            $depreciatedValue = 0;
-                            break;
+                        $depreciationRate = 1 / $usefulLifeYears;
+
+                        $acquisitionValue = $inv->acquisition_value;
+                        $yearsUsed = $acquisitionDate->diff($currentDate)->y;
+                        $depreciatedValue = $acquisitionValue;
+                        $accumulatedDepreciation = 0;
+
+                        for ($year = 1; $year <= $yearsUsed; $year++) {
+                            $annualDepreciation = $depreciatedValue * $depreciationRate;
+                            $accumulatedDepreciation += $annualDepreciation;
+                            $depreciatedValue -= $annualDepreciation;
+
+                            if ($depreciatedValue < 0) {
+                                $depreciatedValue = 0;
+                                break;
+                            }
+                        }
+
+                        if ($usefulLifeYears == 0) {
+                            $depreciatedValue = $acquisitionValue;
                         }
                     }
 
-                    if ($usefulLifeYears == 0) {
-                        $depreciatedValue = $acquisitionValue;
-                    }
+                    $inv->message = $message;
+                    $inv->depreciated_value = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.');
                 }
-
-                $inv->message = $message;
-                $inv->depreciated_value = $depreciatedValue === '-' ? '-' : number_format($depreciatedValue, 0, ',', '.');
 
                 // Menetapkan variabel action berdasarkan status pengguna
                 if (Auth::check()) {
@@ -174,6 +202,8 @@ class InventoryController extends Controller
                                 </div>
                             </div>
                         </div>';
+                    } else {
+                        $inv->action = "-";
                     }
                 }
 

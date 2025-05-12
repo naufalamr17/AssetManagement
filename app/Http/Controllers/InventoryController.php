@@ -403,9 +403,19 @@ class InventoryController extends Controller
             foreach ($ids as $inventory) {
                 $dataCount++;
             }
-            $iteration = str_pad($dataCount + 1, 4, '0', STR_PAD_LEFT);
-            // dd($iteration);
-            $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
+
+            // dd($dataCount);
+
+            do {
+                $iteration = str_pad($dataCount + 1, 4, '0', STR_PAD_LEFT);
+                $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
+
+                // Cek apakah kode sudah ada di database
+                $check = Inventory::where('asset_code', $id)->first();
+                $dataCount++; // Increment jika kode tidak unik
+            } while ($check != null); // Ulangi hingga kode unik ditemukan
+
+            // Setelah kode unik ditemukan, lanjutkan proses
         } else {
             $id = $id1 . ' ' . $id2 . '-' . $id3 . '-' . $iteration;
         }

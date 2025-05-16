@@ -397,7 +397,7 @@
                             color: '#222',
                             font: {
                                 weight: 'bold',
-                                size: 10 // label lebih kecil
+                                size: 7 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value;
@@ -439,7 +439,7 @@
                             color: '#222',
                             font: {
                                 weight: 'bold',
-                                size: 10 // label lebih kecil
+                                size: 7 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value.y !== undefined ? value.y : value;
@@ -536,7 +536,7 @@
                             color: '#222',
                             font: {
                                 weight: 'bold',
-                                size: 10 // label lebih kecil
+                                size: 7 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value.y !== undefined ? value.y : value;
@@ -627,7 +627,7 @@
                             color: '#222',
                             font: {
                                 weight: 'bold',
-                                size: 10 // label lebih kecil
+                                size: 7 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value.y !== undefined ? value.y : value;

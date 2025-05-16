@@ -371,7 +371,7 @@
 
         const ctx = document.getElementById('yearlyGrowthChart').getContext('2d');
         const yearlyGrowthChart = new Chart(ctx, {
-            type: 'line', // or 'bar', 'pie', etc.
+            type: 'bar', // was 'line'
             data: {
                 labels: yearlabels,
                 datasets: [{
@@ -395,7 +395,7 @@
 
         var ctxMonthly = document.getElementById('monthlyGrowthChart').getContext('2d');
         var monthlyGrowthChart = new Chart(ctxMonthly, {
-            type: 'line',
+            type: 'bar', // was 'line'
             data: {
                 labels: @json($monthlyGrowth -> pluck('month')),
                 datasets: [{
@@ -458,7 +458,7 @@
         // Inisialisasi Chart.js
         const ctx2 = document.getElementById('yearlyGrowthChartSpecial').getContext('2d');
         const yearlyGrowthChartSpecial = new Chart(ctx2, {
-            type: 'line', // atau 'bar', 'pie', dll sesuai kebutuhan
+            type: 'bar', // was 'line'
             data: {
                 labels: yearLabels,
                 datasets: datasets
@@ -539,7 +539,7 @@
         // Inisialisasi Chart.js
         const ctx3 = document.getElementById('monthlyGrowthChartSpecial').getContext('2d');
         const monthlyGrowthChartSpecial = new Chart(ctx3, {
-            type: 'line', // atau 'bar', 'pie', dll sesuai kebutuhan
+            type: 'bar', // was 'line'
             data: {
                 labels: yearLabels2, // Menggunakan yearLabels2 untuk labels
                 datasets: datasets2 // Menggunakan datasets2 yang sesuai

@@ -369,56 +369,88 @@
         const yearlabels = yearlyGrowth.map(item => item.year);
         const data = yearlyGrowth.map(item => item.count);
 
-        const ctx = document.getElementById('yearlyGrowthChart').getContext('2d');
-        const yearlyGrowthChart = new Chart(ctx, {
-            type: 'bar', // was 'line'
-            data: {
-                labels: yearlabels,
-                datasets: [{
-                    label: 'Asset Growth Per Year',
-                    data: data,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+        const yearlyGrowthChartElem = document.getElementById('yearlyGrowthChart');
+        if (yearlyGrowthChartElem) {
+            const ctx = yearlyGrowthChartElem.getContext('2d');
+            const yearlyGrowthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: yearlabels,
+                    datasets: [{
+                        label: 'Asset Growth Per Year',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-        var ctxMonthly = document.getElementById('monthlyGrowthChart').getContext('2d');
-        var monthlyGrowthChart = new Chart(ctxMonthly, {
-            type: 'bar', // was 'line'
-            data: {
-                labels: @json($monthlyGrowth -> pluck('month')),
-                datasets: [{
-                    label: 'Asset Growth Per Month',
-                    data: @json($monthlyGrowth -> pluck('count')),
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#222',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return value;
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
                 },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    </script>
+                plugins: [ChartDataLabels]
+            });
+        }
 
-    <script>
+        const monthlyGrowthChartElem = document.getElementById('monthlyGrowthChart');
+        if (monthlyGrowthChartElem) {
+            var ctxMonthly = monthlyGrowthChartElem.getContext('2d');
+            var monthlyGrowthChart = new Chart(ctxMonthly, {
+                type: 'bar',
+                data: {
+                    labels: @json($monthlyGrowth -> pluck('month')),
+                    datasets: [{
+                        label: 'Asset Growth Per Month',
+                        data: @json($monthlyGrowth -> pluck('count')),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#222',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return value;
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+
         // Data yang dikirim dari controller
         const yearlyGrowthSpecial = @json($yearlyGrowth);
 
@@ -456,47 +488,67 @@
         const datasets = Object.values(groupedData);
 
         // Inisialisasi Chart.js
-        const ctx2 = document.getElementById('yearlyGrowthChartSpecial').getContext('2d');
-        const yearlyGrowthChartSpecial = new Chart(ctx2, {
-            type: 'bar', // was 'line'
-            data: {
-                labels: yearLabels,
-                datasets: datasets
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'category',
+        const yearlyGrowthChartSpecialElem = document.getElementById('yearlyGrowthChartSpecial');
+        if (yearlyGrowthChartSpecialElem) {
+            const ctx2 = yearlyGrowthChartSpecialElem.getContext('2d');
+            const yearlyGrowthChartSpecial = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: yearLabels,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: false,
+                                text: 'Count'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
                         title: {
                             display: true,
-                            text: 'Year'
+                            text: 'Pertumbuhan Asset Pertahun per Lokasi',
+                            font: {
+                                size: 16
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#222',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return value.y !== undefined ? value.y : value;
+                            }
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: false,
-                            text: 'Count'
-                        }
-                    }
+                    responsive: true,
+                    maintainAspectRatio: false
                 },
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                    },
-                    title: {
-                        display: false,
-                        text: 'Asset Growth per Year and Location'
-                    }
-                }
-            }
-        });
-    </script>
+                plugins: [ChartDataLabels]
+            });
+        }
 
-    <script>
         // Data yang dikirim dari controller
         const monthlyGrowthSpecial = @json($monthlyGrowth);
 
@@ -537,44 +589,66 @@
         const datasets2 = Object.values(groupedData2);
 
         // Inisialisasi Chart.js
-        const ctx3 = document.getElementById('monthlyGrowthChartSpecial').getContext('2d');
-        const monthlyGrowthChartSpecial = new Chart(ctx3, {
-            type: 'bar', // was 'line'
-            data: {
-                labels: yearLabels2, // Menggunakan yearLabels2 untuk labels
-                datasets: datasets2 // Menggunakan datasets2 yang sesuai
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'category',
+        const monthlyGrowthChartSpecialElem = document.getElementById('monthlyGrowthChartSpecial');
+        if (monthlyGrowthChartSpecialElem) {
+            const ctx3 = monthlyGrowthChartSpecialElem.getContext('2d');
+            const monthlyGrowthChartSpecial = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: yearLabels2,
+                    datasets: datasets2
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: false,
+                                text: 'Count'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
                         title: {
                             display: true,
-                            text: 'Year'
+                            text: 'Pertumbuhan Asset Perbulan per Lokasi',
+                            font: {
+                                size: 16
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#222',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return value.y !== undefined ? value.y : value;
+                            }
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: false,
-                            text: 'Count'
-                        }
-                    }
+                    responsive: true,
+                    maintainAspectRatio: false
                 },
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                    },
-                    title: {
-                        display: false,
-                        text: 'Asset Growth per Year and Location'
-                    }
-                }
-            }
-        });
+                plugins: [ChartDataLabels]
+            });
+        }
     </script>
 
     @endpush

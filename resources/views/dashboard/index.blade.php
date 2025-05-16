@@ -519,17 +519,6 @@
                             display: true,
                             position: 'bottom',
                         },
-                        title: {
-                            display: true,
-                            text: 'Pertumbuhan Asset Pertahun per Lokasi',
-                            font: {
-                                size: 16
-                            },
-                            padding: {
-                                top: 10,
-                                bottom: 20
-                            }
-                        },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
@@ -619,17 +608,6 @@
                         legend: {
                             display: true,
                             position: 'bottom',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Pertumbuhan Asset Perbulan per Lokasi',
-                            font: {
-                                size: 16
-                            },
-                            padding: {
-                                top: 10,
-                                bottom: 20
-                            }
                         },
                         datalabels: {
                             anchor: 'end',

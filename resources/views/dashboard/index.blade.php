@@ -396,7 +396,8 @@
                             align: 'end',
                             color: '#222',
                             font: {
-                                weight: 'bold'
+                                weight: 'bold',
+                                size: 10 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value;
@@ -437,10 +438,11 @@
                             align: 'end',
                             color: '#222',
                             font: {
-                                weight: 'bold'
+                                weight: 'bold',
+                                size: 10 // label lebih kecil
                             },
                             formatter: function(value) {
-                                return value;
+                                return value.y !== undefined ? value.y : value;
                             }
                         }
                     },
@@ -484,6 +486,15 @@
         // Memisahkan labels tahun
         const yearLabels = [...new Set(yearlyGrowthSpecial.map(item => item.year))].sort();
 
+        // Normalisasi data: pastikan setiap lokasi punya data untuk semua tahun
+        Object.keys(groupedData).forEach(loc => {
+            const dataMap = {};
+            groupedData[loc].data.forEach(d => {
+                dataMap[d.x] = d.y;
+            });
+            groupedData[loc].data = yearLabels.map(year => dataMap[year] !== undefined ? dataMap[year] : 0);
+        });
+
         // Membuat array objek dari groupedData
         const datasets = Object.values(groupedData);
 
@@ -524,7 +535,8 @@
                             align: 'end',
                             color: '#222',
                             font: {
-                                weight: 'bold'
+                                weight: 'bold',
+                                size: 10 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value.y !== undefined ? value.y : value;
@@ -614,7 +626,8 @@
                             align: 'end',
                             color: '#222',
                             font: {
-                                weight: 'bold'
+                                weight: 'bold',
+                                size: 10 // label lebih kecil
                             },
                             formatter: function(value) {
                                 return value.y !== undefined ? value.y : value;

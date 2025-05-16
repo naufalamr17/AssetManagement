@@ -11,7 +11,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="pieChart" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="pieChart" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="stackedBarChart" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="stackedBarChart" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="yearlyGrowthChartSpecial" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="yearlyGrowthChartSpecial" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="monthlyGrowthChartSpecial" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="monthlyGrowthChartSpecial" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
                                 <div class="chart">
-                                    <canvas id="monthlyGrowthChart" class="chart-canvas" height="170"></canvas>
+                                    <canvas id="monthlyGrowthChart" class="chart-canvas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="table-responsive p-0" style="height: 170px;">
+                                <div class="table-responsive p-0" style="height: 250px;">
                                     <table id="inventoryTable" class="table align-items-center mb-0">
                                         <thead>
                                             <tr>
@@ -161,7 +161,7 @@
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                             <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="table-responsive p-0" style="height: 170px;">
+                                <div class="table-responsive p-0" style="height: 250px;">
                                     <table id="inventoryTable" class="table align-items-center mb-0">
                                         <thead>
                                             <tr>

@@ -219,7 +219,7 @@
                                             <td>{{ strtoupper($item->tanggal_pengembalian ?? '-') }}</td>
                                             <td>{{ strtoupper($item->note ?? '-') }}</td>
                                             <td>
-                                                @if($item->status == 'Breakdown' && !$item->dokumen_breakdown)
+                                                @if($item->status == 'Breakdown' && !$item->dokumen_breakdown && Auth::check() && Auth::user()->status != 'Viewers')
                                                 <a href="javascript:void(0)" class="btn btn-primary btn-sm add-document mt-3" data-id="{{ $item->id }}">Add Document</a>
                                                 @elseif($item->dokumen_breakdown)
                                                 <a href="{{ asset('storage/' . $item->dokumen_breakdown) }}" target="_blank" class="btn btn-success btn-sm mt-3">View Document</a>

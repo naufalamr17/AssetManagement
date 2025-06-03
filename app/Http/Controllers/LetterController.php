@@ -26,8 +26,12 @@ class LetterController extends Controller
                     if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin') {
                         $btn .= '<a href="javascript:void(0)" class="edit btn btn-dark btn-sm mt-3"><i class="fas fa-edit"></i></a>';
                         $btn .= ' <a href="javascript:void(0)" class="delete btn btn-danger btn-sm mt-3"><i class="fas fa-trash-alt"></i></a>';
+                    } elseif (Auth::user()->status != 'Viewers') {
+                        $btn .= ' <a href="' . route('letters.download', $row->id) . '" class="btn btn-info btn-sm mt-3"><i class="fas fa-download"></i></a>';
+                    } else {
+                        $btn .= '-';
                     }
-                    $btn .= ' <a href="' . route('letters.download', $row->id) . '" class="btn btn-info btn-sm mt-3"><i class="fas fa-download"></i></a>';
+
                     return $btn;
                 })
                 ->addColumn('creator', function ($row) {
@@ -38,10 +42,12 @@ class LetterController extends Controller
                 })
                 ->addColumn('file', function ($row) {
                     $btn = '';
-                    if (empty($row->file)) {
+                    if (empty($row->file) && Auth::user()->status != 'Viewers') {
                         $btn .= ' <a href="javascript:void(0)" class="add-document btn btn-primary btn-sm mt-3" data-id="' . $row->id . '"><i class="fas fa-upload"></i> Add Document</a>';
-                    } else {
+                    } else if (!empty($row->file)) {
                         $btn .= ' <a href="' . asset('storage/' . $row->file) . '" target="_blank" class="view-document btn btn-success btn-sm mt-3"><i class="fas fa-eye"></i> View Document</a>';
+                    } else {
+                        $btn .= '-';
                     }
                     return $btn;
                 })

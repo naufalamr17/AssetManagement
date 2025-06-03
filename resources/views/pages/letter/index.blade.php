@@ -112,9 +112,11 @@
                                 <input type="text" class="form-control border p-2" name="searchbox" id="searchbox" placeholder="Search...">
                             </div>
                             <div class="ms-auto mb-2">
+                                @if(Auth::check() && Auth::user()->status != 'Viewers')
                                 <button id="addDataButton" class="btn bg-gradient-danger">
                                     <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Data
                                 </button>
+                                @endif
                                 <button id="exportExcelButton" class="btn bg-gradient-dark">
                                     <i class="material-icons text-sm">file_download</i>&nbsp;&nbsp;Download Excel
                                 </button>

@@ -242,6 +242,7 @@
                                     </div>
 
                                     <div class="col-md-6">
+                                        @if(Auth::user()->location == 'Head Office')
                                         <div class="form-group">
                                             <label for="acquisition_date">Tanggal Perolehan</label>
                                             <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}" @if(Auth::user()->status == 'Creator') readonly @endif>
@@ -265,6 +266,31 @@
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
                                             @endif
                                         </div>
+                                        @else
+                                        <div class="form-group" style="display:none;">
+                                            <label for="acquisition_date">Tanggal Perolehan</label>
+                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}" @if(Auth::user()->status == 'Creator') readonly @endif>
+                                            @if ($errors->has('acquisition_date'))
+                                            <div class="text-danger mt-2">{{ $errors->first('acquisition_date') }}</div>
+                                            @endif
+                                        </div>
+
+                                        <div class="form-group" style="display:none;">
+                                            <label for="useful_life">Umur ekonomis (Tahun)</label>
+                                            <input type="number" class="form-control border p-2" id="useful_life" name="useful_life" value="{{ old('useful_life', $asset->useful_life) }}" readonly>
+                                            @if ($errors->has('useful_life'))
+                                            <div class="text-danger mt-2">{{ $errors->first('useful_life') }}</div>
+                                            @endif
+                                        </div>
+
+                                        <div class="form-group" style="display:none;">
+                                            <label for="acquisition_value">Nilai Perolehan</label>
+                                            <input id="acquisition_value" class="form-control border p-2" type="number" name="acquisition_value" value="{{ old('acquisition_value', $asset->acquisition_value) }}" readonly>
+                                            @if ($errors->has('acquisition_value'))
+                                            <div class="text-danger mt-2">{{ $errors->first('acquisition_value') }}</div>
+                                            @endif
+                                        </div>
+                                        @endif
 
                                         <div class="form-group">
                                             <label for="hand_over_date">Tanggal Serah Terima</label>

@@ -31,7 +31,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="old_asset_code">Kode Asset Lama</label>
-                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code', $asset->old_asset_code) }}" autofocus>
+                                            <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code', $asset->old_asset_code) }}" autofocus @if(Auth::user()->status == 'Creator') readonly @endif>
                                             @if ($errors->has('old_asset_code'))
                                             <div class="text-danger mt-2">{{ $errors->first('old_asset_code') }}</div>
                                             @endif
@@ -173,7 +173,7 @@
 
                                         <div class="form-group">
                                             <label for="asset_type">Jenis</label>
-                                            <input list="asset_types" class="form-control border p-2" id="asset_type" name="asset_type" value="{{ old('asset_type', $asset->asset_type) }}" required>
+                                            <input list="asset_types" class="form-control border p-2" id="asset_type" name="asset_type" value="{{ old('asset_type', $asset->asset_type) }}" required @if(Auth::user()->status == 'Creator') readonly @endif>
                                             <datalist id="asset_types">
                                                 <option value="LV">LV</option>
                                                 <option value="Mobil Tangki">Mobil Tangki</option>
@@ -218,7 +218,7 @@
 
                                         <div class="form-group">
                                             <label for="merk">Merk</label>
-                                            <input id="merk" class="form-control border p-2" type="text" name="merk" value="{{ old('merk', $asset->merk) }}">
+                                            <input id="merk" class="form-control border p-2" type="text" name="merk" value="{{ old('merk', $asset->merk) }}" @if(Auth::user()->status == 'Creator') readonly @endif>
                                             @if ($errors->has('merk'))
                                             <div class="text-danger mt-2">{{ $errors->first('merk') }}</div>
                                             @endif
@@ -226,7 +226,7 @@
 
                                         <div class="form-group">
                                             <label for="description">Deskripsi</label>
-                                            <textarea id="description" class="form-control border p-2" name="description" required>{{ old('description', $asset->description) }}</textarea>
+                                            <textarea id="description" class="form-control border p-2" name="description" required @if(Auth::user()->status == 'Creator') readonly @endif>{{ old('description', $asset->description) }}</textarea>
                                             @if ($errors->has('description'))
                                             <div class="text-danger mt-2">{{ $errors->first('description') }}</div>
                                             @endif
@@ -244,7 +244,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="acquisition_date">Tanggal Perolehan</label>
-                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}">
+                                            <input type="date" class="form-control border p-2" id="acquisition_date" name="acquisition_date" value="{{ isset($asset->acquisition_date) ? $asset->acquisition_date : '' }}" @if(Auth::user()->status == 'Creator') readonly @endif>
                                             @if ($errors->has('acquisition_date'))
                                             <div class="text-danger mt-2">{{ $errors->first('acquisition_date') }}</div>
                                             @endif

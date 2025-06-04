@@ -204,6 +204,12 @@ class InventoryController extends Controller
                         </div>';
                     } elseif (Auth::user()->status == 'Creator') {
                         $inv->action = '<div class="d-flex align-items-center justify-content-center">
+                            <div>
+                                <a href="' . route('edit_inventory', ['id' => $inv->id]) . '" class="btn btn-success btn-sm p-0 mt-3" style="width: 24px; height: 24px;">
+                                    <i class="material-icons" style="font-size: 16px;">edit</i>
+                                </a>
+                            </div>
+                            <div class="mx-1"></div>
                             <button type="button" class="btn btn-info btn-sm p-0 mt-3" style="width: 24px; height: 24px;" data-bs-toggle="modal" data-bs-target="#qrcodeModal-' . $inv->id . '">
                                 <i class="material-icons" style="font-size: 16px;">qr_code</i>
                             </button>

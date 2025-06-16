@@ -136,6 +136,13 @@
                             <div class="mb-2 me-2">
                                 <input type="number" class="form-control border p-2" name="yearFilter" id="yearFilter" placeholder="Filter by Year">
                             </div>
+                            <!-- Tambahkan filter range tanggal perolehan -->
+                            <div class="mb-2 me-2">
+                                <input type="date" class="form-control border p-2" name="startDateFilter" id="startDateFilter" placeholder="Tanggal Perolehan Dari">
+                            </div>
+                            <div class="mb-2 me-2">
+                                <input type="date" class="form-control border p-2" name="endDateFilter" id="endDateFilter" placeholder="Tanggal Perolehan Sampai">
+                            </div>
                             <div class="mb-2 me-2">
                                 <select class="form-control border p-2" name="statusFilter" id="statusFilter">
                                     <option value="">Filter by Status</option>
@@ -303,6 +310,45 @@
                     table.columns(9).search('').draw();
                 }
             });
+
+            // Filter by date range functionality
+            $('#startDateFilter, #endDateFilter').on('change', function() {
+                var startDate = $('#startDateFilter').val();
+                var endDate = $('#endDateFilter').val();
+
+                // Validate date format (YYYY-MM-DD)
+                var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+                if (startDate && !datePattern.test(startDate)) {
+                    alert('Tanggal awal tidak valid. Harap gunakan format YYYY-MM-DD.');
+                    return;
+                }
+                if (endDate && !datePattern.test(endDate)) {
+                    alert('Tanggal akhir tidak valid. Harap gunakan format YYYY-MM-DD.');
+                    return;
+                }
+
+                // Filter DataTable
+                table.draw();
+            });
+
+            // Override DataTables default filtering function
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    var min = $('#startDateFilter').val();
+                    var max = $('#endDateFilter').val();
+                    var date = data[9]; // Kolom tanggal perolehan (acquisition_date)
+
+                    if (
+                        (min === '' && max === '') || // Jika tidak ada filter tanggal
+                        (min === '' && date <= max) || // Jika hanya filter tanggal akhir
+                        (min <= date && max === '') || // Jika hanya filter tanggal awal
+                        (min <= date && date <= max) // Jika dalam rentang tanggal
+                    ) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
 
             // Filter by status functionality
             $('#statusFilter').on('change', function() {

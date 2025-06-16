@@ -258,6 +258,30 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Container untuk chart dan summary -->
+            <div class="card mb-4">
+                <div class="card-body py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-5 mb-3 mb-md-0 d-flex justify-content-center">
+                            <div style="width:220px;max-width:100%;">
+                                <canvas id="jenisAssetChart" height="180" style="max-height:180px;"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div id="jenisAssetSummary" class="fs-6 mb-2">
+                                <span>Total Asset: <b id="totalAssetCount">0</b></span><br>
+                                <span>Jenis Asset "<b id="selectedJenis"></b>": <b id="jenisAssetCount">0</b></span><br>
+                                <span>Persentase: <b id="jenisAssetPercent">0%</b></span>
+                            </div>
+                            <div>
+                                <label for="jenisAssetSelect" class="form-label mb-1">Pilih Jenis Asset:</label>
+                                <select id="jenisAssetSelect" class="form-select w-auto d-inline-block p-2" style="min-width:120px"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <x-footers.auth></x-footers.auth>
         </div>
     </main>
@@ -268,6 +292,8 @@
     <!-- Include DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Tambahkan Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Initialize DataTable -->
     <script>
@@ -430,6 +456,128 @@
                 XLSX.utils.book_append_sheet(wb, ws, sheetName);
                 XLSX.writeFile(wb, fileName + '.xlsx');
             });
+
+            // --- CHART & SUMMARY JENIS ASSET ---
+            function getJenisAssetData() {
+                var jenisCounts = {};
+                var total = 0;
+                table.rows({
+                    search: 'applied'
+                }).every(function() {
+                    var jenis = this.data()[4] || '-';
+                    jenisCounts[jenis] = (jenisCounts[jenis] || 0) + 1;
+                    total++;
+                });
+                return {
+                    jenisCounts,
+                    total
+                };
+            }
+
+            function updateJenisAssetSelect(jenisCounts) {
+                var $select = $('#jenisAssetSelect');
+                var current = $select.val();
+                $select.empty();
+                var jenisList = [];
+                table.rows({
+                    search: 'applied'
+                }).every(function() {
+                    var jenis = this.data()[4] || '-';
+                    if (jenisList.indexOf(jenis) === -1) {
+                        jenisList.push(jenis);
+                    }
+                });
+                jenisList.sort();
+                jenisList.forEach(function(jenis) {
+                    $select.append($('<option>', {
+                        value: jenis,
+                        text: jenis
+                    }));
+                });
+                if (current && jenisCounts[current]) {
+                    $select.val(current);
+                }
+            }
+
+            var jenisChart;
+
+            function updateJenisAssetChart() {
+                var {
+                    jenisCounts,
+                    total
+                } = getJenisAssetData();
+                updateJenisAssetSelect(jenisCounts);
+
+                var selectedJenis = $('#jenisAssetSelect').val() || Object.keys(jenisCounts)[0] || '-';
+                var selectedCount = jenisCounts[selectedJenis] || 0;
+                var otherCount = total - selectedCount;
+
+                var labels = [selectedJenis, 'Other'];
+                var data = [selectedCount, otherCount];
+
+                if (jenisChart) {
+                    jenisChart.data.labels = labels;
+                    jenisChart.data.datasets[0].data = data;
+                    jenisChart.update();
+                } else {
+                    var ctx = document.getElementById('jenisAssetChart').getContext('2d');
+                    jenisChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: data,
+                                backgroundColor: [
+                                    '#007bff', '#6c757d'
+                                ],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        boxWidth: 16,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                updateJenisAssetSummary();
+            }
+
+            function updateJenisAssetSummary() {
+                var {
+                    jenisCounts,
+                    total
+                } = getJenisAssetData();
+                var selectedJenis = $('#jenisAssetSelect').val() || Object.keys(jenisCounts)[0] || '-';
+                var jenisCount = jenisCounts[selectedJenis] || 0;
+                var percent = total > 0 ? ((jenisCount / total) * 100).toFixed(2) : 0;
+
+                $('#totalAssetCount').text(total);
+                $('#selectedJenis').text(selectedJenis);
+                $('#jenisAssetCount').text(jenisCount);
+                $('#jenisAssetPercent').text(percent + '%');
+            }
+
+            $('#jenisAssetSelect').on('change', updateJenisAssetChart);
+
+            table.on('draw', function() {
+                updateJenisAssetChart();
+            });
+
+            updateJenisAssetChart();
+
+            // Inisialisasi pertama
+            setTimeout(updateJenisAssetChart, 500);
 
         });
     </script>

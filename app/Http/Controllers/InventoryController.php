@@ -275,10 +275,11 @@ class InventoryController extends Controller
     {
         $user = Auth::user();
         $userLocation = $user->location;
+        $employee = DB::connection('travel')->select('SELECT * FROM employees');
 
         // dd($userLocation);
 
-        return view('pages.asset.inputasset', compact('userLocation'));
+        return view('pages.asset.inputasset', compact('userLocation', 'employee'));
     }
 
     public function processQrCode(Request $request, $id)

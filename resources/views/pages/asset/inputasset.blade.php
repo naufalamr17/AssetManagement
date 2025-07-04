@@ -29,7 +29,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <!-- <div class="form-group">
+                                        <!-- <div class="form-group>
                                             <label for="old_asset_code">Kode Asset Lama</label>
                                             <input id="old_asset_code" class="form-control border p-2" type="text" name="old_asset_code" value="{{ old('old_asset_code') }}" readonly>
                                             @if ($errors->has('old_asset_code'))
@@ -284,8 +284,18 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="nik">NIK</label>
+                                            <input id="nik" class="form-control border p-2" type="text" name="nik" list="nik_list" required autocomplete="off">
+                                            <datalist id="nik_list">
+                                                @foreach($employee as $emp)
+                                                    <option value="{{ $emp->nik }}">{{ $emp->nama }} - {{ $emp->organization }} - {{ $emp->job_position }}</option>
+                                                @endforeach
+                                            </datalist>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="user">User</label>
-                                            <input id="user" class="form-control border p-2" type="text" name="user" value="{{ old('user') }}">
+                                            <input id="user" class="form-control border p-2" type="text" name="user" value="{{ old('user') }}" readonly>
                                             @if ($errors->has('user'))
                                             <div class="text-danger mt-2">{{ $errors->first('user') }}</div>
                                             @endif
@@ -293,7 +303,7 @@
 
                                         <div class="form-group">
                                             <label for="dept">Dept</label>
-                                            <input id="dept" class="form-control border p-2" type="text" name="dept" value="{{ old('dept') }}">
+                                            <input id="dept" class="form-control border p-2" type="text" name="dept" value="{{ old('dept') }}" readonly>
                                             @if ($errors->has('dept'))
                                             <div class="text-danger mt-2">{{ $errors->first('dept') }}</div>
                                             @endif
@@ -361,5 +371,28 @@
 
         // Trigger change event to set initial value if a category is already selected
         document.getElementById('asset_category').dispatchEvent(new Event('change'));
+
+        // Data karyawan dari PHP ke JS
+        var employeeData = [
+            @foreach($employee as $emp)
+                {
+                    nik: "{{ $emp->nik }}",
+                    nama: "{{ $emp->nama }}",
+                    organization: `{!! $emp->organization !!}`
+                },
+            @endforeach
+        ];
+
+        document.getElementById('nik').addEventListener('change', function() {
+            var nik = this.value.trim();
+            var emp = employeeData.find(e => e.nik === nik);
+            if (emp) {
+                document.getElementById('user').value = emp.nama;
+                document.getElementById('dept').value = emp.organization;
+            } else {
+                document.getElementById('user').value = '';
+                document.getElementById('dept').value = '';
+            }
+        });
     </script>
 </x-layout>

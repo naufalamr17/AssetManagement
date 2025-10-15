@@ -193,6 +193,7 @@
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Perolehan') }}</th>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Nilai Perolehan') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Useful Life (Tahun)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (Hari)') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('User') }}</th>
@@ -218,6 +219,7 @@
                                             <td>{{ strtoupper($inventory->serial_number ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->location ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->acquisition_date ?? '-') }}</td>
+                                            <td>{{ strtoupper($inventory->acquisition_value ?? '-') }}</td>
                                             <td>{{ $inventory->useful_life ? strtoupper($inventory->useful_life . ' TAHUN') : '-' }}</td>
                                             <?php
                                             if ($inventory->acquisition_date === '-') {

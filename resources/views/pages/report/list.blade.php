@@ -183,6 +183,7 @@
                                 <table id="inventoryTable" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
+                                            <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Create Date') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset Lama') }}</th>
                                             <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kategori Asset') }}</th>
@@ -209,6 +210,7 @@
                                     <tbody>
                                         @foreach($inventoryData as $inventory)
                                         <tr class="text-center" style="font-size: 14px;">
+                                            <td>{{ strtoupper($inventory->created_at ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->asset_code ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->old_asset_code ?? '-') }}</td>
                                             <td>{{ strtoupper($inventory->asset_category ?? '-') }}</td>

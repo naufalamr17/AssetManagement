@@ -971,6 +971,7 @@ class InventoryController extends Controller
                 ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
                 ->select(
+                    'inventories.created_at',
                     'inventories.asset_code',
                     'inventories.old_asset_code',
                     'inventories.asset_category',
@@ -1000,6 +1001,7 @@ class InventoryController extends Controller
                 ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
                 ->select(
+                    'inventories.created_at',
                     'inventories.asset_code',
                     'inventories.old_asset_code',
                     'inventories.asset_category',

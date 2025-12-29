@@ -39,6 +39,14 @@
                                         </button>
                                     </div>
                                     @endif
+                                    @if (Session::has('error'))
+                                    <div class="alert alert-danger alert-dismissible text-white" role="alert">
+                                        <span class="text-sm">{{ Session::get('error') }}</span>
+                                        <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    @endif
                                     <div style="margin-top: 1rem; position: relative;">
                                         <label style="position: absolute; top: -0.5rem; left: 0.75rem; background: white; padding: 0 0.25rem; font-size: 0.6 rem; color: #6b7280;">Email</label>
                                         <input type="email" name="email" style="display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid rgb(8, 47, 73); border-radius: 0.375rem; font-size: 0.875rem; line-height: 1.5rem; color: #374151;" autofocus>

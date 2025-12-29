@@ -62,6 +62,18 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn w-100 my-4 mb-2" style="background-color: rgb(8, 47, 73); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer;">Log In</button>
                                     </div>
+                                    <div class="text-center">
+                                        <p class="text-sm mt-3 mb-2">Or continue with</p>
+                                        <a href="{{ route('auth.azure') }}" class="btn w-100 mb-2" style="background-color: #2f2f2f; color: white; border: 1px solid #2f2f2f; padding: 12px 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 21 21" style="margin-right: 10px;">
+                                                <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                                                <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                                                <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                                                <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                                            </svg>
+                                            Microsoft
+                                        </a>
+                                    </div>
                                 </form>
                             </div>
                         </div>

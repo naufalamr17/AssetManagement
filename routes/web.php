@@ -29,6 +29,7 @@ use App\Models\dispose;
 use App\Models\inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Auth\AzureAuthController;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
@@ -38,6 +39,10 @@ Route::get('sign-in', [SessionsController::class, 'create'])->middleware('guest'
 Route::post('sign-in', [SessionsController::class, 'store'])->middleware('guest');
 Route::post('verify', [SessionsController::class, 'show'])->middleware('guest');
 Route::post('reset-password', [SessionsController::class, 'update'])->middleware('guest')->name('password.update');
+
+Route::get('auth/azure', [AzureAuthController::class, 'redirectToAzure'])->name('auth.azure');
+Route::get('auth/azure/callback', [AzureAuthController::class, 'handleAzureCallback'])->name('auth.azure.callback');
+
 Route::get('verify', function () {
 	return view('sessions.password.verify');
 })->middleware('guest')->name('verify');

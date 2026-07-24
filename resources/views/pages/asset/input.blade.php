@@ -1,113 +1,16 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <!-- Include DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-
-    <!-- Custom CSS to make the DataTable smaller -->
-    <style>
-        #inventoryTable_wrapper .dataTables_length,
-        #inventoryTable_wrapper .dataTables_filter,
-        #inventoryTable_wrapper .dataTables_info,
-        #inventoryTable_wrapper .dataTables_paginate {
-            font-size: 0.75rem;
-        }
-
-        #inventoryTable {
-            font-size: 0.75rem;
-        }
-
-        #inventoryTable th,
-        #inventoryTable td {
-            padding: 4px 8px;
-        }
-
-        /* CSS to make the table scrollable */
-        .table-responsive {
-            max-height: 500px;
-            /* Set the desired maximum height */
-            overflow-y: auto;
-        }
-    </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
-    <style>
-        #interactive {
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        #interactive video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        #result {
-            margin-top: 20px;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Media query for landscape orientation on mobile devices */
-        @media only screen and (max-width: 600px) {
-            .modal-content {
-                width: 90%;
-                max-width: none;
-                height: 60vh;
-                overflow-y: auto;
-            }
-        }
-    </style>
 
     <x-navbars.sidebar activePage="inventory"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="INPUT ASSET"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Daftar Aset"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
+                    <div class="card">
                         @if ($errors->any())
                         <div class="alert alert-danger" role="alert">
                             <ul class="mb-0">
@@ -124,35 +27,38 @@
                         </div>
                         @endif
 
-                        <div class="d-flex flex-wrap align-items-center mb-4 p-3">
-                            <div class="mb-2 me-2">
-                                <input type="text" class="form-control border p-2" name="searchbox" id="searchbox" placeholder="Search..." style="max-width: 300px;" autofocus>
+                        <div class="page-toolbar">
+                            <div class="toolbar-search">
+                                <i class="material-icons-round">search</i>
+                                <input type="text" class="form-control" name="searchbox" id="searchbox" placeholder="Cari kode, jenis, lokasi, atau pengguna..." autofocus>
                             </div>
-                            <div class="mb-2 me-2 mt-3">
-                                <button id="openModalButton" class="btn btn-danger">
-                                    <i class="fas fa-camera"></i>
+                            <div>
+                                <button id="openModalButton" class="btn btn-light mb-0" type="button">
+                                    <i class="material-icons-round text-sm me-1">qr_code_scanner</i> Scan
                                 </button>
                             </div>
                             @if (Auth::check() && (Auth::user()->status != 'Viewers' && Auth::user()->status != 'Auditor'))
-                            <div class="ms-auto mb-2">
-                                <a class="btn bg-gradient-dark mb-0" href="{{ route('add_inventory') }}">
-                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Asset
+                            <div class="ms-auto">
+                                <a class="btn btn-primary mb-0" href="{{ route('add_inventory') }}">
+                                    <i class="material-icons-round text-sm me-1">add</i> Tambah aset
                                 </a>
                             </div>
                             @endif
 
                             <!-- The Modal -->
-                            <div id="myModal" class="modal">
+                            <div id="myModal" class="modal" aria-hidden="true">
                                 <div class="modal-content">
                                     <span class="close">&times;</span>
+                                    <h5>Scan kode aset</h5>
+                                    <p class="text-sm text-secondary">Arahkan kamera ke QR code pada aset.</p>
                                     <div id="interactive" class="viewport"></div>
                                     <div id="result"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-body px-2 pb-2">
-                            <div class="table-responsive p-0">
+                        <div class="card-body p-0">
+                            <div class="table-shell">
                                 <table id="inventoryTable" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
@@ -346,17 +252,18 @@
                         searchable: false
                     }
                 ],
-                pageLength: 50,
+                pageLength: 25,
                 order: [
                     [15, 'desc']
                 ],
                 dom: '<"top">rt<"bottom"ip><"clear">',
                 language: {
-                    processing: "<div class='d-flex justify-content-center align-items-center' style='position: fixed; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); top: 0; left: 0; z-index: 1000;'>" +
-                        "<div class='spinner-border' role='status'>" +
-                        "<span class='sr-only'>Loading...</span>" +
-                        "</div>" +
-                        "</div>"
+                    processing: "<div class='sima-loading'><span class='sima-spinner'></span><span>Memuat data aset...</span></div>",
+                    emptyTable: "Belum ada data aset",
+                    zeroRecords: "Aset yang dicari tidak ditemukan",
+                    info: "Menampilkan _START_–_END_ dari _TOTAL_ aset",
+                    infoEmpty: "Tidak ada aset untuk ditampilkan",
+                    paginate: { previous: "Sebelumnya", next: "Berikutnya" }
                 }
             });
 

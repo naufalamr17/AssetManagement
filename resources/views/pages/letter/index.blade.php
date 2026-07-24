@@ -272,6 +272,14 @@
                     [0, 'desc']
                 ],
                 dom: '<"top">rt<"bottom"ip><"clear">',
+                pageLength: 25,
+                language: {
+                    processing: "<div class='sima-loading'><span class='sima-spinner'></span><span>Memuat dokumen...</span></div>",
+                    emptyTable: "Belum ada dokumen",
+                    zeroRecords: "Dokumen tidak ditemukan",
+                    info: "Menampilkan _START_–_END_ dari _TOTAL_ dokumen",
+                    paginate: { previous: "Sebelumnya", next: "Berikutnya" }
+                },
                 createdRow: function(row, data, dataIndex) {
                     $(row).addClass('text-center').css('font-size', '14px');
                 }

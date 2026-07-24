@@ -1,646 +1,234 @@
-<x-layout bodyClass="g-sidenav-show  bg-gray-200">
-    <x-navbars.sidebar activePage='dashboard'></x-navbars.sidebar>
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="SIMA DASHBOARD"></x-navbars.navs.auth>
-        <!-- End Navbar -->
+<x-layout bodyClass="g-sidenav-show">
+    <x-navbars.sidebar activePage="dashboard"></x-navbars.sidebar>
+
+    <main class="main-content position-relative">
+        <x-navbars.navs.auth titlePage="Dashboard"></x-navbars.navs.auth>
+
+        @php
+            $totalAssets = collect($statusCounts)->sum();
+            $statusPalette = [
+                'Good' => '#20b486',
+                'Repair' => '#f59e0b',
+                'Breakdown' => '#ef5d6f',
+                'Waiting Dispose' => '#8b5cf6',
+                'Dispose' => '#7d8198',
+            ];
+            $badgeClass = fn ($status) => match ($status) {
+                'Good' => 'status-good',
+                'Repair' => 'status-repair',
+                'Breakdown' => 'status-breakdown',
+                'Waiting Dispose' => 'status-waiting',
+                'Dispose' => 'status-dispose',
+                default => 'status-neutral',
+            };
+            $remainingLife = function ($item) {
+                if (empty($item->acquisition_date) || $item->acquisition_date === '-') {
+                    return 'Tidak tersedia';
+                }
+
+                try {
+                    $acquisitionDate = new DateTime($item->acquisition_date);
+                    $endOfUsefulLife = (clone $acquisitionDate)->modify('+' . ((int) $item->useful_life) . ' years');
+                    $days = (new DateTime())->diff($endOfUsefulLife)->days;
+                    return (new DateTime()) > $endOfUsefulLife ? "-{$days} hari" : "{$days} hari";
+                } catch (Throwable $exception) {
+                    return 'Tidak tersedia';
+                }
+            };
+        @endphp
+
         <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="pieChart" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 ">Status Asset</h6>
-                        </div>
-                    </div>
+            <section class="dashboard-intro">
+                <div>
+                    <span class="dashboard-kicker">Ringkasan aset</span>
+                    <h1>Selamat datang, {{ Auth::user()->name }}</h1>
+                    <p>Pantau kondisi, pertumbuhan, perbaikan, dan penghapusan aset dalam satu tempat.</p>
                 </div>
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="stackedBarChart" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Status Asset per Kategori </h6>
-                        </div>
-                    </div>
+                <div class="company-chip">
+                    <span class="company-chip-dot"></span>
+                    PT {{ Auth::user()->status === 'Super Admin' ? 'MLP & KES' : (Auth::user()->company ?? 'MLP') }}
                 </div>
-                @if (Auth::check() && (in_array(Auth::user()->status, ['Administrator', 'Super Admin', 'Auditor'], true) || in_array(Auth::user()->hirar, ['Manager', 'Deputy General Manager'], true)))
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="yearlyGrowthChartSpecial" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="monthlyGrowthChartSpecial" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Perbulan </h6>
-                        </div>
-                    </div>
-                </div>
-                @else
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="yearlyGrowthChart" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Pertahun </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="chart">
-                                    <canvas id="monthlyGrowthChart" class="chart-canvas" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Pertumbuhan Asset Perbulan </h6>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                <div class="col-lg-8 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="table-responsive p-0" style="height: 250px;">
-                                    <table id="inventoryTable" class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Kerusakan') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Pengembalian') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($repair as $item)
-                                            <tr class="text-center text-xxs">
-                                                <td>{{ $item->asset_code ?? '-' }}</td>
-                                                <td>{{ $item->asset_type ?? '-' }}</td>
-                                                <td>{{ $item->serial_number ?? '-' }}</td>
-                                                <?php
-                                                if ($item->acquisition_date === '-') {
-                                                    $message = "Tanggal tidak terdefinisi";
-                                                } else {
-                                                    $acquisitionDate = new DateTime($item->acquisition_date);
-                                                    $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
-                                                    $endOfUsefulLife = clone $acquisitionDate;
-                                                    $endOfUsefulLife->modify("+{$usefulLife} days");
+            </section>
 
-                                                    $currentDate = new DateTime();
-                                                    $interval = $currentDate->diff($endOfUsefulLife);
-
-                                                    if ($currentDate > $endOfUsefulLife) {
-                                                        $remainingDays = -$interval->days; // Use negative value for overdue days
-                                                    } else {
-                                                        $remainingDays = $interval->days;
-                                                    }
-
-                                                    $message = "{$remainingDays} hari";
-                                                }
-                                                ?>
-                                                <td>{{ $message }}</td>
-                                                <td>{{ $item->location ?? '-' }}</td>
-                                                <td>{{ $item->status ?? '-' }}</td>
-                                                <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
-                                                <td>{{ $item->tanggal_pengembalian ?? '-' }}</td>
-                                                <td>{{ $item->note ?? '-' }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Repair & Breakdown Asset </h6>
-                        </div>
+            <section class="metric-grid">
+                <article class="metric-card metric-primary">
+                    <div class="metric-icon"><i class="material-icons-round">inventory_2</i></div>
+                    <div>
+                        <span>Total aset</span>
+                        <strong>{{ number_format($totalAssets) }}</strong>
+                        <small>Seluruh status tercatat</small>
                     </div>
-                </div>
-                <div class="col-lg-12 col-md-6 mt-4 mb-4">
-                    <div class="card z-index-2">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-white shadow-dark border-radius-lg py-3 ps-2 pe-2">
-                                <div class="table-responsive p-0" style="height: 250px;">
-                                    <table id="inventoryTable" class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Kode Asset') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Jenis') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Serial') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Sisa Waktu Pakai (hari)') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Location') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Status') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Tanggal Penghapusan') }}</th>
-                                                <th class="text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('Remarks') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($inventory as $item)
-                                            <tr class="text-center text-xxs">
-                                                <td>{{ $item->asset_code ?? '-' }}</td>
-                                                <td>{{ $item->asset_type ?? '-' }}</td>
-                                                <td>{{ $item->serial_number ?? '-' }}</td>
-                                                <?php
-                                                if ($item->acquisition_date === '-') {
-                                                    $message = "Tanggal tidak terdefinisi";
-                                                } else {
-                                                    $acquisitionDate = new DateTime($item->acquisition_date);
-                                                    $usefulLife = $item->useful_life * 365; // Convert useful life from years to days
-                                                    $endOfUsefulLife = clone $acquisitionDate;
-                                                    $endOfUsefulLife->modify("+{$usefulLife} days");
-
-                                                    $currentDate = new DateTime();
-                                                    $interval = $currentDate->diff($endOfUsefulLife);
-
-                                                    if ($currentDate > $endOfUsefulLife) {
-                                                        $remainingDays = -$interval->days; // Use negative value for overdue days
-                                                    } else {
-                                                        $remainingDays = $interval->days;
-                                                    }
-
-                                                    $message = "{$remainingDays} hari";
-                                                }
-                                                ?>
-                                                <td>{{ $message }}</td>
-                                                <td>{{ $item->location ?? '-' }}</td>
-                                                <td>{{ $item->status ?? '-' }}</td>
-                                                <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
-                                                <td>{{ $item->note ?? '-' }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="mb-0 "> Dispose Asset </h6>
-                        </div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon metric-icon-success"><i class="material-icons-round">check_circle</i></div>
+                    <div>
+                        <span>Kondisi baik</span>
+                        <strong>{{ number_format($statusCounts['Good'] ?? 0) }}</strong>
+                        <small>Siap digunakan</small>
                     </div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon metric-icon-warning"><i class="material-icons-round">build_circle</i></div>
+                    <div>
+                        <span>Dalam perbaikan</span>
+                        <strong>{{ number_format($statusCounts['Repair'] ?? 0) }}</strong>
+                        <small>Sedang ditangani</small>
+                    </div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon metric-icon-danger"><i class="material-icons-round">error</i></div>
+                    <div>
+                        <span>Breakdown</span>
+                        <strong>{{ number_format($statusCounts['Breakdown'] ?? 0) }}</strong>
+                        <small>Perlu perhatian</small>
+                    </div>
+                </article>
+            </section>
+
+            <section class="dashboard-grid">
+                <article class="panel panel-status">
+                    <header class="panel-header">
+                        <div><span class="panel-kicker">Kondisi</span><h2>Komposisi status</h2></div>
+                        <span class="panel-meta">{{ number_format($totalAssets) }} aset</span>
+                    </header>
+                    <div class="chart-wrap chart-doughnut"><canvas id="statusChart"></canvas></div>
+                </article>
+
+                <article class="panel panel-category">
+                    <header class="panel-header">
+                        <div><span class="panel-kicker">Kategori</span><h2>Status per kategori</h2></div>
+                    </header>
+                    <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+                </article>
+
+                <article class="panel panel-growth">
+                    <header class="panel-header">
+                        <div><span class="panel-kicker">Tren</span><h2>Pertumbuhan bulanan</h2></div>
+                        <span class="panel-meta">12 bulan terakhir</span>
+                    </header>
+                    <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+                </article>
+
+                <article class="panel panel-yearly">
+                    <header class="panel-header">
+                        <div><span class="panel-kicker">Historis</span><h2>Pertumbuhan tahunan</h2></div>
+                    </header>
+                    <div class="chart-wrap"><canvas id="yearlyChart"></canvas></div>
+                </article>
+            </section>
+
+            <section class="panel data-panel">
+                <header class="panel-header">
+                    <div><span class="panel-kicker">Aktivitas terbaru</span><h2>Repair & breakdown</h2></div>
+                    <a href="{{ route('repair_inventory') }}" class="panel-link">Lihat semua <i class="material-icons-round">arrow_forward</i></a>
+                </header>
+                <div class="table-responsive">
+                    <table class="table sima-table">
+                        <thead><tr><th>Kode aset</th><th>Jenis</th><th>Lokasi</th><th>Status</th><th>Sisa umur</th><th>Tanggal kerusakan</th><th>Catatan</th></tr></thead>
+                        <tbody>
+                            @forelse($repair as $item)
+                            <tr>
+                                <td><strong class="asset-code">{{ $item->asset_code ?? '-' }}</strong></td>
+                                <td>{{ $item->asset_type ?? '-' }}<small class="cell-subtitle">{{ $item->serial_number ?? 'Tanpa serial' }}</small></td>
+                                <td>{{ $item->location ?? '-' }}</td>
+                                <td><span class="status-pill {{ $badgeClass($item->status) }}">{{ $item->status ?? '-' }}</span></td>
+                                <td>{{ $remainingLife($item) }}</td>
+                                <td>{{ $item->tanggal_kerusakan ?? '-' }}</td>
+                                <td class="cell-truncate">{{ $item->note ?? '-' }}</td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="7"><div class="empty-state"><i class="material-icons-round">task_alt</i><span>Belum ada aktivitas perbaikan.</span></div></td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-                <x-footers.auth></x-footers.auth>
-            </div>
+            </section>
+
+            <section class="panel data-panel">
+                <header class="panel-header">
+                    <div><span class="panel-kicker">Aktivitas terbaru</span><h2>Penghapusan aset</h2></div>
+                    <a href="{{ route('dispose_inventory') }}" class="panel-link">Lihat semua <i class="material-icons-round">arrow_forward</i></a>
+                </header>
+                <div class="table-responsive">
+                    <table class="table sima-table">
+                        <thead><tr><th>Kode aset</th><th>Jenis</th><th>Lokasi</th><th>Status</th><th>Tanggal penghapusan</th><th>Catatan</th></tr></thead>
+                        <tbody>
+                            @forelse($inventory as $item)
+                            <tr>
+                                <td><strong class="asset-code">{{ $item->asset_code ?? '-' }}</strong></td>
+                                <td>{{ $item->asset_type ?? '-' }}<small class="cell-subtitle">{{ $item->serial_number ?? 'Tanpa serial' }}</small></td>
+                                <td>{{ $item->location ?? '-' }}</td>
+                                <td><span class="status-pill {{ $badgeClass($item->status) }}">{{ $item->status ?? '-' }}</span></td>
+                                <td>{{ $item->tanggal_penghapusan ?? '-' }}</td>
+                                <td class="cell-truncate">{{ $item->note ?? '-' }}</td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="6"><div class="empty-state"><i class="material-icons-round">inventory</i><span>Belum ada aktivitas penghapusan.</span></div></td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <x-footers.auth></x-footers.auth>
         </div>
     </main>
-    <x-plugins></x-plugins>
-    </div>
+
     @push('js')
     <script src="{{ asset('assets') }}/js/plugins/chartjs.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
     <script>
-        const statusCounts = @json($statusCounts);
-        const categoryStatusCounts = @json($categoryStatusCounts);
+        (() => {
+            const statusCounts = @json($statusCounts);
+            const categoryStatusCounts = @json($categoryStatusCounts);
+            const monthlyGrowth = @json($monthlyGrowth);
+            const yearlyGrowth = @json($yearlyGrowth);
+            const palette = @json($statusPalette);
+            const locationColors = {'Head Office': '#5b5ce2', 'Office Kendari': '#20b486', 'Site Molore': '#f59e0b'};
 
-        // Pie Chart Data
-        const statusLabels = ['Good', 'Repair', 'Breakdown'];
-        const statusColors = {
-            Good: '#4CAF50', // Green
-            Repair: '#FFC107', // Yellow
-            Breakdown: '#F44336' // Red
-        };
+            Chart.defaults.font.family = "'DM Sans', sans-serif";
+            Chart.defaults.color = '#727690';
+            Chart.defaults.borderColor = '#ececf4';
 
-        // Ensure the data and colors align with the status labels
-        const pieData = {
-            labels: statusLabels,
-            datasets: [{
-                label: 'Asset Status',
-                data: statusLabels.map(label => statusCounts[label] || 0),
-                backgroundColor: statusLabels.map(label => statusColors[label]),
-            }]
-        };
-
-        // Calculate total count for pie chart
-        const totalStatusCount = pieData.datasets[0].data.reduce((a, b) => a + b, 0);
-
-        // Pie Chart Config
-        const pieConfig = {
-            type: 'pie',
-            data: pieData,
-            options: {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                const value = pieData.datasets[0].data[tooltipItem.dataIndex];
-                                const percentage = ((value / totalStatusCount) * 100).toFixed(2);
-                                if (percentage === '0.00') return '';
-                                return `${tooltipItem.label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        formatter: (value, ctx) => {
-                            let percentage = ((value / totalStatusCount) * 100).toFixed(2);
-                            if (percentage === '0.00') return '';
-                            return percentage + '%';
-                        },
-                        color: '#fff',
-                    }
-                },
+            const baseOptions = {
                 responsive: true,
-                maintainAspectRatio: false
-            },
-            plugins: [ChartDataLabels]
-        };
-
-        // Render Pie Chart
-        const pieChart = new Chart(
-            document.getElementById('pieChart'),
-            pieConfig
-        );
-
-        // Stacked Bar Chart Data
-        const labels = Object.keys(categoryStatusCounts);
-        const goodData = labels.map(label => categoryStatusCounts[label]['Good'] || 0);
-        const brokenData = labels.map(label => categoryStatusCounts[label]['Breakdown'] || 0);
-        const repairData = labels.map(label => categoryStatusCounts[label]['Repair'] || 0);
-
-        const stackedBarData = {
-            labels: labels,
-            datasets: [{
-                    label: 'Good',
-                    data: goodData,
-                    backgroundColor: '#4CAF50'
+                maintainAspectRatio: false,
+                interaction: {mode: 'index', intersect: false},
+                plugins: {
+                    legend: {position: 'bottom', labels: {usePointStyle: true, pointStyle: 'circle', padding: 18, boxWidth: 7}},
+                    tooltip: {backgroundColor: '#16182f', padding: 12, cornerRadius: 9, displayColors: true}
                 },
-                {
-                    label: 'Repair',
-                    data: repairData,
-                    backgroundColor: '#FFC107'
-                },
-                {
-                    label: 'Breakdown',
-                    data: brokenData,
-                    backgroundColor: '#F44336'
-                },
-            ]
-        };
-
-        // Calculate total count for each category
-        const totalCategoryCounts = labels.map(label =>
-            (categoryStatusCounts[label]['Good'] || 0) +
-            (categoryStatusCounts[label]['Repair'] || 0) +
-            (categoryStatusCounts[label]['Breakdown'] || 0)
-        );
-
-        // Stacked Bar Chart Config
-        const stackedBarConfig = {
-            type: 'bar',
-            data: stackedBarData,
-            options: {
                 scales: {
-                    x: {
-                        stacked: true,
-                    },
-                    y: {
-                        stacked: true,
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                const datasetLabel = tooltipItem.dataset.label;
-                                const value = tooltipItem.raw;
-                                const categoryIndex = tooltipItem.dataIndex;
-                                const total = totalCategoryCounts[categoryIndex];
-                                const percentage = ((value / total) * 100).toFixed(2);
-                                if (percentage === '0.00') return '';
-                                return `${datasetLabel}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        };
-
-        // Render Stacked Bar Chart
-        const stackedBarChart = new Chart(
-            document.getElementById('stackedBarChart'),
-            stackedBarConfig
-        );
-
-        const yearlyGrowth = @json($yearlyGrowth);
-
-        const yearlabels = yearlyGrowth.map(item => item.year);
-        const data = yearlyGrowth.map(item => item.count);
-
-        const yearlyGrowthChartElem = document.getElementById('yearlyGrowthChart');
-        if (yearlyGrowthChartElem) {
-            const ctx = yearlyGrowthChartElem.getContext('2d');
-            const yearlyGrowthChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: yearlabels,
-                    datasets: [{
-                        label: 'Asset Growth Per Year',
-                        data: data,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'end',
-                            color: '#222',
-                            font: {
-                                weight: 'bold',
-                                size: 7 // label lebih kecil
-                            },
-                            formatter: function(value) {
-                                return value;
-                            }
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                },
-                plugins: [ChartDataLabels]
-            });
-        }
-
-        const monthlyGrowthChartElem = document.getElementById('monthlyGrowthChart');
-        if (monthlyGrowthChartElem) {
-            var ctxMonthly = monthlyGrowthChartElem.getContext('2d');
-            var monthlyGrowthChart = new Chart(ctxMonthly, {
-                type: 'bar',
-                data: {
-                    labels: @json($monthlyGrowth -> pluck('month')),
-                    datasets: [{
-                        label: 'Asset Growth Per Month',
-                        data: @json($monthlyGrowth -> pluck('count')),
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'end',
-                            color: '#222',
-                            font: {
-                                weight: 'bold',
-                                size: 7 // label lebih kecil
-                            },
-                            formatter: function(value) {
-                                return value.y !== undefined ? value.y : value;
-                            }
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                },
-                plugins: [ChartDataLabels]
-            });
-        }
-
-        // Data yang dikirim dari controller
-        const yearlyGrowthSpecial = @json($yearlyGrowth);
-
-        // Mengelompokkan data berdasarkan lokasi
-        const groupedData = {};
-        const locationColors = {
-            'Head Office': '#FF5733', // Misalnya warna oranye
-            'Office Kendari': '#33FF57', // Misalnya warna hijau
-            'Site Molore': '#5733FF' // Misalnya warna biru
-        };
-
-        yearlyGrowthSpecial.forEach(item => {
-            if (Object.keys(locationColors).includes(item.location)) {
-                if (!groupedData[item.location]) {
-                    groupedData[item.location] = {
-                        label: item.location,
-                        data: [],
-                        backgroundColor: locationColors[item.location],
-                        borderColor: locationColors[item.location],
-                        borderWidth: 2,
-                        fill: false
-                    };
+                    x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: true, maxTicksLimit: 8}},
+                    y: {beginAtZero: true, border: {display: false}, ticks: {precision: 0}}
                 }
-                groupedData[item.location].data.push({
-                    x: item.year,
-                    y: item.count
-                });
-            }
-        });
+            };
 
-        // Memisahkan labels tahun
-        const yearLabels = [...new Set(yearlyGrowthSpecial.map(item => item.year))].sort();
-
-        // Normalisasi data: pastikan setiap lokasi punya data untuk semua tahun
-        Object.keys(groupedData).forEach(loc => {
-            const dataMap = {};
-            groupedData[loc].data.forEach(d => {
-                dataMap[d.x] = d.y;
+            const statusLabels = Object.keys(statusCounts);
+            new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {labels: statusLabels, datasets: [{data: statusLabels.map(label => statusCounts[label]), backgroundColor: statusLabels.map(label => palette[label] || '#a0a4b8'), borderWidth: 0, hoverOffset: 5}]},
+                options: {responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: baseOptions.plugins}
             });
-            groupedData[loc].data = yearLabels.map(year => dataMap[year] !== undefined ? dataMap[year] : 0);
-        });
 
-        // Membuat array objek dari groupedData
-        const datasets = Object.values(groupedData);
-
-        // Inisialisasi Chart.js
-        const yearlyGrowthChartSpecialElem = document.getElementById('yearlyGrowthChartSpecial');
-        if (yearlyGrowthChartSpecialElem) {
-            const ctx2 = yearlyGrowthChartSpecialElem.getContext('2d');
-            const yearlyGrowthChartSpecial = new Chart(ctx2, {
+            const categoryLabels = Object.keys(categoryStatusCounts);
+            const allStatuses = [...new Set(categoryLabels.flatMap(label => Object.keys(categoryStatusCounts[label])))];
+            new Chart(document.getElementById('categoryChart'), {
                 type: 'bar',
-                data: {
-                    labels: yearLabels,
-                    datasets: datasets
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'category',
-                            title: {
-                                display: true,
-                                text: 'Year'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: false,
-                                text: 'Count'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                        },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'end',
-                            color: '#222',
-                            font: {
-                                weight: 'bold',
-                                size: 7 // label lebih kecil
-                            },
-                            formatter: function(value) {
-                                return value.y !== undefined ? value.y : value;
-                            }
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                },
-                plugins: [ChartDataLabels]
+                data: {labels: categoryLabels, datasets: allStatuses.map(status => ({label: status, data: categoryLabels.map(label => categoryStatusCounts[label][status] || 0), backgroundColor: palette[status] || '#a0a4b8', borderRadius: 5, borderSkipped: false}))},
+                options: {...baseOptions, scales: {...baseOptions.scales, x: {...baseOptions.scales.x, stacked: true}, y: {...baseOptions.scales.y, stacked: true}}}
             });
-        }
 
-        // Data yang dikirim dari controller
-        const monthlyGrowthSpecial = @json($monthlyGrowth);
-
-        // Mengelompokkan data berdasarkan lokasi
-        const groupedData2 = {};
-        const locationColors2 = {
-            'Head Office': '#FF5733', // Misalnya warna oranye
-            'Office Kendari': '#33FF57', // Misalnya warna hijau
-            'Site Molore': '#5733FF' // Misalnya warna biru
-        };
-
-        monthlyGrowthSpecial.forEach(item => {
-            if (Object.keys(locationColors2).includes(item.location)) {
-                if (!groupedData2[item.location]) {
-                    groupedData2[item.location] = {
-                        label: item.location,
-                        data: [],
-                        backgroundColor: locationColors2[item.location],
-                        borderColor: locationColors2[item.location],
-                        borderWidth: 2,
-                        fill: false
-                    };
-                }
-                groupedData2[item.location].data.push({
-                    x: item.month,
-                    y: item.count
-                });
+            function growthData(items, key) {
+                const labels = [...new Set(items.map(item => item[key]))].sort();
+                const hasLocation = items.some(item => item.location);
+                if (!hasLocation) return {labels, datasets: [{label: 'Aset baru', data: labels.map(label => items.find(item => item[key] === label)?.count || 0), borderColor: '#5b5ce2', backgroundColor: 'rgba(91,92,226,.12)', fill: true, tension: .38, pointRadius: 3, pointBackgroundColor: '#5b5ce2'}]};
+                const locations = [...new Set(items.map(item => item.location).filter(Boolean))];
+                return {labels, datasets: locations.map(location => ({label: location, data: labels.map(label => items.find(item => item[key] === label && item.location === location)?.count || 0), borderColor: locationColors[location] || '#7d8198', backgroundColor: locationColors[location] || '#7d8198', tension: .38, pointRadius: 2}))};
             }
-        });
 
-        // Memisahkan labels tahun
-        // Dapatkan label tahun dari data bulanan yang disediakan
-        const yearLabels2 = monthlyGrowthSpecial
-            .map(item => item.year) // Ambil semua nilai tahun dari setiap item
-            .filter(year => year !== undefined) // Hapus nilai undefined
-
-        // Membuat array objek dari groupedData2 (bukan dari groupedData)
-        const datasets2 = Object.values(groupedData2);
-
-        // Inisialisasi Chart.js
-        const monthlyGrowthChartSpecialElem = document.getElementById('monthlyGrowthChartSpecial');
-        if (monthlyGrowthChartSpecialElem) {
-            const ctx3 = monthlyGrowthChartSpecialElem.getContext('2d');
-            const monthlyGrowthChartSpecial = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: yearLabels2,
-                    datasets: datasets2
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'category',
-                            title: {
-                                display: true,
-                                text: 'Year'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: false,
-                                text: 'Count'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                        },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'end',
-                            color: '#222',
-                            font: {
-                                weight: 'bold',
-                                size: 7 // label lebih kecil
-                            },
-                            formatter: function(value) {
-                                return value.y !== undefined ? value.y : value;
-                            }
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                },
-                plugins: [ChartDataLabels]
-            });
-        }
+            new Chart(document.getElementById('monthlyChart'), {type: 'line', data: growthData(monthlyGrowth, 'month'), options: baseOptions});
+            new Chart(document.getElementById('yearlyChart'), {type: 'bar', data: growthData(yearlyGrowth, 'year'), options: {...baseOptions, plugins: baseOptions.plugins}});
+        })();
     </script>
-
     @endpush
 </x-layout>

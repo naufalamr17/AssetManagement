@@ -1,108 +1,64 @@
-<x-layout bodyClass="bg-gray-200">
-
-    <div class="container position-sticky z-index-sticky top-0">
-        <div class="row">
-            <div class="col-12">
-                <!-- Navbar -->
-                <!-- <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest> -->
-                <!-- End Navbar -->
+<x-layout bodyClass="sima-auth-body">
+    <main class="sima-auth">
+        <section class="auth-showcase">
+            <div class="auth-brand">
+                <img src="{{ asset('img/sima-mark.svg') }}" alt="SIMA logo">
+                <div><strong>SIMA</strong><span>Sistem Informasi Manajemen Aset</span></div>
             </div>
-        </div>
-    </div>
-    <main class="main-content  mt-0">
-        <div class="page-header align-items-start min-vh-100" style="background-image: url('{{ asset('img/exa.jpg') }}');">
-            <span class="mask bg-gradient-dark opacity-6"></span>
-            <div class="container mt-5">
-                <div class="row signin-margin">
-                    <div class="col-lg-4 col-md-8 col-12 mx-auto">
-                        <div class="card z-index-0 fadeIn3 fadeInBottom">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                <div class="border-radius-lg py-3 pe-1">
-                                    <div class="text-center">
-                                        <img src="{{ asset('img/sima-mark.svg') }}" alt="SIMA logo" class="sima-login-mark mb-3" />
-                                    </div>
-                                    <div class="row mt-3">
-                                        <h4 class='text-center' style="color: #16182f;">
-                                            <span class="font-weight-normal">Welcome to SIMA</span>
-                                        </h4>
-                                        <p class="text-center text-sm text-secondary mb-0">Sistem Informasi Manajemen Aset</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <form role="form" method="POST" action="{{ route('login') }}" class="text-start">
-                                    @csrf
-                                    @if (Session::has('status'))
-                                    <div class="alert alert-success alert-dismissible text-white" role="alert">
-                                        <span class="text-sm">{{ Session::get('status') }}</span>
-                                        <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    @endif
-                                    @if (Session::has('error'))
-                                    <div class="alert alert-danger alert-dismissible text-white" role="alert">
-                                        <span class="text-sm">{{ Session::get('error') }}</span>
-                                        <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    @endif
-                                    <div style="margin-top: 1rem; position: relative;">
-                                        <label style="position: absolute; top: -0.5rem; left: 0.75rem; background: white; padding: 0 0.25rem; font-size: 0.6 rem; color: #6b7280;">Email</label>
-                                        <input type="email" name="email" style="display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid rgb(8, 47, 73); border-radius: 0.375rem; font-size: 0.875rem; line-height: 1.5rem; color: #374151;" autofocus>
-                                    </div>
-                                    @error('email')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                    <div style="margin-top: 1rem; position: relative;">
-                                        <label style="position: absolute; top: -0.5rem; left: 0.75rem; background: white; padding: 0 0.25rem; font-size: 0.6 rem; color: #6b7280;">Password</label>
-                                        <input type="password" name="password" style="display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid rgb(8, 47, 73); border-radius: 0.375rem; font-size: 0.875rem; line-height: 1.5rem; color: #374151;">
-                                    </div>
-                                    @error('password')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                    <!-- <div class="form-check form-switch d-flex align-items-center my-3">
-                                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                                            <label class="form-check-label mb-0 ms-2" for="rememberMe">Remember
-                                                me</label>
-                                        </div> -->
-                                    <div class="text-center">
-                                        <button type="submit" class="btn w-100 my-4 mb-1" style="background-color: rgb(8, 47, 73); color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer;">Log In</button>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-sm mt-2 mb-2 text-secondary">Or continue with</p>
-                                        <a href="{{ route('auth.azure') }}" class="btn w-100 mb-2" style="background-color: white; color: #444; border: 1px solid #ccc; padding: 12px 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 21 21" style="margin-right: 10px;">
-                                                <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
-                                                <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
-                                                <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
-                                                <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
-                                            </svg>
-                                            <span style="font-weight: 500;">Sign in with Microsoft</span>
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+            <div class="auth-copy">
+                <span class="auth-kicker">Asset intelligence workspace</span>
+                <h1>Kelola seluruh siklus aset dalam satu sistem.</h1>
+                <p>Dari pencatatan, mutasi, perbaikan, hingga penghapusan—semuanya lebih terstruktur dan mudah dipantau.</p>
+                <div class="auth-features">
+                    <div><i class="material-icons-round">domain</i><span><strong>Multi-company</strong><small>PT MLP & PT KES</small></span></div>
+                    <div><i class="material-icons-round">insights</i><span><strong>Live insights</strong><small>Dashboard terpadu</small></span></div>
+                    <div><i class="material-icons-round">verified_user</i><span><strong>Secure access</strong><small>Kontrol berdasarkan peran</small></span></div>
                 </div>
             </div>
-            <!-- <x-footers.guest></x-footers.guest> -->
-        </div>
-    </main>
-    @push('js')
-    <script src="{{ asset('assets') }}/js/jquery.min.js"></script>
-    <script>
-        $(function() {
+            <small class="auth-copyright">© {{ date('Y') }} SIMA. Internal asset management system.</small>
+        </section>
 
-            var text_val = $(".input-group input").val();
-            if (text_val === "") {
-                $(".input-group").removeClass('is-filled');
-            } else {
-                $(".input-group").addClass('is-filled');
-            }
-        });
-    </script>
-    @endpush
+        <section class="auth-form-side">
+            <div class="auth-form-card">
+                <span class="auth-kicker">Selamat datang kembali</span>
+                <h2>Masuk ke akun Anda</h2>
+                <p>Gunakan akun SIMA atau akun Microsoft perusahaan.</p>
+
+                @if (Session::has('status'))
+                <div class="alert alert-success">{{ Session::get('status') }}</div>
+                @endif
+                @if (Session::has('error'))
+                <div class="alert alert-danger">{{ Session::get('error') }}</div>
+                @endif
+
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="auth-field">
+                        <label for="email">Email</label>
+                        <div class="auth-input">
+                            <i class="material-icons-round">mail_outline</i>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="nama@perusahaan.com" autocomplete="email" required autofocus>
+                        </div>
+                        @error('email')<small class="text-danger">{{ $message }}</small>@enderror
+                    </div>
+                    <div class="auth-field">
+                        <label for="password">Password</label>
+                        <div class="auth-input">
+                            <i class="material-icons-round">lock_outline</i>
+                            <input id="password" type="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                        </div>
+                        @error('password')<small class="text-danger">{{ $message }}</small>@enderror
+                    </div>
+                    <button type="submit" class="btn btn-primary auth-submit">Masuk ke SIMA <i class="material-icons-round">arrow_forward</i></button>
+                </form>
+
+                <div class="auth-divider"><span>atau lanjutkan dengan</span></div>
+                <a href="{{ route('auth.azure') }}" class="microsoft-button">
+                    <span class="microsoft-mark"><i></i><i></i><i></i><i></i></span>
+                    Masuk dengan Microsoft
+                </a>
+                <p class="auth-help"><i class="material-icons-round">help_outline</i> Hubungi administrator jika Anda mengalami kendala akses.</p>
+            </div>
+        </section>
+    </main>
 </x-layout>

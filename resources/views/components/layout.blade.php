@@ -40,6 +40,12 @@
 </head>
 <body class="{{ $bodyClass }}">
 
+<div class="sima-page-loader" id="simaPageLoader" aria-live="polite" aria-label="Memuat halaman">
+    <img src="{{ asset('img/sima-mark.svg') }}" alt="" aria-hidden="true">
+    <span class="sima-spinner"></span>
+    <small>Menyiapkan SIMA...</small>
+</div>
+
 {{ $slot }}
 
 <script src="{{ asset('assets') }}/js/core/popper.min.js"></script>
@@ -57,9 +63,17 @@
     }
 
 </script>
-<!-- Github buttons -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{{ asset('assets') }}/js/material-dashboard.min.js?v=3.0.0"></script>
+<script>
+    window.addEventListener('load', function () {
+        document.getElementById('simaPageLoader')?.classList.add('is-hidden');
+    });
+    document.addEventListener('submit', function (event) {
+        if (!event.defaultPrevented && event.target.checkValidity()) {
+            document.getElementById('simaPageLoader')?.classList.remove('is-hidden');
+        }
+    });
+</script>
 </body>
 </html>

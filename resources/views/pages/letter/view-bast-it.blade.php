@@ -252,7 +252,7 @@
                         }
                     },
                 ],
-                "pageLength": 50,
+                "pageLength": 25,
                 "columnDefs": [{
                         "orderable": true,
                         "targets": 1
@@ -266,6 +266,13 @@
                     [1, 'desc']
                 ],
                 "dom": '<"top">rt<"bottom"ip><"clear">',
+                language: {
+                    processing: "<div class='sima-loading'><span class='sima-spinner'></span><span>Memuat data BAST...</span></div>",
+                    emptyTable: "Belum ada data BAST",
+                    zeroRecords: "Data BAST tidak ditemukan",
+                    info: "Menampilkan _START_–_END_ dari _TOTAL_ data",
+                    paginate: { previous: "Sebelumnya", next: "Berikutnya" }
+                }
             });
 
             // Add the search functionality

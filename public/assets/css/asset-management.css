@@ -203,6 +203,101 @@ h1, h2, h3, h4, h5, h6, .navbar-brand { font-family: 'Plus Jakarta Sans', sans-s
 .microsoft-mark i:nth-child(1) { background: #f25022; }.microsoft-mark i:nth-child(2) { background: #7fba00; }.microsoft-mark i:nth-child(3) { background: #00a4ef; }.microsoft-mark i:nth-child(4) { background: #ffb900; }
 .auth-help { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 19px 0 0 !important; color: #9a9db1 !important; font-size: .68rem !important; }
 .auth-help i { font-size: .9rem; }
+/* Shared data-list experience: used by legacy and AJAX-powered asset lists. */
+.table-shell,
+.table-responsive {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    overscroll-behavior-inline: contain;
+    scrollbar-color: #c8c9e6 transparent;
+    scrollbar-width: thin;
+}
+.table-shell::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar { height: 8px; }
+.table-shell::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb { border-radius: 999px; background: #c8c9e6; }
+.card .table-responsive,
+.card .table-shell { border-radius: 0 0 16px 16px; }
+.card .table { min-width: 760px; }
+.card .table thead th {
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    padding: .9rem .85rem !important;
+    border-top: 0;
+    border-bottom: 1px solid var(--sima-line) !important;
+    background: #f8f8ff;
+    color: #747890 !important;
+    font-size: .66rem !important;
+    font-weight: 800 !important;
+    letter-spacing: .07em;
+    line-height: 1.25;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.card .table tbody td {
+    padding: .9rem .85rem !important;
+    border-color: #eff0f6 !important;
+    color: #4b5068;
+    font-size: .8rem;
+    line-height: 1.4;
+    transition: background-color .16s ease;
+}
+.card .table tbody tr:nth-child(even) { background: rgba(248, 248, 255, .52); }
+.card .table tbody tr:hover { background: #f4f4ff !important; }
+.card .table tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--sima-primary); }
+.card .table td:first-child,
+.card .table th:first-child { padding-left: 1.15rem !important; }
+.card .table td:last-child,
+.card .table th:last-child { padding-right: 1.15rem !important; }
+.table-primary-text { color: var(--sima-ink); font-weight: 700; }
+.table-code-cell { display: inline-flex; align-items: center; gap: 7px; color: var(--sima-ink); font-weight: 800; white-space: nowrap; }
+.table-code-cell i { color: var(--sima-primary); font-size: .95rem; }
+.table-location-cell { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.table-location-cell i { color: #9295ac; font-size: .95rem; }
+.table-status { display: inline-flex; align-items: center; gap: 6px; min-height: 27px; padding: 4px 9px; border-radius: 999px; font-size: .67rem; font-weight: 800; letter-spacing: .015em; white-space: nowrap; }
+.table-status::before { width: 6px; height: 6px; border-radius: 50%; content: ''; background: currentColor; }
+.table-status-good { color: #10845a; background: #e7f8f1; }
+.table-status-repair { color: #a76b00; background: #fff4d9; }
+.table-status-breakdown { color: #c83e50; background: #ffeaed; }
+.table-status-waiting { color: #7140c7; background: #f1eaff; }
+.table-status-dispose,
+.table-status-neutral { color: #62667c; background: #eff0f5; }
+.table-status-available { color: #226eb3; background: #eaf4ff; }
+.dataTables_wrapper .bottom { gap: 10px; min-height: 64px; padding: 8px 18px; background: #fff; }
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate { padding: 0 !important; }
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover { border: 0 !important; background: #eeefff !important; color: var(--sima-primary) !important; }
+.page-toolbar { min-height: 76px; }
+.page-toolbar .btn { min-height: 42px; margin-bottom: 0; }
+
+@media (max-width: 767.98px) {
+    .navbar-main .container-fluid { min-height: 48px; }
+    .navbar-main h4 { max-width: 190px; overflow: hidden; font-size: 1.08rem; text-overflow: ellipsis; white-space: nowrap; }
+    .container-fluid.py-4 { padding: 14px 12px 28px !important; }
+    .card { border-radius: 14px; }
+    .card > .d-flex.align-items-center { align-items: stretch !important; flex-wrap: wrap; gap: 9px; padding: 14px !important; }
+    .card > .d-flex.align-items-center .form-control { width: 100%; max-width: none !important; margin-right: 0 !important; }
+    .page-toolbar { align-items: stretch; gap: 9px; padding: 14px; }
+    .page-toolbar .toolbar-search { min-width: 100%; max-width: none; flex-basis: 100%; }
+    .page-toolbar .ms-auto { width: 100%; margin-left: 0 !important; }
+    .page-toolbar .ms-auto .btn { display: flex; width: 100%; align-items: center; justify-content: center; }
+    .page-toolbar .btn { min-height: 43px; }
+    .card .table { min-width: 680px; }
+    .card .table thead th { padding: .78rem .7rem !important; font-size: .62rem !important; }
+    .card .table tbody td { padding: .78rem .7rem !important; font-size: .76rem; }
+    .card .table td:first-child,
+    .card .table th:first-child { position: sticky; z-index: 1; left: 0; padding-left: .9rem !important; background: inherit; box-shadow: 8px 0 14px rgba(29, 31, 69, .035); }
+    .card .table th:first-child { z-index: 3; background: #f8f8ff; }
+    .card .table tbody tr:nth-child(odd) td:first-child { background: #fff; }
+    .card .table tbody tr:nth-child(even) td:first-child { background: #f8f8ff; }
+    .dataTables_wrapper .bottom { align-items: flex-start; flex-direction: column; padding: 12px 14px; }
+    .dataTables_wrapper .dataTables_paginate { width: 100%; overflow-x: auto; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { flex: 0 0 auto; }
+    .sima-footer { align-items: flex-start; flex-direction: column; gap: 6px; padding: 16px 2px !important; }
+}
 
 @media (min-width: 1200px) { .main-content { margin-left: 272px; } }
 @media (max-width: 900px) { .sima-auth { grid-template-columns: 1fr; } .auth-showcase { min-height: auto; padding: 28px 28px 34px; } .auth-copy { margin-top: 55px; } .auth-copy h1 { font-size: 2rem; } .auth-features { grid-template-columns: 1fr; } .auth-copyright { margin-top: 40px; } .auth-form-side { min-height: auto; padding-block: 56px; } }

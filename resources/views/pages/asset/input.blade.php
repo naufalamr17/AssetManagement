@@ -124,6 +124,23 @@
             return s.join(dec);
         }
 
+        function tableText(value) {
+            return $('<div>').text(value || '-').html();
+        }
+
+        function statusPill(value) {
+            const status = String(value || '-');
+            const statusClass = {
+                'GOOD': 'good',
+                'REPAIR': 'repair',
+                'BREAKDOWN': 'breakdown',
+                'WAITING DISPOSE': 'waiting',
+                'DISPOSE': 'dispose'
+            }[status.toUpperCase()] || 'neutral';
+
+            return '<span class="table-status table-status-' + statusClass + '">' + tableText(status) + '</span>';
+        }
+
         $(document).ready(function() {
             var table = $('#inventoryTable').DataTable({
                 processing: true,
@@ -131,7 +148,10 @@
                 ajax: "{{ route('inventory') }}",
                 columns: [{
                         data: 'asset_code',
-                        name: 'asset_code'
+                        name: 'asset_code',
+                        render: function(data) {
+                            return '<span class="table-code-cell"><i class="material-icons-round">qr_code_2</i>' + tableText(data) + '</span>';
+                        }
                     },
                     {
                         data: 'asset_category',
@@ -151,7 +171,7 @@
                         data: 'asset_type',
                         name: 'asset_type',
                         render: function(data) {
-                            return data ? data.toUpperCase() : '-';
+                            return '<span class="table-primary-text">' + tableText(data ? data.toUpperCase() : '-') + '</span>';
                         }
                     },
                     {
@@ -201,14 +221,14 @@
                         data: 'location',
                         name: 'location',
                         render: function(data) {
-                            return data ? data.toUpperCase() : '-';
+                            return '<span class="table-location-cell"><i class="material-icons-round">location_on</i>' + tableText(data ? data.toUpperCase() : '-') + '</span>';
                         }
                     },
                     {
                         data: 'status',
                         name: 'status',
                         render: function(data) {
-                            return data ? data.toUpperCase() : '-';
+                            return statusPill(data ? data.toUpperCase() : '-');
                         }
                     },
                     {
@@ -242,7 +262,7 @@
                         data: 'barcode_availability',
                         name: 'barcode_availability',
                         render: function(data) {
-                            return data ? data.toUpperCase() : '-';
+                            return '<span class="table-status table-status-available">' + tableText(data ? data.toUpperCase() : '-') + '</span>';
                         }
                     },
                     {

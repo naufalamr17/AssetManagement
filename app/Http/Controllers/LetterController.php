@@ -18,7 +18,7 @@ class LetterController extends Controller
     public function generate(Request $request)
     {
         if ($request->ajax()) {
-            $data = Letter::latest()->get();
+            $data = Letter::visibleTo(Auth::user())->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -66,7 +66,7 @@ class LetterController extends Controller
             'file' => 'required|file|mimes:pdf|max:2048',
         ]);
 
-        $letter = Letter::findOrFail($request->letter_id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($request->letter_id);
         try {
             if ($request->hasFile('file')) {
                 $filePath = $request->file('file')->store('letters', 'public');
@@ -86,9 +86,13 @@ class LetterController extends Controller
             'tanggal' => 'required|date',
             'perihal' => 'nullable|string|max:255',
             'jenisBA' => 'required|string|max:255',
+            'company' => 'nullable|in:MLP,KES',
         ]);
 
         $perihal = $request->perihal ?? '-';
+        $company = Auth::user()->status === 'Super Admin'
+            ? $request->input('company', Auth::user()->company ?? 'MLP')
+            : (Auth::user()->company ?? 'MLP');
 
         // Generate kode_surat based on jenisBA
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
@@ -99,7 +103,7 @@ class LetterController extends Controller
         if ($jenisBA == 'FORM KERUSAKAN ASSET') {
             $bulan = \Carbon\Carbon::parse($request->tanggal)->format('m');
             // Get the latest iterasi for FORM PENGHAPUSAN ASSET for the current year
-            $latestLetter = Letter::whereYear('tanggal', $tahun)
+            $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                 ->where('jenisBA', 'FORM KERUSAKAN ASSET')
                 ->orderBy('id', 'desc')
                 ->first();
@@ -109,7 +113,7 @@ class LetterController extends Controller
             } else {
                 $iterasi = '001';
             }
-            $kode_surat = "{$iterasi}_FKKA_GA-MLP/{$bulan}/{$tahun}";
+            $kode_surat = "{$iterasi}_FKKA_GA-{$company}/{$bulan}/{$tahun}";
         } elseif ($jenisBA == 'BAST') {
             // Ambil bulan dalam format Romawi
             $bulanRomawi = [
@@ -138,7 +142,7 @@ class LetterController extends Controller
             }
 
             // Ambil iterasi terakhir untuk jenisBA BAST dan perihal tertentu
-            $latestLetter = Letter::whereYear('tanggal', $tahun)
+            $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                 ->where('jenisBA', 'BAST')
                 ->where('perihal', $perihal)
                 ->orderBy('id', 'desc')
@@ -152,10 +156,10 @@ class LetterController extends Controller
             }
 
             // Format kode surat
-            $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
+            $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/{$company}/{$bulan}/{$tahun}";
         } else {
             // Get the latest iterasi for BA for the current year
-            $latestLetter = Letter::whereYear('tanggal', $tahun)
+            $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                 ->where('jenisBA', '!=', 'FORM KERUSAKAN ASSET')
                 ->orderBy('id', 'desc')
                 ->first();
@@ -178,6 +182,7 @@ class LetterController extends Controller
         }
 
         Letter::create([
+            'company' => $company,
             'tanggal' => $request->tanggal,
             'perihal' => $perihal,
             'jenisBA' => $request->jenisBA,
@@ -191,7 +196,7 @@ class LetterController extends Controller
 
     public function edit($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
         return response()->json($letter);
     }
 
@@ -206,11 +211,12 @@ class LetterController extends Controller
         $perihal = $request->perihal ?? '-';
 
         // Temukan surat berdasarkan ID
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
 
         // Ambil data tanggal dan tahun
         $tanggal = \Carbon\Carbon::parse($request->tanggal)->format('dm');
         $tahun = \Carbon\Carbon::parse($request->tanggal)->format('Y');
+        $company = $letter->company ?? Auth::user()->company ?? 'MLP';
 
         // Periksa apakah jenisBA adalah FORM KERUSAKAN ASSET, ASSET SERAH TERIMA, atau ASSET HILANG
         if (in_array($request->jenisBA, ['FORM KERUSAKAN ASSET', 'ASSET SERAH TERIMA', 'ASSET HILANG']) && $letter->jenisBA == $request->jenisBA) {
@@ -226,7 +232,7 @@ class LetterController extends Controller
                 $bulan = \Carbon\Carbon::parse($request->tanggal)->format('m');
 
                 // Ambil iterasi terakhir untuk FORM KERUSAKAN ASSET
-                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                     ->where('jenisBA', 'FORM KERUSAKAN ASSET')
                     ->orderBy('id', 'desc')
                     ->first();
@@ -238,7 +244,7 @@ class LetterController extends Controller
                     $iterasi = '001';
                 }
 
-                $kode_surat = "{$iterasi}_FKKA_GA-MLP/{$bulan}/{$tahun}";
+                $kode_surat = "{$iterasi}_FKKA_GA-{$company}/{$bulan}/{$tahun}";
             } elseif ($request->jenisBA == 'BAST') {
                 // Ambil bulan dalam format Romawi
                 $bulanRomawi = [
@@ -261,7 +267,7 @@ class LetterController extends Controller
                 $kodePerihal = $perihal == 'General' ? 'GR' : ($perihal == 'Radio' ? 'RD' : 'OT');
 
                 // Ambil iterasi terakhir untuk jenisBA BAST dan perihal tertentu
-                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                     ->where('jenisBA', 'BAST')
                     ->where('perihal', $perihal)
                     ->orderBy('id', 'desc')
@@ -274,9 +280,9 @@ class LetterController extends Controller
                     $iterasi = '001';
                 }
 
-                $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/MLP/{$bulan}/{$tahun}";
+                $kode_surat = "{$iterasi}/{$kodePerihal}/BAST/{$company}/{$bulan}/{$tahun}";
             } elseif ($request->jenisBA == 'ASSET HILANG') {
-                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                     ->orderBy('id', 'desc')
                     ->first();
 
@@ -289,7 +295,7 @@ class LetterController extends Controller
 
                 $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/AH";
             } elseif ($request->jenisBA == 'ASSET SERAH TERIMA') {
-                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                     ->orderBy('id', 'desc')
                     ->first();
 
@@ -303,7 +309,7 @@ class LetterController extends Controller
                 $kode_surat = "{$iterasi}/BA/{$tanggal}/{$tahun}/AST";
             } else {
                 // Default untuk jenisBA lainnya
-                $latestLetter = Letter::whereYear('tanggal', $tahun)
+                $latestLetter = Letter::where('company', $company)->whereYear('tanggal', $tahun)
                     ->where('jenisBA', '!=', 'FORM KERUSAKAN ASSET')
                     ->orderBy('id', 'desc')
                     ->first();
@@ -344,13 +350,13 @@ class LetterController extends Controller
 
     public function destroy($id)
     {
-        Letter::findOrFail($id)->delete();
+        Letter::visibleTo(Auth::user())->findOrFail($id)->delete();
         return response()->json(['success' => 'Data has been deleted successfully.']);
     }
 
     public function download($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
 
         $beritaAcara = $letter->beritaAcara;
 
@@ -396,7 +402,7 @@ class LetterController extends Controller
                         $templateProcessor->cloneRow('kode_asset', $rowCount); // Gandakan baris sesuai jumlah data
 
                         foreach ($beritaAcara as $index => $item) {
-                            $asset = inventory::where('asset_code', $item->no_asset)->first();
+                            $asset = inventory::visibleTo(Auth::user())->where('asset_code', $item->no_asset)->first();
 
                             // Indeks Word mulai dari 1, bukan 0
                             $rowNumber = $index + 1;
@@ -457,7 +463,7 @@ class LetterController extends Controller
                         $templateProcessor->cloneRow('kode_asset', $rowCount); // Gandakan baris sesuai jumlah data
 
                         foreach ($beritaAcara as $index => $item) {
-                            $asset = inventory::where('asset_code', $item->no_asset)->first();
+                            $asset = inventory::visibleTo(Auth::user())->where('asset_code', $item->no_asset)->first();
 
                             // Indeks Word mulai dari 1, bukan 0
                             $rowNumber = $index + 1;
@@ -523,7 +529,7 @@ class LetterController extends Controller
                         $templateProcessor->cloneRow('kode_asset', $rowCount); // Gandakan baris sesuai jumlah data
 
                         foreach ($beritaAcara as $index => $item) {
-                            $asset = inventory::where('asset_code', $item->no_asset)->first();
+                            $asset = inventory::visibleTo(Auth::user())->where('asset_code', $item->no_asset)->first();
 
                             // Indeks Word mulai dari 1, bukan 0
                             $rowNumber = $index + 1;
@@ -583,7 +589,7 @@ class LetterController extends Controller
                     $templateProcessor->cloneRow('kode_asset', $rowCount); // Gandakan baris sesuai jumlah data
 
                     foreach ($beritaAcara as $index => $item) {
-                        $asset = inventory::where('asset_code', $item->no_asset)->first();
+                        $asset = inventory::visibleTo(Auth::user())->where('asset_code', $item->no_asset)->first();
 
                         // Indeks Word mulai dari 1, bukan 0
                         $rowNumber = $index + 1;
@@ -618,7 +624,7 @@ class LetterController extends Controller
                     $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
                     $year = $date->format('Y'); // Year, e.g., 2023
 
-                    $asset = inventory::where('asset_code', $formKerusakan->kode_asset)->first();
+                    $asset = inventory::visibleTo(Auth::user())->where('asset_code', $formKerusakan->kode_asset)->first();
 
                     if ($letter->location == 'Head Office') {
                         $templatePath = storage_path('app/public/templates/PENGGANTIAN.docx');
@@ -666,7 +672,7 @@ class LetterController extends Controller
                     $month = $date->translatedFormat('F'); // Full month name in Indonesian, e.g., Januari
                     $year = $date->format('Y'); // Year, e.g., 2023
 
-                    $asset = inventory::where('asset_code', $formKerusakan->kode_asset)->first();
+                    $asset = inventory::visibleTo(Auth::user())->where('asset_code', $formKerusakan->kode_asset)->first();
 
                     if ($letter->location == 'Head Office') {
                         $templatePath = storage_path('app/public/templates/SERVICE.docx');
@@ -778,7 +784,7 @@ class LetterController extends Controller
 
     public function showBeritaAcaraForm($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
         $results = DB::connection('travel')->select('SELECT * FROM employees');
 
         return view('pages.letter.form-berita-acara', compact('letter', 'results'));
@@ -786,7 +792,7 @@ class LetterController extends Controller
 
     public function showKerusakanForm($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
         $results = DB::connection('travel')->select('SELECT * FROM employees');
 
         return view('pages.letter.form-kerusakan', compact('letter', 'results'));
@@ -794,16 +800,16 @@ class LetterController extends Controller
 
     public function showBastGeneral($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
         $results = DB::connection('travel')->select('SELECT * FROM employees');
-        $item = inventory::select('asset_code', 'description')->get();
+        $item = inventory::visibleTo(Auth::user())->select('asset_code', 'description')->get();
 
         return view('pages.letter.bast', compact('letter', 'results', 'item'));
     }
 
     public function showBastRadio($id)
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::visibleTo(Auth::user())->findOrFail($id);
         $results = DB::connection('travel')->select('SELECT * FROM employees');
 
         return view('pages.letter.bast', compact('letter', 'results'));

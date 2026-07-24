@@ -60,14 +60,14 @@ Route::get('/letters/{id}/edit', [LetterController::class, 'edit'])->middleware(
 Route::put('/letters/{id}', [LetterController::class, 'update'])->middleware('auth')->name('letters.update');
 Route::delete('/letters/{id}', [LetterController::class, 'destroy'])->middleware('auth')->name('letters.destroy');
 Route::get('/letters/download/{id}', [LetterController::class, 'download'])->middleware('auth')->name('letters.download');
-Route::get('/form-berita-acara/{id}', [LetterController::class, 'showBeritaAcaraForm'])->name('form-berita-acara');
-Route::get('/form-kerusakan/{id}', [LetterController::class, 'showKerusakanForm'])->name('form-kerusakan');
-Route::get('/form-bast-general/{id}', [LetterController::class, 'showBastGeneral'])->name('form-bast-general');
-Route::get('/form-bast-radio/{id}', [LetterController::class, 'showBastRadio'])->name('form-bast-radio');
-Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->name('kerusakan.store');
-Route::post('/berita-acara/store', [LetterController::class, 'storeBeritaAcara'])->name('berita-acara.store');
-Route::post('/bast/store', [LetterController::class, 'storeBast'])->name('bast.store');
-Route::post('/letters/add-document', [LetterController::class, 'addDocument'])->name('letters.addDocument');
+Route::get('/form-berita-acara/{id}', [LetterController::class, 'showBeritaAcaraForm'])->name('form-berita-acara')->middleware('auth');
+Route::get('/form-kerusakan/{id}', [LetterController::class, 'showKerusakanForm'])->name('form-kerusakan')->middleware('auth');
+Route::get('/form-bast-general/{id}', [LetterController::class, 'showBastGeneral'])->name('form-bast-general')->middleware('auth');
+Route::get('/form-bast-radio/{id}', [LetterController::class, 'showBastRadio'])->name('form-bast-radio')->middleware('auth');
+Route::post('/kerusakan/store', [LetterController::class, 'storeKerusakan'])->name('kerusakan.store')->middleware('auth');
+Route::post('/berita-acara/store', [LetterController::class, 'storeBeritaAcara'])->name('berita-acara.store')->middleware('auth');
+Route::post('/bast/store', [LetterController::class, 'storeBast'])->name('bast.store')->middleware('auth');
+Route::post('/letters/add-document', [LetterController::class, 'addDocument'])->name('letters.addDocument')->middleware('auth');
 
 Route::get('/view-bast-it-asset', [LetterController::class, 'viewBastItAsset'])->name('view-bast-it-asset')->middleware('auth');
 
@@ -103,27 +103,35 @@ Route::get('/add-document/{id}', [InventoryController::class, 'document_dispose'
 Route::post('/store_disposedoc', [InventoryController::class, 'storedisposedoc'])->name('store_disposedoc')->middleware('auth');
 
 Route::post('/approval', function (Request $request) {
-	// Access form data using $request object
+	$request->validate([
+		'itemId' => 'required|integer|exists:disposes,id',
+		'itemId2' => 'required|string',
+		'hirar' => 'required|in:Supervisor,Manager,Deputy General Manager',
+		'approval_action' => 'required|in:Approve,Reject',
+	]);
+
 	$itemId = $request->input('itemId');
 	$itemId2 = $request->input('itemId2');
 	$hirar = $request->input('hirar');
 	$approvalStatus = $request->input('approval_action');
 	$approval = $approvalStatus . ' by ' . $hirar;
+	abort_unless($hirar === auth()->user()->hirar, 403);
 
-	if ($hirar = 'Supervisor') {
-		$dispose = dispose::where('id', $itemId)->get();
+	$dispose = dispose::whereHas('inventory', fn ($query) => $query->visibleTo(auth()->user()))->findOrFail($itemId);
+
+	if ($hirar === 'Supervisor' && $dispose->inventory->company === 'MLP') {
 
 		// Prepare email details
 		$details = [
-			'asset_code' => $itemId2,
-			'disposal_date' => $dispose[0]->tanggal_penghapusan,
-			'remarks' => $dispose[0]->note,
+			'asset_code' => $dispose->inventory->asset_code,
+			'disposal_date' => $dispose->tanggal_penghapusan,
+			'remarks' => $dispose->note,
 		];
 
 		// Send email notification from noreply email
 		Mail::to('galuh.swasintari@mlpmining.com')  // Ganti dengan email tujuan
 			->send(new DisposeNotification($details));
-	} elseif ($hirar = 'Manager') {
+	} elseif ($hirar === 'Manager') {
 		// $dispose = dispose::where('id', $itemId)->get();
 
 		// // Prepare email details
@@ -139,14 +147,10 @@ Route::post('/approval', function (Request $request) {
 		// 	->send(new DisposeNotification($details));
 	}
 
-	dispose::where('id', $itemId)->update([
-		'Approval' => $approval
-	]);
+	$dispose->update(['approval' => $approval]);
 
 	if (($hirar === "Deputy General Manager" || $hirar === "Manager") && $approvalStatus === "Approve") {
-		inventory::where('asset_code', $itemId2)->update([
-			'status' => 'Dispose'
-		]);
+		$dispose->inventory()->update(['status' => 'Dispose']);
 	}
 
 	return redirect()->route('dispose_inventory')->with('success', 'Approval processed successfully!');

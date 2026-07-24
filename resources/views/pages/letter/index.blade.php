@@ -131,6 +131,15 @@
                                 <form id="addDataForm" method="POST">
                                     @csrf
                                     <input type="hidden" id="letterId" name="letterId">
+                                    @if(Auth::user()->status === 'Super Admin')
+                                    <div class="mb-3">
+                                        <label for="company" class="form-label">Company</label>
+                                        <select class="form-control" id="company" name="company">
+                                            <option value="MLP">PT MLP</option>
+                                            <option value="KES">PT KES</option>
+                                        </select>
+                                    </div>
+                                    @endif
                                     <div class="mb-3">
                                         <label for="tanggal" class="form-label">Tanggal</label>
                                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>

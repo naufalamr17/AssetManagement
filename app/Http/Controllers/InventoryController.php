@@ -8,6 +8,7 @@ use App\Models\dispose;
 use App\Models\inventory;
 use App\Models\repairstatus;
 use App\Models\userhist;
+use App\Services\AssetCodeGenerator;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -24,9 +25,9 @@ class InventoryController extends Controller
         if ($request->ajax()) {
             // Query inventaris berdasarkan status pengguna
             if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-                $inventory = Inventory::where('status', '!=', 'Dispose')->orderBy('acquisition_date', 'desc')->get();
+                $inventory = Inventory::visibleTo(Auth::user())->where('status', '!=', 'Dispose')->orderBy('acquisition_date', 'desc')->get();
             } else {
-                $inventory = Inventory::where('status', '!=', 'Dispose')
+                $inventory = Inventory::visibleTo(Auth::user())->where('status', '!=', 'Dispose')
                     ->where('location', Auth::user()->location)
                     ->orderBy('acquisition_date', 'desc')->get();
             }
@@ -284,6 +285,7 @@ class InventoryController extends Controller
 
     public function processQrCode(Request $request, $id)
     {
+        $this->ensureCanModify();
         // Validasi input
         $request->validate([
             'barcode_exists' => 'required|string',
@@ -291,7 +293,7 @@ class InventoryController extends Controller
         ]);
 
         // Ambil data inventaris berdasarkan ID
-        $inventory = Inventory::findOrFail($id);
+        $inventory = Inventory::visibleTo(Auth::user())->findOrFail($id);
 
         // Format data untuk kolom barcode_availability
         $barcodeAvailability = $request->barcode_exists . ' - ' . ($request->note ?? '');
@@ -307,8 +309,9 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
+        $this->ensureCanModify();
         $validatedData = $request->validate([
+            'company' => 'nullable|in:MLP,KES',
             'old_asset_code' => 'nullable|string',
             'location' => 'required|string',
             'asset_category' => 'required|string',
@@ -326,6 +329,35 @@ class InventoryController extends Controller
             'dept' => 'nullable|string',
             'note' => 'nullable|string',
         ]);
+
+        $validatedData['company'] = Auth::user()->status === 'Super Admin'
+            ? ($validatedData['company'] ?? Auth::user()->company ?? 'MLP')
+            : (Auth::user()->company ?? 'MLP');
+
+        $code = app(AssetCodeGenerator::class)->generate(
+            $validatedData['company'],
+            $validatedData['acquisition_value'] ?? 0,
+            $validatedData['location'],
+            $validatedData['asset_category'],
+        );
+
+        $validatedData['pic_dept'] = $code['pic_dept'];
+        $validatedData['asset_code'] = $code['asset_code'];
+        unset($validatedData['note']);
+
+        $asset = Inventory::create($validatedData);
+
+        if ($request->boolean('store_to_database')) {
+            Userhist::create([
+                'inv_id' => $asset->id,
+                'hand_over_date' => $request->input('hand_over_date'),
+                'user' => $request->input('user'),
+                'dept' => $request->input('dept'),
+                'note' => $request->input('note'),
+            ]);
+        }
+
+        return redirect()->route('inventory')->with('success', 'Inventory created successfully. Asset code: ' . $asset->asset_code);
 
         // Mendefinisikan PIC Dept berdasarkan acquisition_value
         if ($request->acquisition_value > 2499999) {
@@ -493,7 +525,8 @@ class InventoryController extends Controller
 
     public function destroy($id)
     {
-        $inventory = inventory::findOrFail($id);
+        abort_unless(in_array(Auth::user()->status, ['Administrator', 'Super Admin'], true), 403);
+        $inventory = inventory::visibleTo(Auth::user())->findOrFail($id);
         $inventory->delete();
 
         return redirect()->back()->with('success', 'Inventory deleted successfully.');
@@ -501,7 +534,7 @@ class InventoryController extends Controller
 
     public function edit($id)
     {
-        $asset = inventory::findOrFail($id);
+        $asset = inventory::visibleTo(Auth::user())->findOrFail($id);
         $userhist = Userhist::where('inv_id', $id)
             ->where('hand_over_date', $asset->hand_over_date)
             ->first();
@@ -512,6 +545,7 @@ class InventoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->ensureCanModify();
         // dd($request);
         // $request->validate([
         //     'old_asset_code' => 'nullable',
@@ -530,7 +564,7 @@ class InventoryController extends Controller
         //     'note' => 'nullable',
         // ]);
 
-        $asset = inventory::findOrFail($id);
+        $asset = inventory::visibleTo(Auth::user())->findOrFail($id);
         $userhist = Userhist::where('inv_id', $id)
             ->where('hand_over_date', $asset->hand_over_date)
             ->first();
@@ -580,7 +614,24 @@ class InventoryController extends Controller
 
         // if ($idc == $ids) {
         // dd('halo');
-        $data = $request->all(); // Ambil semua data dari request
+        $data = $request->validate([
+            'old_asset_code' => 'nullable|string|max:255',
+            'location' => 'required|string|max:255',
+            'asset_category' => 'required|string|max:255',
+            'asset_position_dept' => 'required|string|max:255',
+            'asset_type' => 'required|string|max:255',
+            'merk' => 'nullable|string|max:255',
+            'description' => 'required|string',
+            'serial_number' => 'nullable|string|max:255',
+            'acquisition_date' => 'nullable|date',
+            'disposal_date' => 'nullable|date',
+            'useful_life' => 'nullable|integer|min:0',
+            'acquisition_value' => 'nullable|numeric|min:0',
+            'hand_over_date' => 'nullable|date',
+            'user' => 'nullable|string|max:255',
+            'dept' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:1000',
+        ]);
 
         // Cek apakah 'acquisition_date' kosong
         if (empty($data['acquisition_date'])) {
@@ -588,6 +639,8 @@ class InventoryController extends Controller
         }
 
         // Update data ke database
+        $note = $data['note'] ?? null;
+        unset($data['note']);
         $asset->update($data);
         // } else {
         //     $iddb = Inventory::where('asset_code', 'LIKE', "%$ids%")->get(['asset_code']);
@@ -641,7 +694,7 @@ class InventoryController extends Controller
                 'hand_over_date' => $request['hand_over_date'], // Pastikan untuk menyesuaikan dengan atribut yang sesuai
                 'user' => $request['user'], // Sesuaikan dengan atribut yang sesuai
                 'dept' => $request['dept'], // Sesuaikan dengan atribut yang sesuai
-                'note' => $request['note'], // Sesuaikan dengan atribut yang sesuai
+                'note' => $note,
             ]);
         }
 
@@ -652,6 +705,7 @@ class InventoryController extends Controller
     {
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
             $userhist = Userhist::join('inventories', 'userhists.inv_id', '=', 'inventories.id')
+                ->when(Auth::user()->status !== 'Super Admin', fn ($query) => $query->where('inventories.company', Auth::user()->company ?? 'MLP'))
                 ->select(
                     'inventories.asset_code as kode_asset',
                     'inventories.asset_category',
@@ -683,6 +737,7 @@ class InventoryController extends Controller
                     'userhists.dept',
                     'userhists.note'
                 )
+                ->where('inventories.company', Auth::user()->company ?? 'MLP')
                 ->where('inventories.location', Auth::user()->location)
                 ->get();
         }
@@ -692,7 +747,7 @@ class InventoryController extends Controller
     public function repair()
     {
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-            $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            $inventory = inventory::visibleTo(Auth::user())->join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -708,7 +763,7 @@ class InventoryController extends Controller
                     'repairstatuses.dokumen_breakdown',
                 )->get();
         } else {
-            $inventory = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            $inventory = inventory::visibleTo(Auth::user())->join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -734,12 +789,14 @@ class InventoryController extends Controller
 
     public function addDocument(Request $request)
     {
+        $this->ensureCanModify();
         $request->validate([
             'repair_status_id' => 'required|exists:repairstatuses,id',
             'dokumen_breakdown' => 'required|file|mimes:pdf|max:2048',
         ]);
 
-        $repairStatus = repairstatus::findOrFail($request->repair_status_id);
+        $repairStatus = repairstatus::whereHas('inventory', fn ($query) => $query->visibleTo(Auth::user()))
+            ->findOrFail($request->repair_status_id);
 
         try {
             if ($request->hasFile('dokumen_breakdown')) {
@@ -759,16 +816,21 @@ class InventoryController extends Controller
 
     public function storerepair(Request $request)
     {
+        $this->ensureCanModify();
         // Validate the request data
         $request->validate([
-            'tanggal_kerusakan' => 'nullable|date',
-            'tanggal_pengembalian' => 'nullable|date',
-            'remarks' => 'nullable|string',
+            'asset_code' => 'required|string',
+            'status' => 'required|in:Good,Breakdown,Repair',
+            'tanggal_kerusakan_breakdown' => 'nullable|date',
+            'tanggal_kerusakan_repair' => 'nullable|date',
+            'tanggal_pengembalian_repair' => 'nullable|date',
+            'remarks_breakdown' => 'nullable|string|max:1000',
+            'remarks_repair' => 'nullable|string|max:1000',
             'dokumen_breakdown' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         // Find the inventory based on the asset code
-        $inventory = inventory::where('asset_code', $request->asset_code)->first();
+        $inventory = inventory::visibleTo(Auth::user())->where('asset_code', $request->asset_code)->firstOrFail();
 
         // Update the status of the inventory
         $inventory->status = $request->status;
@@ -817,7 +879,7 @@ class InventoryController extends Controller
     public function getInventoryData(Request $request)
     {
         $assetCode = $request->input('asset_code');
-        $inventory = Inventory::where('asset_code', $assetCode)->first();
+        $inventory = Inventory::visibleTo(Auth::user())->where('asset_code', $assetCode)->first();
 
         if ($inventory) {
             $data = [
@@ -844,7 +906,7 @@ class InventoryController extends Controller
     public function dispose()
     {
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventory = inventory::visibleTo(Auth::user())->join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -860,7 +922,7 @@ class InventoryController extends Controller
                     'disposes.disposal_document',
                 )->get();
         } else {
-            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventory = inventory::visibleTo(Auth::user())->join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -892,10 +954,16 @@ class InventoryController extends Controller
 
     public function storedispose(Request $request)
     {
-        // dd($request);
+        $this->ensureCanModify();
+        $request->validate([
+            'asset_code' => 'required|string',
+            'disposal_date' => 'required|date',
+            'remarks_repair' => 'nullable|string|max:1000',
+            'disposal_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
 
         $assetCode = $request->input('asset_code');
-        $inventory = Inventory::where('asset_code', $assetCode)->first();
+        $inventory = Inventory::visibleTo(Auth::user())->where('asset_code', $assetCode)->firstOrFail();
 
         // Update the status of the inventory
         $inventory->status = 'Waiting Dispose';
@@ -924,28 +992,30 @@ class InventoryController extends Controller
             'remarks' => $request->remarks_repair,
         ];
 
-        // Send email notification from noreply email
-        Mail::to('endra.putra@mlpmining.com')  // Ganti dengan email tujuan
-            ->send(new DisposeNotification($details));
+        // PT KES recipients are intentionally not assumed from MLP's distribution list.
+        if ($inventory->company === 'MLP') {
+            Mail::to('endra.putra@mlpmining.com')->send(new DisposeNotification($details));
+        }
 
         return redirect()->route('dispose_inventory')->with('success', 'Successfully.');
     }
 
     public function document_dispose($id)
     {
-        $dispose = dispose::findOrFail($id);
+        $dispose = dispose::whereHas('inventory', fn ($query) => $query->visibleTo(Auth::user()))->findOrFail($id);
         return view('pages.asset.disposedoc', compact('dispose'));
     }
 
     public function storedisposedoc(Request $request)
     {
+        $this->ensureCanModify();
         // Validasi jika diperlukan
         $request->validate([
             'disposal_document' => 'required|mimes:pdf,jpg,jpeg,png|max:2048', // Sesuaikan dengan kebutuhan
         ]);
 
         // Cari disposal berdasarkan ID
-        $dispose = Dispose::findOrFail($request->id);
+        $dispose = Dispose::whereHas('inventory', fn ($query) => $query->visibleTo(Auth::user()))->findOrFail($request->id);
 
         // Inisialisasi array untuk menyimpan data
         $data = [];
@@ -967,11 +1037,12 @@ class InventoryController extends Controller
     public function report()
     {
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-            $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventoryData = Inventory::visibleTo(Auth::user())->leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
                 ->select(
                     'inventories.created_at',
+                    'inventories.company',
                     'inventories.asset_code',
                     'inventories.old_asset_code',
                     'inventories.asset_category',
@@ -997,11 +1068,12 @@ class InventoryController extends Controller
                 ->get()
                 ->unique('asset_code');
         } else {
-            $inventoryData = Inventory::leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventoryData = Inventory::visibleTo(Auth::user())->leftJoin('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->leftJoin('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->leftJoin('userhists', 'inventories.id', '=', 'userhists.inv_id')
                 ->select(
                     'inventories.created_at',
+                    'inventories.company',
                     'inventories.asset_code',
                     'inventories.old_asset_code',
                     'inventories.asset_category',
@@ -1039,16 +1111,27 @@ class InventoryController extends Controller
 
     public function storeexcel(Request $request)
     {
+        abort_unless(in_array(Auth::user()->status, ['Administrator', 'Super Admin'], true), 403);
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
+            'company' => 'nullable|in:MLP,KES',
         ]);
 
+        $company = Auth::user()->status === 'Super Admin'
+            ? $request->input('company', Auth::user()->company ?? 'MLP')
+            : (Auth::user()->company ?? 'MLP');
+
         try {
-            Excel::import(new YourDataImport, $request->file('file'));
+            Excel::import(new YourDataImport($company), $request->file('file'));
 
             return redirect()->back()->with('success', 'Data Imported Successfully');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to import data: ' . $e->getMessage()]);
         }
+    }
+
+    private function ensureCanModify(): void
+    {
+        abort_unless(in_array(Auth::user()->status, ['Administrator', 'Super Admin', 'Creator', 'Modified'], true), 403);
     }
 }

@@ -5,13 +5,10 @@
         <i class="fas fa-times p-3 cursor-pointer text-black opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0 d-flex text-wrap align-items-center" href="{{ route('dashboard') }}">
             <img src="{{ asset('img/mlpLogo.png') }}" class="navbar-brand-img h-100" alt="main_logo">
-            @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager')
-            <span class="ms-4 font-weight-bold" style="color: black;">MLP ASSET MANAGEMENT</span>
-            @else
-            <span class="ms-4 font-weight-bold" style="color: black;">
-                MLP ASSET MANAGEMENT {{ strtoupper(Auth::user()->location) }}
+            <span class="ms-3 font-weight-bold text-dark">
+                SIMA
+                <small class="d-block text-secondary">Sistem Informasi Manajemen Aset</small>
             </span>
-            @endif
         </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">
@@ -87,7 +84,7 @@
                 </a>
             </li>
             @endif
-            @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
+            @if (Auth::check() && in_array(Auth::user()->status, ['Administrator', 'Super Admin'], true))
             <li class="nav-item">
                 <a class="nav-link {{ $activePage == 'user-management' ? 'active bg-gradient-danger' : '' }}" href="{{ route('user-management') }}" style="color: {{ $activePage == 'user-management' ? 'white' : 'black' }};">
                     <div class="text-center me-2 d-flex align-items-center justify-content-center">
@@ -99,7 +96,7 @@
             @endif
         </ul>
     </div>
-    @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin')
+    @if (Auth::check() && in_array(Auth::user()->status, ['Administrator', 'Super Admin'], true))
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
         <div class="mx-3">
             <a class="btn bg-gradient-danger w-100" href="{{ route('inputexcel') }}" type="button">Import Data</a>

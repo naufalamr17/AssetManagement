@@ -14,7 +14,7 @@ class DashboardController extends Controller
         // dd(Auth::user());
 
         if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
-            $assets = Inventory::all();
+            $assets = Inventory::visibleTo(Auth::user())->get();
 
             // Aggregate data for asset growth per year and location
             $yearlyGrowth = $assets->filter(function ($item) {
@@ -65,7 +65,7 @@ class DashboardController extends Controller
             }
             $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
 
-            $inventory = inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventory = inventory::visibleTo(Auth::user())->join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -80,7 +80,7 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            $repair = inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            $repair = inventory::visibleTo(Auth::user())->join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -96,7 +96,7 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
         } else {
-            $assets = Inventory::where('location', Auth::user()->location)->get();
+            $assets = Inventory::visibleTo(Auth::user())->where('location', Auth::user()->location)->get();
 
             // Aggregate data for asset growth per year
             $yearlyGrowth = $assets->filter(function ($item) {
@@ -140,7 +140,7 @@ class DashboardController extends Controller
             $monthlyGrowthFormatted = $monthlyGrowthFormatted->sortBy('month')->values();
 
             // Query untuk mengambil data inventory yang telah dipindahkan
-            $inventory = Inventory::join('disposes', 'inventories.id', '=', 'disposes.inv_id')
+            $inventory = Inventory::visibleTo(Auth::user())->join('disposes', 'inventories.id', '=', 'disposes.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',
@@ -157,7 +157,7 @@ class DashboardController extends Controller
                 ->get();
 
             // Query untuk mengambil data inventory yang perlu direparasi
-            $repair = Inventory::join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
+            $repair = Inventory::visibleTo(Auth::user())->join('repairstatuses', 'inventories.id', '=', 'repairstatuses.inv_id')
                 ->select(
                     'inventories.asset_code',
                     'inventories.asset_type',

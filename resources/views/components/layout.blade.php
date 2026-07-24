@@ -24,7 +24,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets') }}/img/apple-icon.png">
     <link rel="icon" type="image/png" href="{{ asset('assets') }}/img/favicon.png">
     <title>
-        MLP Asset Management
+        SIMA — Sistem Informasi Manajemen Aset
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -38,6 +38,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css" rel="stylesheet" />
+    <link href="{{ asset('assets') }}/css/asset-management.css" rel="stylesheet" />
 </head>
 <body class="{{ $bodyClass }}">
 

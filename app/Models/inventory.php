@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 
 class inventory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'company',
         'asset_code',
         'old_asset_code',
         'pic_dept',
@@ -30,6 +33,15 @@ class inventory extends Model
         'dept',
         'barcode_availability',
     ];
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->status === 'Super Admin') {
+            return $query;
+        }
+
+        return $query->where('company', $user->company ?? 'MLP');
+    }
 
     public function userhist()
     {

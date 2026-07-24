@@ -2,7 +2,7 @@
     <x-navbars.sidebar activePage='dashboard'></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="DASHBOARD ASSET MANAGEMENT"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="SIMA DASHBOARD"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                @if (Auth::check() && Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager')
+                @if (Auth::check() && (in_array(Auth::user()->status, ['Administrator', 'Super Admin', 'Auditor'], true) || in_array(Auth::user()->hirar, ['Manager', 'Deputy General Manager'], true)))
                 <div class="col-lg-4 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">

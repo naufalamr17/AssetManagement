@@ -42,7 +42,7 @@
                                             <label for="kode_asset">Kode Asset</label>
                                             <input list="assetList" class="form-control border p-2" id="kode_asset" name="kode_asset" required>
                                             <datalist id="assetList">
-                                                @foreach(App\Models\inventory::all() as $inventory)
+                                                @foreach(App\Models\inventory::visibleTo(Auth::user())->get() as $inventory)
                                                 <option value="{{ $inventory->asset_code }}">
                                                     {{ $inventory->asset_code }} ({{ $inventory->description }})
                                                 </option>

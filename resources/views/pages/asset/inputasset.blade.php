@@ -38,6 +38,18 @@
                                         </div> -->
 
                                         <div class="form-group">
+                                            <label for="company">Company</label>
+                                            @if(Auth::user()->status === 'Super Admin')
+                                                <select id="company" class="form-control border p-2" name="company">
+                                                    <option value="MLP" {{ old('company', Auth::user()->company) === 'MLP' ? 'selected' : '' }}>PT MLP</option>
+                                                    <option value="KES" {{ old('company', Auth::user()->company) === 'KES' ? 'selected' : '' }}>PT KES</option>
+                                                </select>
+                                            @else
+                                                <input class="form-control border p-2" value="PT {{ Auth::user()->company ?? 'MLP' }}" readonly>
+                                            @endif
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="location">Location</label>
                                             <select id="location" class="form-control border p-2" name="location" required {{ Auth::user()->email === 'info@mlpmining.com' ? '' : 'readonly' }}>
                                                 <option value="" selected disabled>Select Location</option>

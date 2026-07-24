@@ -1,0 +1,15 @@
+:root {
+    --asset-primary: #0f766e;
+    --asset-dark: #0f172a;
+    --asset-accent: #f59e0b;
+}
+
+body { background: #f8fafc; color: var(--asset-dark); }
+.sidenav { box-shadow: 0 12px 32px rgba(15, 23, 42, .10); }
+.sidenav .nav-link.active { background: linear-gradient(135deg, var(--asset-primary), #14b8a6) !important; box-shadow: 0 6px 14px rgba(15, 118, 110, .22); }
+.navbar-brand-img { max-height: 34px; width: auto; }
+.card { border: 1px solid #e2e8f0; box-shadow: 0 8px 24px rgba(15, 23, 42, .05); }
+.card-header, .bg-gradient-primary { background: linear-gradient(135deg, var(--asset-primary), #14b8a6) !important; }
+.btn-success, .btn-primary { background: var(--asset-primary); border-color: var(--asset-primary); }
+.form-control:focus, .form-select:focus { border-color: #14b8a6; box-shadow: 0 0 0 .2rem rgba(20, 184, 166, .16); }
+.table thead th { color: #475569; background: #f1f5f9; }

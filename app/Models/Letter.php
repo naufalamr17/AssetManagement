@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 
 class Letter extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'company',
         'kode_surat',
         'tanggal',
         'perihal',
@@ -18,6 +21,11 @@ class Letter extends Model
         'location',
         'file',
     ];
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        return $user->status === 'Super Admin' ? $query : $query->where('company', $user->company ?? 'MLP');
+    }
 
     public function beritaAcara()
     {

@@ -36,6 +36,15 @@
                             <form action="{{ route('store_excel') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="m-3">
+                                    @if(Auth::user()->status === 'Super Admin')
+                                    <label for="company" class="form-label">Company</label>
+                                    <select class="form-control border p-2 mb-2" id="company" name="company">
+                                        <option value="MLP">PT MLP</option>
+                                        <option value="KES">PT KES</option>
+                                    </select>
+                                    @else
+                                    <p class="text-sm text-secondary mb-2">Importing for PT {{ Auth::user()->company ?? 'MLP' }}.</p>
+                                    @endif
                                     <label for="file" class="form-label">Choose Excel File</label>
                                     <input class="form-control border p-2 mb-2" type="file" id="file" name="file" required>
                                     <button type="submit" class="btn bg-gradient-primary">Import Data</button>

@@ -1,13 +1,13 @@
 @props(['activePage'])
 
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white" id="sidenav-main">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 my-0 fixed-start ms-0" id="sidenav-main">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-black opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0 d-flex text-wrap align-items-center" href="{{ route('dashboard') }}">
-            <img src="{{ asset('img/mlpLogo.png') }}" class="navbar-brand-img h-100" alt="main_logo">
+            <img src="{{ asset('img/sima-mark.svg') }}" class="navbar-brand-img h-100" alt="SIMA logo">
             <span class="ms-3 font-weight-bold text-dark">
                 SIMA
-                <small class="d-block text-secondary">Sistem Informasi Manajemen Aset</small>
+                <small class="d-block text-secondary">Sistem Manajemen Aset</small>
             </span>
         </a>
     </div>

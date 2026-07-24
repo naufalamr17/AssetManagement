@@ -86,12 +86,12 @@ class LetterController extends Controller
             'tanggal' => 'required|date',
             'perihal' => 'nullable|string|max:255',
             'jenisBA' => 'required|string|max:255',
-            'company' => 'nullable|in:MLP,KES',
+            'company' => 'required|in:MLP,KES',
         ]);
 
         $perihal = $request->perihal ?? '-';
         $company = Auth::user()->status === 'Super Admin'
-            ? $request->input('company', Auth::user()->company ?? 'MLP')
+            ? $request->input('company')
             : (Auth::user()->company ?? 'MLP');
 
         // Generate kode_surat based on jenisBA

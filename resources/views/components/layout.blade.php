@@ -21,14 +21,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets') }}/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="{{ asset('assets') }}/img/favicon.png">
-    <title>
-        SIMA — Sistem Informasi Manajemen Aset
-    </title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/sima-mark.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('img/sima-mark.svg') }}">
+    <title>SIMA | Sistem Informasi Manajemen Aset</title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" />
     <!-- Nucleo Icons -->
     <link href="{{ asset('assets') }}/css/nucleo-icons.css" rel="stylesheet" />
     <link href="{{ asset('assets') }}/css/nucleo-svg.css" rel="stylesheet" />

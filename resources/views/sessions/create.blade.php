@@ -19,12 +19,13 @@
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                 <div class="border-radius-lg py-3 pe-1">
                                     <div class="text-center">
-                                        <img src="{{ asset('img/mlpLogo.jpg') }}" alt="Application Logo" class="img-fluid w-20 h-20 mb-2" />
+                                        <img src="{{ asset('img/sima-mark.svg') }}" alt="SIMA logo" class="sima-login-mark mb-3" />
                                     </div>
                                     <div class="row mt-3">
-                                        <h4 class='text-center' style="color: rgb(8, 47, 73);">
-                                            <span class="font-weight-normal">Log in to your account</span>
+                                        <h4 class='text-center' style="color: #16182f;">
+                                            <span class="font-weight-normal">Welcome to SIMA</span>
                                         </h4>
+                                        <p class="text-center text-sm text-secondary mb-0">Sistem Informasi Manajemen Aset</p>
                                     </div>
                                 </div>
                             </div>

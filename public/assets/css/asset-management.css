@@ -1,15 +1,69 @@
 :root {
-    --asset-primary: #0f766e;
-    --asset-dark: #0f172a;
-    --asset-accent: #f59e0b;
+    --sima-ink: #16182f;
+    --sima-muted: #727690;
+    --sima-surface: #ffffff;
+    --sima-canvas: #f5f6fb;
+    --sima-line: #e8e9f2;
+    --sima-primary: #5b5ce2;
+    --sima-primary-dark: #4344c4;
+    --sima-violet-soft: #eeefff;
+    --sima-success: #1da871;
+    --sima-shadow: 0 12px 36px rgba(26, 28, 61, .08);
 }
 
-body { background: #f8fafc; color: var(--asset-dark); }
-.sidenav { box-shadow: 0 12px 32px rgba(15, 23, 42, .10); }
-.sidenav .nav-link.active { background: linear-gradient(135deg, var(--asset-primary), #14b8a6) !important; box-shadow: 0 6px 14px rgba(15, 118, 110, .22); }
-.navbar-brand-img { max-height: 34px; width: auto; }
-.card { border: 1px solid #e2e8f0; box-shadow: 0 8px 24px rgba(15, 23, 42, .05); }
-.card-header, .bg-gradient-primary { background: linear-gradient(135deg, var(--asset-primary), #14b8a6) !important; }
-.btn-success, .btn-primary { background: var(--asset-primary); border-color: var(--asset-primary); }
-.form-control:focus, .form-select:focus { border-color: #14b8a6; box-shadow: 0 0 0 .2rem rgba(20, 184, 166, .16); }
-.table thead th { color: #475569; background: #f1f5f9; }
+html, body { min-height: 100%; }
+body { background: var(--sima-canvas); color: var(--sima-ink); font-family: 'DM Sans', sans-serif; }
+h1, h2, h3, h4, h5, h6, .navbar-brand { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -.025em; }
+.main-content { background: var(--sima-canvas); min-height: 100vh; border-radius: 0 !important; }
+
+.sidenav { width: 272px !important; min-height: 100vh; background: var(--sima-surface) !important; box-shadow: 1px 0 0 var(--sima-line); z-index: 1040; }
+.sidenav-header { height: 100px; display: flex; align-items: center; padding: 20px 18px; }
+.sidenav .navbar-brand { width: 100%; padding: 0; font-size: 1.125rem; line-height: 1.1; }
+.sidenav .navbar-brand small { margin-top: 5px; font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .01em; }
+.navbar-brand-img { width: 42px !important; height: 42px !important; max-height: none !important; border-radius: 13px; }
+.sidenav hr { border-color: var(--sima-line); margin: 0 18px 14px !important; }
+.sidenav .navbar-nav { gap: 5px; padding: 0 14px; }
+.sidenav .nav-link { display: flex; align-items: center; min-height: 45px; margin: 0; padding: 10px 12px !important; border-radius: 11px; color: #565a73 !important; font-size: .9rem; font-weight: 600; transition: .2s ease; }
+.sidenav .nav-link:hover { background: #f6f6fd; color: var(--sima-primary) !important; }
+.sidenav .nav-link.active { background: var(--sima-violet-soft) !important; box-shadow: none !important; color: var(--sima-primary) !important; }
+.sidenav .nav-link i { color: inherit !important; font-size: 1.05rem; }
+.sidenav .nav-link.active .nav-link-text { color: var(--sima-primary) !important; }
+.sidenav-footer { padding-bottom: 20px; }
+.sidenav-footer .btn { background: var(--sima-ink) !important; border: 0; border-radius: 10px; box-shadow: none; font-size: .78rem; font-weight: 700; text-transform: none; letter-spacing: 0; }
+
+.navbar-main { margin: 0 !important; padding: 24px 30px 10px !important; background: transparent; }
+.navbar-main .container-fluid { min-height: 64px; padding: 0 4px !important; }
+.navbar-eyebrow { color: var(--sima-muted); font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.navbar-main h4 { color: var(--sima-ink); font-size: 1.35rem; font-weight: 800; }
+.navbar-main .nav-link { color: var(--sima-muted) !important; font-size: .86rem; }
+
+.container-fluid.py-4 { padding: 20px 34px 38px !important; }
+.card { border: 1px solid var(--sima-line); border-radius: 16px; background: var(--sima-surface); box-shadow: var(--sima-shadow); overflow: hidden; }
+.card .card-header { border: 0; background: var(--sima-surface); }
+.card-body { padding: 1.35rem; }
+.card-body h6 { color: var(--sima-ink); font-weight: 700; }
+.bg-white.shadow-dark { box-shadow: none !important; }
+
+.btn { border-radius: 9px; box-shadow: none !important; font-family: 'DM Sans', sans-serif; font-size: .83rem; font-weight: 700; letter-spacing: 0; text-transform: none; }
+.btn-primary, .btn-success, .bg-gradient-primary { background: var(--sima-primary) !important; border-color: var(--sima-primary) !important; }
+.btn-primary:hover, .btn-success:hover, .bg-gradient-primary:hover { background: var(--sima-primary-dark) !important; border-color: var(--sima-primary-dark) !important; }
+.btn-danger, .bg-gradient-danger { background: #ed5f71 !important; border-color: #ed5f71 !important; }
+.btn-info { background: #3c9dc8 !important; border-color: #3c9dc8 !important; }
+.btn-dark, .bg-gradient-dark { background: var(--sima-ink) !important; border-color: var(--sima-ink) !important; }
+
+.form-control, .form-select, select.form-control { min-height: 43px; border: 1px solid #dde0eb !important; border-radius: 9px !important; color: var(--sima-ink); font-size: .9rem; padding: .6rem .8rem !important; background: #fff; }
+.form-control:focus, .form-select:focus, select.form-control:focus { border-color: var(--sima-primary) !important; box-shadow: 0 0 0 3px rgba(91, 92, 226, .12) !important; }
+.form-group label, label { color: #4d5169; font-size: .82rem; font-weight: 700; margin-bottom: .42rem; }
+
+.table { margin-bottom: 0; }
+.table thead th { padding: .85rem .7rem; border-bottom: 1px solid var(--sima-line); color: var(--sima-muted); background: #fafaff; font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.table tbody td { padding: .82rem .7rem; border-color: #f0f1f6; color: #454962; font-size: .82rem; vertical-align: middle; }
+.table tbody tr:hover { background: #fbfbff; }
+.dataTables_wrapper .dataTables_filter input, .dataTables_wrapper .dataTables_length select { border: 1px solid #dde0eb; border-radius: 8px; padding: .35rem .5rem; }
+
+.alert { border: 0; border-radius: 11px; font-size: .88rem; }
+.badge { border-radius: 999px; font-weight: 700; padding: .42em .7em; }
+.sima-login-mark { width: 58px; height: 58px; border-radius: 17px; box-shadow: 0 10px 24px rgba(91, 92, 226, .24); }
+
+@media (min-width: 1200px) { .main-content { margin-left: 272px; } }
+@media (max-width: 1199.98px) { .sidenav { width: 272px !important; } .container-fluid.py-4 { padding: 16px 18px 32px !important; } .navbar-main { padding: 16px 18px 8px !important; } }

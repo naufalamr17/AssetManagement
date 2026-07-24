@@ -311,7 +311,7 @@ class InventoryController extends Controller
     {
         $this->ensureCanModify();
         $validatedData = $request->validate([
-            'company' => 'nullable|in:MLP,KES',
+            'company' => 'required|in:MLP,KES',
             'old_asset_code' => 'nullable|string',
             'location' => 'required|string',
             'asset_category' => 'required|string',
@@ -331,7 +331,7 @@ class InventoryController extends Controller
         ]);
 
         $validatedData['company'] = Auth::user()->status === 'Super Admin'
-            ? ($validatedData['company'] ?? Auth::user()->company ?? 'MLP')
+            ? $validatedData['company']
             : (Auth::user()->company ?? 'MLP');
 
         $code = app(AssetCodeGenerator::class)->generate(
@@ -1114,11 +1114,11 @@ class InventoryController extends Controller
         abort_unless(in_array(Auth::user()->status, ['Administrator', 'Super Admin'], true), 403);
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
-            'company' => 'nullable|in:MLP,KES',
+            'company' => 'required|in:MLP,KES',
         ]);
 
         $company = Auth::user()->status === 'Super Admin'
-            ? $request->input('company', Auth::user()->company ?? 'MLP')
+            ? $request->input('company')
             : (Auth::user()->company ?? 'MLP');
 
         try {

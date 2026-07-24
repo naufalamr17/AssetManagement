@@ -30,7 +30,7 @@ Use `php artisan migrate:fresh --seed` only for a disposable development databas
 
 ## Multi-company support
 
-Every user and asset belongs to either `MLP` or `KES`. Existing records are migrated to `MLP` automatically. Administrators assign a company when creating a user; normal users only see and operate on assets in their own company. Super Admin users can work across both companies.
+Every user and asset belongs to either `MLP` or `KES`. Existing records are migrated to `MLP` automatically. Administrators must choose a company when creating a user, and users explicitly choose their company for asset, import, and letter workflows. Normal users can only select and operate within their assigned company; Super Admin users can select either company.
 
 Asset codes use the same location/category logic for both companies. MLP keeps its existing format; KES codes receive the requested prefix:
 

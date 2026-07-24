@@ -39,14 +39,17 @@
 
                                         <div class="form-group">
                                             <label for="company">Company</label>
-                                            @if(Auth::user()->status === 'Super Admin')
-                                                <select id="company" class="form-control border p-2" name="company">
-                                                    <option value="MLP" {{ old('company', Auth::user()->company) === 'MLP' ? 'selected' : '' }}>PT MLP</option>
-                                                    <option value="KES" {{ old('company', Auth::user()->company) === 'KES' ? 'selected' : '' }}>PT KES</option>
-                                                </select>
-                                            @else
-                                                <input class="form-control border p-2" value="PT {{ Auth::user()->company ?? 'MLP' }}" readonly>
-                                            @endif
+                                            <select id="company" class="form-control border p-2" name="company" required>
+                                                @if(Auth::user()->status === 'Super Admin')
+                                                <option value="" disabled {{ old('company') ? '' : 'selected' }}>Select company</option>
+                                                @endif
+                                                @if(Auth::user()->status === 'Super Admin' || Auth::user()->company === 'MLP')
+                                                <option value="MLP" {{ old('company', Auth::user()->company) === 'MLP' ? 'selected' : '' }}>PT MLP</option>
+                                                @endif
+                                                @if(Auth::user()->status === 'Super Admin' || Auth::user()->company === 'KES')
+                                                <option value="KES" {{ old('company', Auth::user()->company) === 'KES' ? 'selected' : '' }}>PT KES</option>
+                                                @endif
+                                            </select>
                                         </div>
 
                                         <div class="form-group">

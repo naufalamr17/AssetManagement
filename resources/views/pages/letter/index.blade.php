@@ -131,15 +131,20 @@
                                 <form id="addDataForm" method="POST">
                                     @csrf
                                     <input type="hidden" id="letterId" name="letterId">
-                                    @if(Auth::user()->status === 'Super Admin')
                                     <div class="mb-3">
                                         <label for="company" class="form-label">Company</label>
-                                        <select class="form-control" id="company" name="company">
+                                        <select class="form-control" id="company" name="company" required>
+                                            @if(Auth::user()->status === 'Super Admin')
+                                            <option value="" disabled selected>Select company</option>
+                                            @endif
+                                            @if(Auth::user()->status === 'Super Admin' || Auth::user()->company === 'MLP')
                                             <option value="MLP">PT MLP</option>
+                                            @endif
+                                            @if(Auth::user()->status === 'Super Admin' || Auth::user()->company === 'KES')
                                             <option value="KES">PT KES</option>
+                                            @endif
                                         </select>
                                     </div>
-                                    @endif
                                     <div class="mb-3">
                                         <label for="tanggal" class="form-label">Tanggal</label>
                                         <input type="date" class="form-control" id="tanggal" name="tanggal" required>

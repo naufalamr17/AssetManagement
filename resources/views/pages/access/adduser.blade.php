@@ -42,7 +42,8 @@
                                         <div class="form-group">
                                             <label for="company">Company</label>
                                             <select id="company" class="form-control border p-2" name="company" required>
-                                                <option value="MLP" {{ old('company', 'MLP') === 'MLP' ? 'selected' : '' }}>PT MLP</option>
+                                                <option value="" disabled {{ old('company') ? '' : 'selected' }}>Select company</option>
+                                                <option value="MLP" {{ old('company') === 'MLP' ? 'selected' : '' }}>PT MLP</option>
                                                 <option value="KES" {{ old('company') === 'KES' ? 'selected' : '' }}>PT KES</option>
                                             </select>
                                         </div>

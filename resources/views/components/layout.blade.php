@@ -34,6 +34,7 @@
     <script src="https://kit.fontawesome.com/2afeabd839.js" crossorigin="anonymous"></script>
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    @vite('resources/js/app.js')
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css" rel="stylesheet" />
     <link href="{{ asset('assets') }}/css/asset-management.css" rel="stylesheet" />

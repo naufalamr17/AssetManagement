@@ -272,6 +272,11 @@ h1, h2, h3, h4, h5, h6, .navbar-brand { font-family: 'Plus Jakarta Sans', sans-s
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover { border: 0 !important; background: #eeefff !important; color: var(--sima-primary) !important; }
 .page-toolbar { min-height: 76px; }
 .page-toolbar .btn { min-height: 42px; margin-bottom: 0; }
+.asset-form-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--sima-line); }
+.asset-form-heading h5 { margin: 4px 0; color: var(--sima-ink); font-size: 1.12rem; font-weight: 800; }
+.asset-form-heading p { margin: 0; color: var(--sima-muted); font-size: .82rem; }
+.asset-form-heading fluent-badge { flex: 0 0 auto; }
+
 
 @media (max-width: 767.98px) {
     .navbar-main .container-fluid { min-height: 48px; }

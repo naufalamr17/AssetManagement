@@ -27,6 +27,13 @@
                         <div class="p-6">
                             <form method="POST" action="{{ route('store_inventory') }}">
                                 @csrf
+                            <div class="asset-form-heading">
+                                <div>
+                                    <span class="panel-kicker">Asset registration</span>
+                                    <h5>Asset details</h5>
+                                    <p>Enter the record details, then save it to the selected company.</p>
+                                </div>
+                                <fluent-badge>Fluent UI</fluent-badge>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <!-- <div class="form-group>

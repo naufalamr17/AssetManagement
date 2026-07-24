@@ -23,6 +23,7 @@ class InventoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            return $this->inventoryDataTable($request);
             // Query inventaris berdasarkan status pengguna
             if (Auth::user()->status == 'Administrator' || Auth::user()->status == 'Super Admin' || Auth::user()->status == 'Auditor' || Auth::user()->hirar == 'Manager' || Auth::user()->hirar == 'Deputy General Manager') {
                 $inventory = Inventory::visibleTo(Auth::user())->where('status', '!=', 'Dispose')->orderBy('acquisition_date', 'desc')->get();
@@ -1128,6 +1129,99 @@ class InventoryController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to import data: ' . $e->getMessage()]);
         }
+    }
+
+    private function inventoryDataTable(Request $request)
+    {
+        $user = Auth::user();
+        $query = Inventory::visibleTo($user)
+            ->select([
+                'id', 'company', 'asset_code', 'asset_category', 'asset_position_dept', 'asset_type',
+                'merk', 'description', 'serial_number', 'acquisition_date', 'acquisition_value',
+                'useful_life', 'location', 'status', 'user', 'dept', 'created_at', 'barcode_availability',
+            ])
+            ->where('status', '!=', 'Dispose')
+            ->when(! $this->canViewAllLocations($user), fn ($builder) => $builder->where('location', $user->location))
+            ->when($request->filled('company'), fn ($builder) => $builder->where('company', $request->string('company')))
+            ->orderByDesc('acquisition_date');
+
+        return DataTables::eloquent($query)
+            ->addColumn('message', fn (Inventory $asset) => $this->remainingUsefulLife($asset))
+            ->addColumn('depreciated_value', fn (Inventory $asset) => $this->depreciatedValue($asset, $user))
+            ->addColumn('action', fn (Inventory $asset) => $this->inventoryActions($asset, $user))
+            ->editColumn('acquisition_value', fn (Inventory $asset) => $user->location === 'Head Office' ? $asset->acquisition_value : 0)
+            ->rawColumns(['action'])
+            ->toJson();
+    }
+
+    private function canViewAllLocations($user): bool
+    {
+        return in_array($user->status, ['Administrator', 'Super Admin', 'Auditor'], true)
+            || in_array($user->hirar, ['Manager', 'Deputy General Manager'], true);
+    }
+
+    private function remainingUsefulLife(Inventory $asset): string
+    {
+        if (empty($asset->acquisition_date) || $asset->acquisition_date === '-' || ! $asset->useful_life) {
+            return 'Tanggal tidak tersedia';
+        }
+
+        try {
+            $endOfUsefulLife = Carbon::parse($asset->acquisition_date)->addYears((int) $asset->useful_life);
+            $days = now()->diffInDays($endOfUsefulLife, false);
+
+            return $days . ' hari';
+        } catch (\Throwable $exception) {
+            return 'Tanggal tidak tersedia';
+        }
+    }
+
+    private function depreciatedValue(Inventory $asset, $user): string|int
+    {
+        if ($user->location !== 'Head Office') {
+            return 0;
+        }
+
+        if (empty($asset->acquisition_date) || $asset->acquisition_date === '-' || ! $asset->useful_life) {
+            return $asset->acquisition_value ?? 0;
+        }
+
+        try {
+            $yearsUsed = max(0, Carbon::parse($asset->acquisition_date)->diffInYears(now(), false));
+            $value = (float) ($asset->acquisition_value ?? 0);
+            $rate = 1 / (int) $asset->useful_life;
+
+            for ($year = 0; $year < $yearsUsed; $year++) {
+                $value *= 1 - $rate;
+            }
+
+            return number_format(max(0, $value), 0, ',', '.');
+        } catch (\Throwable $exception) {
+            return '-';
+        }
+    }
+
+    private function inventoryActions(Inventory $asset, $user): string
+    {
+        $canEdit = in_array($user->status, ['Administrator', 'Super Admin', 'Creator', 'Modified'], true);
+        $canDelete = in_array($user->status, ['Administrator', 'Super Admin'], true);
+
+        if (! $canEdit) {
+            return '-';
+        }
+
+        $actions = '<div class="table-actions">';
+        $actions .= '<a href="' . route('edit_inventory', ['id' => $asset->id]) . '" class="btn btn-success btn-sm" title="Edit asset"><i class="material-icons">edit</i></a>';
+
+        if ($canDelete) {
+            $actions .= '<form action="' . route('destroy_inventory', ['id' => $asset->id]) . '" method="POST" onsubmit="return confirm(\'Hapus aset ini?\');">'
+                . csrf_field() . method_field('DELETE')
+                . '<button type="submit" class="btn btn-danger btn-sm" title="Hapus aset"><i class="material-icons">close</i></button></form>';
+        }
+
+        $actions .= '<button type="button" class="btn btn-info btn-sm js-asset-qr" data-bs-toggle="modal" data-bs-target="#qrcodeModal" data-asset-id="' . $asset->id . '" data-asset-code="' . e($asset->asset_code) . '" title="Update barcode"><i class="material-icons">qr_code</i></button>';
+
+        return $actions . '</div>';
     }
 
     private function ensureCanModify(): void

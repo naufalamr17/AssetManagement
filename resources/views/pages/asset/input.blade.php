@@ -93,6 +93,39 @@
             <x-footers.auth></x-footers.auth>
         </div>
     </main>
+    <div class="modal fade" id="qrcodeModal" tabindex="-1" aria-labelledby="qrcodeModalLabel" aria-hidden="true" data-action-template="{{ route('process_qrcode', ['id' => '__asset__']) }}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="qrcodeModalForm" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <div><span class="panel-kicker">Barcode</span><h5 class="modal-title" id="qrcodeModalLabel">Update asset barcode</h5></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-sm text-secondary mb-3">Asset: <strong id="qrcodeAssetCode">-</strong></p>
+                        <div class="form-group">
+                            <label for="barcodeExists">Barcode availability</label>
+                            <select class="form-select" id="barcodeExists" name="barcode_exists" required>
+                                <option value="" selected disabled>Select an option</option>
+                                <option value="yes">Available</option>
+                                <option value="no">Not available</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label for="barcodeNote">Note</label>
+                            <textarea class="form-control" id="barcodeNote" name="note" rows="3" placeholder="Optional note"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save barcode status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <x-plugins></x-plugins>
 
     <!-- Include jQuery -->
@@ -298,6 +331,19 @@
             });
         });
     </script>
+    <script>
+        document.getElementById('qrcodeModal')?.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const modal = event.currentTarget;
+            const form = document.getElementById('qrcodeModalForm');
+
+            form.action = modal.dataset.actionTemplate.replace('__asset__', button.dataset.assetId);
+            document.getElementById('qrcodeAssetCode').textContent = button.dataset.assetCode || '-';
+            document.getElementById('barcodeExists').value = '';
+            document.getElementById('barcodeNote').value = '';
+        });
+    </script>
+
 
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
